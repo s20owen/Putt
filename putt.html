@@ -2560,6 +2560,15 @@
       }
       return null;
     };
+    const takePressureCell = predicate => {
+      const pressured = takeOpenCell(index => {
+        if (predicate && !predicate(index)) return false;
+        if (settings.key === "beginner") return false;
+        if (index < Math.max(startBufferCells + 1, Math.floor(cells.length * 0.32))) return false;
+        return !isTurnCell(cells, index);
+      });
+      return pressured != null ? pressured : takeOpenCell(predicate);
+    };
     const getLaneSign = index => ((index + holeIndex + (layoutType === "left_turn" ? 1 : 0)) % 2 === 0 ? 1 : -1);
     const clampWithin = (value, min, max) => {
       if (max <= min) return (min + max) / 2;
@@ -2789,7 +2798,9 @@
     } else {
       const padCount = clamp(Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale), 1, 4);
       for (let i = 0; i < padCount; i++) {
-        const padIndex = takeOpenCell(index => index > 1 && index < cells.length - 1);
+        const padIndex = (settings.key !== "beginner" && i === 0)
+          ? takePressureCell(index => index > 1 && index < cells.length - 1)
+          : takeOpenCell(index => index > 1 && index < cells.length - 1);
         if (padIndex == null) break;
         const laneSign = getLaneSign(padIndex);
         const turning = isTurnCell(cells, padIndex);
@@ -2797,8 +2808,11 @@
           ? 0.8 + rng() * 0.08
           : (rng() > 0.45 ? 1.08 + rng() * 0.18 : 0.82 + rng() * 0.07);
         const alongOffset = turning ? -cellSize * 0.12 : cellSize * 0.06;
+        const laneContest = settings.key !== "beginner" && i === 0 && !turning;
         const baseSide = laneSign * cellSize * (turning ? 0.2 : 0.16);
-        const sideOffset = baseSide * (i === 0 ? 1 - lanePressure * 0.7 : 1 - lanePressure * 0.35);
+        const sideOffset = laneContest
+          ? laneSign * cellSize * 0.05
+          : baseSide * (i === 0 ? 1 - lanePressure * 0.7 : 1 - lanePressure * 0.35);
         placePadAtCell(padIndex, boost, alongOffset, sideOffset, turning);
       }
 
@@ -2808,10 +2822,15 @@
         4
       ) : 0;
       for (let i = 0; i < spinnerCount; i++) {
-        const spinnerIndex = takeOpenCell(index => index > 1 && index < cells.length - 2);
+        const spinnerIndex = (settings.key !== "beginner" && i === 0)
+          ? takePressureCell(index => index > 1 && index < cells.length - 2)
+          : takeOpenCell(index => index > 1 && index < cells.length - 2);
         if (spinnerIndex == null) break;
         const laneSign = getLaneSign(spinnerIndex + i);
-        const sideOffset = laneSign * cellSize * 0.18 * (i === 0 ? 1 - lanePressure : 1 - lanePressure * 0.45);
+        const laneContest = settings.key !== "beginner" && i === 0;
+        const sideOffset = laneContest
+          ? laneSign * cellSize * 0.04
+          : laneSign * cellSize * 0.18 * (i === 0 ? 1 - lanePressure : 1 - lanePressure * 0.45);
         const anchor = getObstacleCenter(spinnerIndex, 0, sideOffset, false, cellSize * 0.2);
         spinners.push({
           x: Math.round(anchor.x),
@@ -2826,13 +2845,18 @@
         3
       ) : 0;
       for (let i = 0; i < sandCount; i++) {
-        const sandIndex = takeOpenCell(index => index > 1 && index < cells.length - 1);
+        const sandIndex = (settings.key !== "beginner" && i === 0)
+          ? takePressureCell(index => index > 1 && index < cells.length - 1)
+          : takeOpenCell(index => index > 1 && index < cells.length - 1);
         if (sandIndex == null) break;
         const laneSign = getLaneSign(sandIndex + i);
         const turning = isTurnCell(cells, sandIndex);
-        const sideOffset = laneSign * cellSize * 0.16 * (i === 0 ? 1 - lanePressure * 0.8 : 1 - lanePressure * 0.35);
+        const laneContest = settings.key !== "beginner" && i === 0 && !turning;
+        const sideOffset = laneContest
+          ? laneSign * cellSize * 0.03
+          : laneSign * cellSize * 0.16 * (i === 0 ? 1 - lanePressure * 0.8 : 1 - lanePressure * 0.35);
         const anchor = getObstacleCenter(sandIndex, 0, sideOffset, false, cellSize * 0.26);
-        const trapWidth = Math.round(cellSize * (turning ? 0.46 + lanePressure * 0.08 : 0.34 + lanePressure * 0.16));
+        const trapWidth = Math.round(cellSize * (laneContest ? 0.48 : turning ? 0.46 + lanePressure * 0.08 : 0.34 + lanePressure * 0.16));
         const trapHeight = Math.round(cellSize * (turning ? 0.46 : 0.56));
         const trapPos = clampRectToCell(sandIndex, anchor.x - trapWidth / 2, anchor.y - trapHeight / 2, trapWidth, trapHeight);
         sandTraps.push({
@@ -2849,13 +2873,18 @@
         3
       ) : 0;
       for (let i = 0; i < bumperCount; i++) {
-        const bumperIndex = takeOpenCell(index => index > 2 && index < cells.length - 2);
+        const bumperIndex = (settings.key !== "beginner" && i === 0)
+          ? takePressureCell(index => index > 2 && index < cells.length - 2)
+          : takeOpenCell(index => index > 2 && index < cells.length - 2);
         if (bumperIndex == null) break;
         const laneSign = getLaneSign(bumperIndex + i);
+        const laneContest = settings.key !== "beginner" && i === 0;
         const anchor = getObstacleCenter(
           bumperIndex,
           isTurnCell(cells, bumperIndex) ? -cellSize * 0.08 : 0,
-          laneSign * cellSize * 0.22 * (i === 0 ? 1 - lanePressure * 0.85 : 1 - lanePressure * 0.35),
+          laneContest
+            ? laneSign * cellSize * 0.05
+            : laneSign * cellSize * 0.22 * (i === 0 ? 1 - lanePressure * 0.85 : 1 - lanePressure * 0.35),
           false,
           cellSize * 0.17
         );
@@ -2869,7 +2898,9 @@
       if ((archetype === "splitter" || holeIndex >= 5) && rng() > (settings.key === "hardcore" ? 0.16 : 0.3)) {
         const blockerCount = clamp(Math.round((archetype === "splitter" ? 2 : 1) * settings.obstacleScale), 1, 3);
         for (let i = 0; i < blockerCount; i++) {
-          const blockerIndex = takeOpenCell(index => index > 1 && index < cells.length - 1);
+          const blockerIndex = (settings.key !== "beginner" && i === 0)
+            ? takePressureCell(index => index > 1 && index < cells.length - 1)
+            : takeOpenCell(index => index > 1 && index < cells.length - 1);
           if (blockerIndex == null) break;
           walls.push(makeInternalBlocker(cells[blockerIndex].rect, getCellDirection(cells, blockerIndex)));
         }
@@ -2891,9 +2922,17 @@
       }
 
       if (holeIndex >= 2 && rng() < settings.advancedHazardChance) {
-        const fanIndex = takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
+        const fanIndex = settings.key === "hardcore"
+          ? takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells)
+          : takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (fanIndex != null) {
-          const anchor = getObstacleCenter(fanIndex, 0, getLaneSign(fanIndex) * cellSize * 0.1, false, cellSize * 0.25);
+          const anchor = getObstacleCenter(
+            fanIndex,
+            0,
+            settings.key === "hardcore" ? getLaneSign(fanIndex) * cellSize * 0.04 : getLaneSign(fanIndex) * cellSize * 0.1,
+            false,
+            cellSize * 0.25
+          );
           fanZones.push({
             x: Math.round(anchor.x - (Math.abs(anchor.direction.y) > 0.5 ? 20 : cellSize * 0.28)),
             y: Math.round(anchor.y - (Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.22 : 20)),
@@ -2924,9 +2963,17 @@
       }
 
       if (holeIndex >= 4 && rng() < settings.advancedHazardChance) {
-        const magnetIndex = takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
+        const magnetIndex = settings.key === "hardcore"
+          ? takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells)
+          : takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (magnetIndex != null) {
-          const anchor = getObstacleCenter(magnetIndex, 0, getLaneSign(magnetIndex) * cellSize * 0.08, false, cellSize * 0.19);
+          const anchor = getObstacleCenter(
+            magnetIndex,
+            0,
+            settings.key === "hardcore" ? getLaneSign(magnetIndex) * cellSize * 0.03 : getLaneSign(magnetIndex) * cellSize * 0.08,
+            false,
+            cellSize * 0.19
+          );
           magneticZones.push({
             x: Math.round(anchor.x),
             y: Math.round(anchor.y),
@@ -3907,15 +3954,17 @@
       `;
     }
     resizeCanvas() {
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 844;
+      const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight || 844;
       const wrapRect = this.canvasWrap.getBoundingClientRect();
       const wrapWidth = Math.round(wrapRect.width || this.canvasWrap.clientWidth || 480);
       const wrapHeight = Math.round(wrapRect.height || this.canvasWrap.clientHeight || 0);
       const safeBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom')) || 0;
-      const availableHeight = Math.round(viewportHeight - wrapRect.top - safeBottom);
+      const availableHeight = Math.round(viewportHeight - wrapRect.top + safeBottom);
       const cssWidth = Math.max(240, wrapWidth);
       const cssHeight = Math.max(320, Math.min(wrapHeight || availableHeight, availableHeight));
       const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+
+      this.canvasWrap.style.height = `${cssHeight}px`;
 
       this.canvas.style.width = `${cssWidth}px`;
       this.canvas.style.height = `${cssHeight}px`;
@@ -4488,15 +4537,19 @@
   }
 
   applyModifierForces() {
-    if (this.modifier.id === "low_gravity" && this.ball.speed() > 0.14) {
+    const speed = this.ball.speed();
+    if (this.modifier.id === "low_gravity" && speed > 0.14) {
       this.ball.vx *= 1.004;
       this.ball.vy *= 1.004;
     }
-    if (this.modifier.id === "crosswind_left" && this.ball.speed() > 0.08) {
-      this.ball.vx -= 0.02;
-    }
-    if (this.modifier.id === "crosswind_right" && this.ball.speed() > 0.08) {
-      this.ball.vx += 0.02;
+    if (this.modifier.id === "crosswind_left" || this.modifier.id === "crosswind_right") {
+      if (speed > 0.2) {
+        const wind = 0.005 + Math.min(0.007, speed * 0.0018);
+        this.ball.vx += this.modifier.id === "crosswind_left" ? -wind : wind;
+      } else if (speed > 0.02) {
+        this.ball.vx *= 0.94;
+        this.ball.vy *= 0.94;
+      }
     }
   }
 
@@ -4923,8 +4976,16 @@
         ghost.vx *= 1.004;
         ghost.vy *= 1.004;
       }
-      if (this.modifier.id === "crosswind_left" && ghost.speed() > 0.08) ghost.vx -= 0.02;
-      if (this.modifier.id === "crosswind_right" && ghost.speed() > 0.08) ghost.vx += 0.02;
+      if (this.modifier.id === "crosswind_left" || this.modifier.id === "crosswind_right") {
+        const ghostSpeed = ghost.speed();
+        if (ghostSpeed > 0.2) {
+          const wind = 0.005 + Math.min(0.007, ghostSpeed * 0.0018);
+          ghost.vx += this.modifier.id === "crosswind_left" ? -wind : wind;
+        } else if (ghostSpeed > 0.02) {
+          ghost.vx *= 0.94;
+          ghost.vy *= 0.94;
+        }
+      }
       if (ghost.jumpGhostFrames > 0) {
         ghost.jumpGhostFrames--;
         if (ghost.jumpGhostFrames === 0) {
