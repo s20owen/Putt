@@ -1071,6 +1071,69 @@
       stroke: "#f9fafb",
       ring: "#f9fafb",
       trackReward: "hardcore"
+    },
+    {
+      id: "blueprint",
+      type: "cosmetic",
+      name: "Blueprint",
+      cost: 24,
+      description: "Draft-line shell with precise construction marks.",
+      fill: "#ffffff",
+      stroke: "#111111",
+      ring: "#9ca3af",
+      skinPattern: "blueprint"
+    },
+    {
+      id: "obsidian_ring",
+      type: "cosmetic",
+      name: "Obsidian Ring",
+      cost: 28,
+      description: "Dark shell with a crisp inner tournament ring.",
+      fill: "#111111",
+      stroke: "#f9fafb",
+      ring: "#f9fafb",
+      skinPattern: "obsidian_ring"
+    },
+    {
+      id: "monogram",
+      type: "cosmetic",
+      name: "Monogram",
+      cost: 26,
+      description: "Minimal luxury shell with centered stamp details.",
+      fill: "#ffffff",
+      stroke: "#111111",
+      skinPattern: "monogram"
+    },
+    {
+      id: "halftone_ghost",
+      type: "cosmetic",
+      name: "Halftone Ghost",
+      cost: 30,
+      description: "Rare dotted shell that shifts with the light.",
+      fill: "#ffffff",
+      stroke: "#111111",
+      skinPattern: "halftone_ghost"
+    },
+    {
+      id: "signal",
+      type: "cosmetic",
+      name: "Signal",
+      cost: 34,
+      description: "Rare target-ring shell with bold centered contrast.",
+      fill: "#ffffff",
+      stroke: "#111111",
+      ring: "#111111",
+      skinPattern: "signal"
+    },
+    {
+      id: "glitch_ink",
+      type: "cosmetic",
+      name: "Glitch Ink",
+      cost: 32,
+      description: "Offset linework shell with a rare misprint feel.",
+      fill: "#ffffff",
+      stroke: "#111111",
+      skinPattern: "glitch_ink"
     }
   ];
   const TRAIL_SHOP = [
@@ -1175,6 +1238,46 @@
       cost: 22,
       maxTier: 3,
       description: "Skips over obstacles mid-roll with a quick hop pop."
+    },
+    {
+      id: "bank_shot",
+      type: "ability",
+      name: "Bank Shot Core",
+      cost: 24,
+      maxTier: 3,
+      description: "Keeps rebounds lively and more reliable off walls."
+    },
+    {
+      id: "anchor_core",
+      type: "ability",
+      name: "Anchor Core",
+      cost: 22,
+      maxTier: 3,
+      description: "Resists wind, fans, and magnetic pull for steadier lines."
+    },
+    {
+      id: "split_core",
+      type: "ability",
+      name: "Split Core",
+      cost: 28,
+      maxTier: 3,
+      description: "Shows a second projected line so the risky route is easier to read."
+    },
+    {
+      id: "pulse_core",
+      type: "ability",
+      name: "Pulse Core",
+      cost: 26,
+      maxTier: 3,
+      description: "Kicks the ball once mid-roll with a delayed burst."
+    },
+    {
+      id: "needle_core",
+      type: "ability",
+      name: "Needle Core",
+      cost: 30,
+      maxTier: 3,
+      description: "Shrinks the ball slightly for tighter gaps, but bad contacts hit harder."
     }
   ];
   const SHOP_SECTIONS = [
@@ -2399,19 +2502,20 @@
     return { x: -direction.y, y: direction.x };
   }
 
-  function makeCellPad(center, direction, cellSize, boost, axis = "horizontal") {
+  function makeCellPad(center, direction, cellSize, boost, axis = "horizontal", sign = 1) {
     const horizontal = axis !== "vertical";
     const width = horizontal ? Math.round(cellSize * 0.68) : 30;
     const height = horizontal ? 30 : Math.round(cellSize * 0.68);
+    const rotation = horizontal
+      ? (sign >= 0 ? 0 : 180)
+      : (sign >= 0 ? 90 : 270);
     return {
       x: center.x - Math.round(width / 2),
       y: center.y - Math.round(height / 2),
       width,
       height,
       boost,
-      rotation: horizontal
-        ? 0
-        : 90
+      rotation
     };
   }
 
@@ -2533,6 +2637,7 @@
     const teleports = [];
     const fanZones = [];
     const shutterDoors = [];
+    const staticShutters = [];
     const magneticZones = [];
     const setpiece = pickProgressionSetpiece(rng, holeIndex, settings.key, layoutType, progress);
     const teleportPalette = ["#0ea5e9", "#f97316", "#10b981", "#ec4899"];
@@ -2616,16 +2721,26 @@
     };
     const placePadAtCell = (index, boost, alongOffset = 0, sideOffset = 0, useIncoming = false) => {
       const isSlowPad = boost < 1;
+      const incoming = getCellIncomingDirection(cells, index);
+      const outgoing = getCellOutgoingDirection(cells, index);
+      const turning = isTurnCell(cells, index);
+      const horizontalTurn = turning && (incoming.x !== 0 || outgoing.x !== 0);
       const axis = isSlowPad
-        ? (rng() < 0.88 ? "horizontal" : "vertical")
+        ? (horizontalTurn ? "vertical" : (rng() < 0.92 ? "horizontal" : "vertical"))
         : (rng() < 0.5 ? "horizontal" : "vertical");
+      let sign = 1;
+      if (axis === "horizontal") {
+        sign = rng() < 0.5 ? 1 : -1;
+      } else {
+        sign = rng() < 0.5 ? 1 : -1;
+      }
       const padInsetX = axis === "horizontal" ? cellSize * 0.38 : 28;
       const padInsetY = axis === "horizontal" ? 28 : cellSize * 0.38;
       const anchor = getObstacleCenter(index, alongOffset, sideOffset, useIncoming, Math.max(padInsetX, padInsetY));
       pads.push(makeCellPad({
         x: anchor.x,
         y: anchor.y
-      }, anchor.direction, cellSize, boost, axis));
+      }, anchor.direction, cellSize, boost, axis, sign));
     };
     const reserveCell = index => {
       if (index == null || index < 0 || index >= cells.length) return false;
@@ -2969,6 +3084,20 @@
         }
       }
 
+      if (holeIndex >= 4 && settings.key !== "beginner" && rng() < settings.advancedHazardChance * 0.82) {
+        const staticShutterIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
+        if (staticShutterIndex != null) {
+          const rect = cells[staticShutterIndex].rect;
+          const direction = getCellDirection(cells, staticShutterIndex);
+          staticShutters.push({
+            x: Math.round(Math.abs(direction.y) > 0.5 ? rect.x + rect.width * 0.22 : rect.x + rect.width * 0.5 - 10),
+            y: Math.round(Math.abs(direction.y) > 0.5 ? rect.y + rect.height * 0.5 - 10 : rect.y + rect.height * 0.22),
+            width: Math.round(Math.abs(direction.y) > 0.5 ? rect.width * 0.56 : 20),
+            height: Math.round(Math.abs(direction.y) > 0.5 ? 20 : rect.height * 0.56)
+          });
+        }
+      }
+
       if (holeIndex >= 4 && rng() < settings.advancedHazardChance) {
         const magnetIndex = settings.key === "hardcore"
           ? takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells)
@@ -2984,8 +3113,8 @@
           magneticZones.push({
             x: Math.round(anchor.x),
             y: Math.round(anchor.y),
-            radius: Math.round(cellSize * 0.17),
-            strength: settings.key === "hardcore" ? 0.18 : 0.12,
+            radius: Math.round(cellSize * 0.18),
+            strength: settings.key === "hardcore" ? 0.28 : 0.2,
             mode: rng() > 0.5 ? "pull" : "push"
           });
         }
@@ -3002,6 +3131,7 @@
         teleports.length * 0.4 +
         fanZones.length * 0.3 +
         shutterDoors.length * 0.25 +
+        staticShutters.length * 0.22 +
         magneticZones.length * 0.35 +
         (setpiece.id !== "none" ? 0.55 : 0) +
         (layoutType !== "straight" ? 0.4 : 0)
@@ -3032,6 +3162,7 @@
       teleports,
       fanZones,
       shutterDoors,
+      staticShutters,
       magneticZones
     };
   }
@@ -4218,11 +4349,12 @@
           pads: level.pads.length,
           sandTraps: level.sandTraps.length,
           bumpers: level.bumpers.length,
-          teleports: level.teleports.length,
-          fanZones: level.fanZones.length,
-          shutterDoors: level.shutterDoors.length,
-          magneticZones: level.magneticZones.length
-        } : null,
+        teleports: level.teleports.length,
+        fanZones: level.fanZones.length,
+        shutterDoors: level.shutterDoors.length,
+        staticShutters: level.staticShutters.length,
+        magneticZones: level.magneticZones.length
+      } : null,
         camera: level ? {
           x: Math.round(level.camera.x),
           y: Math.round(level.camera.y),
@@ -4281,6 +4413,7 @@
     this.teleports = (data.teleports || []).map(t => new TeleportPair(t));
     this.fanZones = (data.fanZones || []).map(zone => new FanZone(zone));
     this.shutterDoors = (data.shutterDoors || []).map(door => new ShutterDoor(door));
+    this.staticShutters = (data.staticShutters || []).map(shutter => new StaticShutter(shutter));
     this.magneticZones = (data.magneticZones || []).map(zone => new MagneticZone(zone));
     this.modifier = data.modifier || HOLE_MODIFIERS.none;
     this.previewUnlocked = Boolean(loadout && loadout.previewUnlocked) && this.modifier.id !== "no_preview";
@@ -4505,6 +4638,7 @@
     this.teleports.forEach(teleport => teleport.apply(this.ball));
     this.fanZones.forEach(zone => zone.apply(this.ball));
     this.shutterDoors.forEach(door => { door.update(); door.collide(this.ball); });
+    this.staticShutters.forEach(shutter => shutter.collide(this.ball));
     this.magneticZones.forEach(zone => zone.apply(this.ball));
     this.applyModifierForces();
     this.ball.clampSpeed(16);
@@ -4558,7 +4692,8 @@
     if (this.modifier.id === "crosswind_left" || this.modifier.id === "crosswind_right") {
       if (speed > 0.2) {
         const wind = 0.005 + Math.min(0.007, speed * 0.0018);
-        this.ball.vx += this.modifier.id === "crosswind_left" ? -wind : wind;
+        const resist = this.ball.getFieldResistance ? this.ball.getFieldResistance() : 1;
+        this.ball.vx += (this.modifier.id === "crosswind_left" ? -wind : wind) * resist;
       } else if (speed > 0.02) {
         this.ball.vx *= 0.94;
         this.ball.vy *= 0.94;
@@ -4604,6 +4739,7 @@
     this.teleports.forEach(teleport => teleport.render(ctx));
     this.fanZones.forEach(zone => zone.render(ctx));
     this.shutterDoors.forEach(door => door.render(ctx));
+    this.staticShutters.forEach(shutter => shutter.render(ctx));
     this.magneticZones.forEach(zone => zone.render(ctx));
     this.pads.forEach(p => p.render(ctx));
     const startPoint = this.data.ballStart || this.data.start || { x: this.ball.x, y: this.ball.y };
@@ -4722,6 +4858,7 @@
       this.teleports.forEach(teleport => teleport.render(exportCtx));
       this.fanZones.forEach(zone => zone.render(exportCtx));
       this.shutterDoors.forEach(door => door.render(exportCtx));
+      this.staticShutters.forEach(shutter => shutter.render(exportCtx));
       this.magneticZones.forEach(zone => zone.render(exportCtx));
       this.pads.forEach(p => p.render(exportCtx));
       const activeShotOverlay = this.lastReplayShots.find(shot => frame.sourceIndex >= shot.frameIndex && frame.sourceIndex <= shot.frameIndex + shotOverlayWindow);
@@ -4772,6 +4909,18 @@
           exportCtx.lineWidth = 1.5;
           exportCtx.strokeStyle = '#111111';
           exportCtx.stroke();
+        }
+        if (activeShotOverlay.preview.altPoints && activeShotOverlay.preview.altPoints.length > 1) {
+          exportCtx.globalAlpha *= 0.7;
+          exportCtx.strokeStyle = '#9ca3af';
+          exportCtx.setLineDash([6, 7]);
+          exportCtx.beginPath();
+          exportCtx.moveTo(activeShotOverlay.preview.altPoints[0].x, activeShotOverlay.preview.altPoints[0].y);
+          for (let i = 1; i < activeShotOverlay.preview.altPoints.length; i++) {
+            exportCtx.lineTo(activeShotOverlay.preview.altPoints[i].x, activeShotOverlay.preview.altPoints[i].y);
+          }
+          exportCtx.stroke();
+          exportCtx.setLineDash([]);
         }
         exportCtx.restore();
       }
@@ -4870,6 +5019,18 @@
           ctx.strokeStyle = "#111111";
           ctx.stroke();
         }
+        if (preview.altPoints && preview.altPoints.length > 1) {
+          ctx.strokeStyle = "#9ca3af";
+          ctx.globalAlpha = 0.85;
+          ctx.setLineDash([6, 7]);
+          ctx.beginPath();
+          ctx.moveTo(preview.altPoints[0].x, preview.altPoints[0].y);
+          for (let i = 1; i < preview.altPoints.length; i++) {
+            ctx.lineTo(preview.altPoints[i].x, preview.altPoints[i].y);
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
         ctx.restore();
       }
     }
@@ -4942,7 +5103,7 @@
     return this.buildPreviewPathFromVector(this.aimVector.dx, this.aimVector.dy);
   }
 
-  buildPreviewPathFromVector(dx, dy) {
+  buildPreviewPathFromVector(dx, dy, includeSplit = true) {
     const drag = Math.hypot(dx, dy);
     if (!drag) return { points: [], landingPoint: null };
     const MAX_DRAG = 150;
@@ -4963,6 +5124,9 @@
       jumpGhostFrames: this.ball.ability.id === "air_hopper" ? this.ball.getHopFrames(hopStrength) : 0,
       curveDirection: this.ball.getCurveDirectionFromAim(dx, dy),
       getCurveStrength: () => this.ball.getCurveStrength(),
+      getFieldResistance: () => this.ball.getFieldResistance ? this.ball.getFieldResistance() : 1,
+      hasSplitPreview: () => this.ball.hasSplitPreview ? this.ball.hasSplitPreview() : false,
+      getSplitPreviewOffset: () => this.ball.getSplitPreviewOffset ? this.ball.getSplitPreviewOffset() : 0,
       getBounceFactor(base) { return base; },
       getHazardKnockbackFactor() { return 1; },
       getSandFactor() { return 0.9; },
@@ -4993,7 +5157,7 @@
         const ghostSpeed = ghost.speed();
         if (ghostSpeed > 0.2) {
           const wind = 0.005 + Math.min(0.007, ghostSpeed * 0.0018);
-          ghost.vx += this.modifier.id === "crosswind_left" ? -wind : wind;
+          ghost.vx += (this.modifier.id === "crosswind_left" ? -wind : wind) * ghost.getFieldResistance();
         } else if (ghostSpeed > 0.02) {
           ghost.vx *= 0.94;
           ghost.vy *= 0.94;
@@ -5030,6 +5194,9 @@
       for (const door of this.shutterDoors) {
         door.collide(ghost, frame);
       }
+      for (const shutter of this.staticShutters) {
+        shutter.collide(ghost);
+      }
       for (const zone of this.magneticZones) {
         zone.apply(ghost);
       }
@@ -5041,7 +5208,30 @@
     if (points.length === 1 || points[points.length - 1].x !== ghost.x || points[points.length - 1].y !== ghost.y) {
       points.push({ x: ghost.x, y: ghost.y });
     }
-    return { points: points.slice(0, 8), landingPoint };
+    const result = { points: points.slice(0, 8), landingPoint };
+    if (includeSplit && ghost.hasSplitPreview && ghost.hasSplitPreview()) {
+      const offset = ghost.getSplitPreviewOffset();
+      const alt = this.buildPreviewVariant(dx, dy, offset);
+      if (alt.points.length > 1) result.altPoints = alt.points;
+      if (alt.landingPoint) result.altLandingPoint = alt.landingPoint;
+    }
+    return result;
+  }
+
+  buildPreviewVariant(dx, dy, splitOffset = 0.02) {
+    const preview = this.buildPreviewPathFromVector(dx, dy, false);
+    if (!preview.points.length || !splitOffset) return preview;
+    return {
+      ...preview,
+      points: preview.points.map((point, index) => ({
+        x: point.x + (index === 0 ? 0 : splitOffset * 120 * (index / Math.max(1, preview.points.length - 1))),
+        y: point.y
+      })),
+      landingPoint: preview.landingPoint ? {
+        x: preview.landingPoint.x + splitOffset * 120,
+        y: preview.landingPoint.y
+      } : null
+    };
   }
 }
 
@@ -5064,6 +5254,9 @@
       this.jumpPeakScale = 1;
       this.shotHopsRemaining = 0;
       this.curveDirection = 1;
+      this.pulseFrames = 0;
+      this.pulseStrength = 0;
+      this.pulseTriggered = false;
       this.trailHistory = [];
       this.bounds = null;
       this.applyLoadout(loadout || { cosmetic: BALL_COSMETICS[0], trail: TRAIL_SHOP[0], ability: ABILITY_SHOP[0] });
@@ -5081,6 +5274,9 @@
       this.visualScale = 1;
       this.visualScaleX = 1;
       this.visualScaleY = 1;
+      this.pulseFrames = this.ability.id === "pulse_core" ? Math.max(10, 14 - this.abilityTier) : 0;
+      this.pulseStrength = this.ability.id === "pulse_core" ? (0.85 + this.abilityTier * 0.18) : 0;
+      this.pulseTriggered = false;
       if (this.ability.id === "air_hopper" && this.shotHopsRemaining > 0) {
         this.startHop(power / this.getMaxPower());
       }
@@ -5090,6 +5286,7 @@
       this.trail = loadout.trail || TRAIL_SHOP[0];
       this.ability = loadout.ability || ABILITY_SHOP[0];
       this.abilityTier = Math.max(0, Number(loadout.abilityTier) || 0);
+      this.radius = this.ability.id === "needle_core" ? 5.2 - this.abilityTier * 0.18 : 6;
       this.shotHopsRemaining = this.getHopCount();
     }
     setHoleModifier(modifier) {
@@ -5109,10 +5306,13 @@
       return 0.98 + this.abilityTier * 0.0025;
     }
     getBounceFactor(base) {
+      if (this.ability.id === "bank_shot") return base * (1.12 + this.abilityTier * 0.06);
+      if (this.ability.id === "needle_core") return base * (1.08 + this.abilityTier * 0.04);
       if (this.ability.id !== "soft_shell") return base;
       return base * (1 - this.abilityTier * 0.08);
     }
     getHazardKnockbackFactor() {
+      if (this.ability.id === "needle_core") return 1.14 + this.abilityTier * 0.06;
       if (this.ability.id !== "soft_shell") return 1;
       return 1 - this.abilityTier * 0.08;
     }
@@ -5123,6 +5323,17 @@
     getCurveStrength() {
       if (this.ability.id !== "curve_core") return 0;
       return 0.02 + this.abilityTier * 0.007;
+    }
+    getFieldResistance() {
+      if (this.ability.id !== "anchor_core") return 1;
+      return Math.max(0.38, 0.72 - this.abilityTier * 0.1);
+    }
+    hasSplitPreview() {
+      return this.ability.id === "split_core" && this.abilityTier > 0;
+    }
+    getSplitPreviewOffset() {
+      if (this.ability.id !== "split_core") return 0;
+      return 0.015 + this.abilityTier * 0.007;
     }
     getCurveDirectionFromAim(dx, dy) {
       if (this.ability.id !== "curve_core") return 1;
@@ -5176,6 +5387,17 @@
         this.vy += (currentVx / speed) * curveStrength * curveScale * this.curveDirection;
       }
       this.x += this.vx; this.y += this.vy;
+      if (this.pulseFrames > 0) {
+        this.pulseFrames--;
+        if (!this.pulseTriggered && this.pulseFrames === 0 && this.speed() > 0.3) {
+          const speedNow = this.speed();
+          if (speedNow > 0.001) {
+            this.vx += (this.vx / speedNow) * this.pulseStrength;
+            this.vy += (this.vy / speedNow) * this.pulseStrength;
+          }
+          this.pulseTriggered = true;
+        }
+      }
       this.vx *= this.getRollFriction(); this.vy *= this.getRollFriction();
       const stopThreshold = this.getStopThreshold();
       if (Math.abs(this.vx) < stopThreshold) this.vx = 0;
@@ -5286,6 +5508,76 @@
         ctx.lineCap = "round";
         ctx.stroke();
       }
+      if (this.style.skinPattern === "blueprint") {
+        ctx.beginPath();
+        ctx.moveTo(this.x - renderRadiusX * 0.56, this.y + renderRadiusY * 0.18);
+        ctx.lineTo(this.x + renderRadiusX * 0.5, this.y + renderRadiusY * 0.18);
+        ctx.moveTo(this.x - renderRadiusX * 0.16, this.y - renderRadiusY * 0.54);
+        ctx.lineTo(this.x - renderRadiusX * 0.16, this.y + renderRadiusY * 0.54);
+        ctx.strokeStyle = "#9ca3af";
+        ctx.lineWidth = Math.max(0.9, outlineWidth * 0.48);
+        ctx.stroke();
+      }
+      if (this.style.skinPattern === "obsidian_ring") {
+        ctx.beginPath();
+        ctx.ellipse(this.x, this.y, renderRadiusX * 0.42, renderRadiusY * 0.42, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#f9fafb";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(this.x, this.y, renderRadiusX * 0.18, renderRadiusY * 0.18, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#111111";
+        ctx.fill();
+      }
+      if (this.style.skinPattern === "monogram") {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, Math.max(1.5, Math.min(renderRadiusX, renderRadiusY) * 0.18), 0, Math.PI * 2);
+        ctx.fillStyle = "#111111";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(this.x - renderRadiusX * 0.38, this.y - renderRadiusY * 0.34);
+        ctx.lineTo(this.x + renderRadiusX * 0.38, this.y - renderRadiusY * 0.34);
+        ctx.moveTo(this.x - renderRadiusX * 0.38, this.y + renderRadiusY * 0.34);
+        ctx.lineTo(this.x + renderRadiusX * 0.38, this.y + renderRadiusY * 0.34);
+        ctx.strokeStyle = "#111111";
+        ctx.lineWidth = Math.max(0.9, outlineWidth * 0.44);
+        ctx.stroke();
+      }
+      if (this.style.skinPattern === "halftone_ghost") {
+        for (let row = -2; row <= 2; row++) {
+          for (let col = -2; col <= 2; col++) {
+            const px = this.x + col * renderRadiusX * 0.22 + (row % 2 === 0 ? 0 : renderRadiusX * 0.08);
+            const py = this.y + row * renderRadiusY * 0.2;
+            if (((px - this.x) ** 2) / (renderRadiusX * renderRadiusX) + ((py - this.y) ** 2) / (renderRadiusY * renderRadiusY) <= 0.85) {
+              ctx.beginPath();
+              ctx.arc(px, py, Math.max(0.5, outlineWidth * 0.18), 0, Math.PI * 2);
+              ctx.fillStyle = "rgba(17,17,17,0.22)";
+              ctx.fill();
+            }
+          }
+        }
+      }
+      if (this.style.skinPattern === "signal") {
+        [0.22, 0.42, 0.62].forEach(scale => {
+          ctx.beginPath();
+          ctx.ellipse(this.x, this.y, renderRadiusX * scale, renderRadiusY * scale, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = scale === 0.22 ? "#111111" : "rgba(17,17,17,0.7)";
+          ctx.lineWidth = Math.max(0.8, outlineWidth * 0.38);
+          ctx.stroke();
+        });
+      }
+      if (this.style.skinPattern === "glitch_ink") {
+        ctx.beginPath();
+        ctx.ellipse(this.x - renderRadiusX * 0.06, this.y + renderRadiusY * 0.04, renderRadiusX * 0.78, renderRadiusY * 0.78, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(17,17,17,0.35)";
+        ctx.lineWidth = Math.max(0.9, outlineWidth * 0.36);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(this.x - renderRadiusX * 0.5, this.y + renderRadiusY * 0.06);
+        ctx.lineTo(this.x + renderRadiusX * 0.44, this.y - renderRadiusY * 0.08);
+        ctx.strokeStyle = "#111111";
+        ctx.lineWidth = Math.max(0.8, outlineWidth * 0.34);
+        ctx.stroke();
+      }
       ctx.beginPath();
       ctx.ellipse(this.x, this.y, renderRadiusX, renderRadiusY, 0, 0, Math.PI * 2);
       ctx.strokeStyle = this.style.stroke || "black";
@@ -5357,6 +5649,44 @@
           );
           ctx.stroke();
         });
+      } else if (this.ability.id === "bank_shot") {
+        ctx.beginPath();
+        ctx.moveTo(this.x - innerRadius * 0.56, this.y + innerRadius * 0.2);
+        ctx.lineTo(this.x - innerRadius * 0.08, this.y - innerRadius * 0.24);
+        ctx.lineTo(this.x + innerRadius * 0.44, this.y + innerRadius * 0.18);
+        ctx.stroke();
+      } else if (this.ability.id === "anchor_core") {
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y - innerRadius * 0.52);
+        ctx.lineTo(this.x, this.y + innerRadius * 0.28);
+        ctx.moveTo(this.x - innerRadius * 0.34, this.y + innerRadius * 0.08);
+        ctx.lineTo(this.x + innerRadius * 0.34, this.y + innerRadius * 0.08);
+        ctx.moveTo(this.x - innerRadius * 0.46, this.y + innerRadius * 0.28);
+        ctx.quadraticCurveTo(this.x, this.y + innerRadius * 0.56, this.x + innerRadius * 0.46, this.y + innerRadius * 0.28);
+        ctx.stroke();
+      } else if (this.ability.id === "split_core") {
+        ctx.beginPath();
+        ctx.moveTo(this.x - innerRadius * 0.46, this.y - innerRadius * 0.26);
+        ctx.lineTo(this.x - innerRadius * 0.08, this.y);
+        ctx.lineTo(this.x - innerRadius * 0.46, this.y + innerRadius * 0.26);
+        ctx.moveTo(this.x + innerRadius * 0.46, this.y - innerRadius * 0.26);
+        ctx.lineTo(this.x + innerRadius * 0.08, this.y);
+        ctx.lineTo(this.x + innerRadius * 0.46, this.y + innerRadius * 0.26);
+        ctx.stroke();
+      } else if (this.ability.id === "pulse_core") {
+        [0.28, 0.5].forEach(scale => {
+          ctx.beginPath();
+          ctx.ellipse(this.x, this.y, innerRadius * scale, innerRadius * scale, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+      } else if (this.ability.id === "needle_core") {
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y - innerRadius * 0.58);
+        ctx.lineTo(this.x + innerRadius * 0.32, this.y + innerRadius * 0.34);
+        ctx.lineTo(this.x, this.y + innerRadius * 0.1);
+        ctx.lineTo(this.x - innerRadius * 0.32, this.y + innerRadius * 0.34);
+        ctx.closePath();
+        ctx.stroke();
       }
       if (this.abilityTier > 1) {
         const pipCount = Math.min(this.abilityTier, 3);
@@ -5714,8 +6044,9 @@ class FanZone {
       ball.x > this.x && ball.x < this.x + this.width &&
       ball.y > this.y && ball.y < this.y + this.height
     ) {
-      ball.vx += this.forceX * this.power;
-      ball.vy += this.forceY * this.power;
+      const resist = ball.getFieldResistance ? ball.getFieldResistance() : 1;
+      ball.vx += this.forceX * this.power * resist;
+      ball.vy += this.forceY * this.power * resist;
     }
   }
 }
@@ -5753,6 +6084,23 @@ class ShutterDoor extends Wall {
   collide(ball, offset = 0) {
     if (!this.isClosedAt(offset)) return;
     super.collide(ball);
+  }
+}
+
+class StaticShutter extends Wall {
+  render(ctx) {
+    ctx.save();
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.rotate(this.rotation);
+    fillRoundedRect(ctx, -this.width / 2, -this.height / 2, this.width, this.height, 4, VISUAL_STYLE.ink);
+    drawDiagonalStripeField(ctx, -this.width / 2 + 2, -this.height / 2 + 2, this.width - 4, this.height - 4, 14, 10, "rgba(255,255,255,0.28)", 2);
+    ctx.fillStyle = VISUAL_STYLE.paper;
+    if (this.width >= this.height) {
+      ctx.fillRect(-this.width * 0.08, -this.height / 2 + 4, this.width * 0.16, this.height - 8);
+    } else {
+      ctx.fillRect(-this.width / 2 + 4, -this.height * 0.08, this.width - 8, this.height * 0.16);
+    }
+    ctx.restore();
   }
 }
 
@@ -5812,12 +6160,18 @@ class MagneticZone {
     if (dist <= 0.001 || dist > this.radius) return;
     const falloff = 1 - dist / this.radius;
     const sign = this.mode === "pull" ? 1 : -1;
-    ball.vx += (dx / dist) * this.strength * falloff * sign;
-    ball.vy += (dy / dist) * this.strength * falloff * sign;
+    const resist = ball.getFieldResistance ? ball.getFieldResistance() : 1;
+    const force = this.strength * (0.32 + falloff * 0.96) * resist;
+    ball.vx += (dx / dist) * force * sign;
+    ball.vy += (dy / dist) * force * sign;
+    if (this.mode === "pull" && dist < this.radius * 0.46) {
+      ball.vx *= 0.992;
+      ball.vy *= 0.992;
+    }
   }
 }
 
-class SpeedPad {
+  class SpeedPad {
   constructor({x, y, width, height, boost, rotation = 0}) {
     this.x = x;
     this.y = y;
@@ -5902,6 +6256,93 @@ class SpeedPad {
       }
     }
   }
+}
+
+function renderThemeGlyphField(ctx, theme, width, height) {
+  const spacing = 80;
+  ctx.save();
+  ctx.fillStyle = theme.glyphColor;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = `12px system-ui, -apple-system, sans-serif`;
+  for (let x = spacing / 2; x < width; x += spacing) {
+    for (let y = spacing / 2; y < height; y += spacing) {
+      ctx.fillText(theme.glyph, x, y);
+    }
+  }
+  ctx.restore();
+}
+
+function drawObstacleGalleryTheme(theme, canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.__courseTheme = theme;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  renderThemeGlyphField(ctx, theme, canvas.width, canvas.height);
+  ctx.fillStyle = '#111111';
+  ctx.font = '700 24px system-ui, sans-serif';
+  ctx.fillText(`${theme.name} Theme`, 28, 34);
+  ctx.font = '500 13px system-ui, sans-serif';
+  ctx.fillStyle = '#4b5563';
+  ctx.fillText('Obstacle gallery', 28, 56);
+
+  const entries = [
+    { label: 'Wall', x: 72, y: 124, render: () => new Wall({ x: 36, y: 110, width: 116, height: 14 }).render(ctx) },
+    { label: 'Spinner', x: 230, y: 124, render: () => new Spinner({ x: 228, y: 118, radius: 34 }).render(ctx) },
+    { label: 'Sand', x: 386, y: 124, render: () => new SandTrap({ x: 330, y: 82, width: 112, height: 72 }).render(ctx) },
+    { label: 'Bumper', x: 544, y: 124, render: () => new Bumper({ x: 544, y: 118, radius: 28 }).render(ctx) },
+    { label: 'Teleport', x: 700, y: 124, render: () => new TeleportPair({ a: { x: 664, y: 118 }, b: { x: 738, y: 118 }, radius: 22 }).render(ctx) },
+    { label: 'Fan', x: 92, y: 314, render: () => new FanZone({ x: 34, y: 266, width: 116, height: 68, forceX: 1, forceY: 0, power: 0.12 }).render(ctx) },
+    { label: 'Shutter', x: 248, y: 314, render: () => {
+      const shutter = new ShutterDoor({ x: 190, y: 292, width: 116, height: 18, period: 96, closedFrames: 52, phase: 0 });
+      shutter.render(ctx);
+    } },
+    { label: 'Static Shutter', x: 404, y: 314, render: () => new StaticShutter({ x: 362, y: 248, width: 84, height: 96 }).render(ctx) },
+    { label: 'Magnet', x: 560, y: 314, render: () => new MagneticZone({ x: 560, y: 300, radius: 34, strength: 0.2, mode: 'pull' }).render(ctx) },
+    { label: 'Boost Pad', x: 716, y: 314, render: () => new SpeedPad({ x: 662, y: 278, width: 108, height: 32, boost: 1.18, rotation: 180 }).render(ctx) },
+    { label: 'Slow Pad', x: 248, y: 500, render: () => new SpeedPad({ x: 194, y: 464, width: 108, height: 32, boost: 0.82, rotation: 0 }).render(ctx) },
+    { label: 'Vertical Boost', x: 560, y: 500, render: () => new SpeedPad({ x: 544, y: 426, width: 32, height: 108, boost: 1.16, rotation: 270 }).render(ctx) }
+  ];
+
+  for (const entry of entries) {
+    entry.render();
+    ctx.fillStyle = '#111111';
+    ctx.font = '600 13px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(entry.label, entry.x, entry.y + 44);
+  }
+}
+
+function renderObstacleGalleryPage() {
+  document.body.style.overflow = 'auto';
+  document.body.style.background = '#f3f4f6';
+  const app = document.getElementById('app');
+  if (app) app.style.display = 'none';
+  document.getElementById('startMenu').style.display = 'none';
+  document.getElementById('zoomBtn').style.display = 'none';
+  document.getElementById('shopFab').style.display = 'none';
+  document.getElementById('settingsFab').style.display = 'none';
+  const root = document.createElement('div');
+  root.style.cssText = 'padding:24px; display:grid; gap:18px; max-width:880px; margin:0 auto;';
+  root.innerHTML = `
+    <div style="background:#fff;border:2px solid #111827;border-radius:22px;padding:20px;">
+      <h1 style="margin:0 0 8px;font-size:32px;letter-spacing:-0.03em;">Obstacle Gallery</h1>
+      <p style="margin:0;color:#4b5563;line-height:1.45;">All obstacle renders across every course theme, including the new static shutter.</p>
+    </div>
+  `;
+  Object.values(COURSE_THEMES).forEach(theme => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border:2px solid #111827;border-radius:22px;padding:14px;';
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 580;
+    canvas.style.cssText = 'width:100%;height:auto;display:block;border-radius:14px;background:#fff;';
+    drawObstacleGalleryTheme(theme, canvas);
+    card.appendChild(canvas);
+    root.appendChild(card);
+  });
+  document.body.appendChild(root);
 }
 
   function resolveInitialSeed() {
@@ -6099,11 +6540,17 @@ class SpeedPad {
       document.getElementById('settingsModal').style.display = 'none';
     }
   };
-  renderMenuMeta(startModeKey, startRoundLengthKey);
+  const urlParams = new URLSearchParams(window.location.search);
+  const isObstacleGallery = urlParams.get('gallery') === '1';
+  if (isObstacleGallery) {
+    renderObstacleGalleryPage();
+  } else {
+    renderMenuMeta(startModeKey, startRoundLengthKey);
+  }
 
   window.__game = null;
   window.__generateCourse = generateCourse;
-  window.render_game_to_text = () => JSON.stringify(game ? game.renderState() : { mode: 'menu' });
+  window.render_game_to_text = () => JSON.stringify(isObstacleGallery ? { mode: 'gallery' } : (game ? game.renderState() : { mode: 'menu' }));
   window.advanceTime = (ms) => {
     if (game) game.advanceTime(ms);
   };
