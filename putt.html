@@ -21,6 +21,7 @@
       --safe-right: env(safe-area-inset-right, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
+      --viewport-h: 100dvh;
     }
     html, body {
       height: 100%;
@@ -37,8 +38,8 @@
       -webkit-touch-callout: none;
     }
     #app {
-      min-height: 100svh;
-      height: 100dvh;
+      min-height: var(--viewport-h);
+      height: var(--viewport-h);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -59,6 +60,7 @@
     #canvasWrap {
       width: 100%;
       flex: 1 1 auto;
+      height: 100%;
       min-height: 0;
       display: flex;
       align-items: stretch;
@@ -81,13 +83,13 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: calc(var(--safe-top) + 18px) calc(var(--safe-right) + 18px) calc(var(--safe-bottom) + 18px) calc(var(--safe-left) + 18px);
+      padding: calc(var(--safe-top) + 12px) calc(var(--safe-right) + 18px) calc(var(--safe-bottom) + 10px) calc(var(--safe-left) + 18px);
       overflow-y: auto;
       z-index: 120;
     }
     .menu-card {
       width: min(100%, 390px);
-      max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);
+      max-height: calc(var(--viewport-h) - var(--safe-top) - var(--safe-bottom) - 16px);
       overflow: auto;
       border: 2px solid #111827;
       border-radius: 24px;
@@ -95,7 +97,7 @@
       background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
       box-shadow: 0 20px 50px rgba(0,0,0,0.14);
       text-align: left;
-      margin: auto 0;
+      margin: 0;
     }
     .menu-card h2 {
       margin: 0 0 8px;
@@ -206,7 +208,7 @@
     }
     #scorecard .card {
       width: min(100%, 340px);
-      max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 32px);
+      max-height: calc(var(--viewport-h) - var(--safe-top) - var(--safe-bottom) - 24px);
       overflow: auto;
       background: #fff;
       border-radius: 18px;
@@ -787,7 +789,7 @@
       #settingsModal .card,
       #replayModal .card {
         width: min(100%, 100vw - 18px);
-        max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 16px);
+        max-height: calc(var(--viewport-h) - var(--safe-top) - var(--safe-bottom) - 12px);
         padding: 14px;
       }
       #scorecard .card h2 {
@@ -1489,6 +1491,11 @@
     if (FX_STATE.listenerBound) return;
     FX_STATE.listenerBound = true;
     window.addEventListener('pointerdown', unlockGameFx, { passive: true });
+  }
+
+  function updateViewportMetrics() {
+    const viewportHeight = Math.round(window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight || 844);
+    document.documentElement.style.setProperty('--viewport-h', `${viewportHeight}px`);
   }
 
   function isAppleMobileShareTarget() {
@@ -3119,8 +3126,14 @@
       this.lastReplayPreviewUrl = null;
       this.resizeCanvas = this.resizeCanvas.bind(this);
       bindFxUnlockListener();
+      updateViewportMetrics();
       window.addEventListener('resize', this.resizeCanvas);
       window.addEventListener('orientationchange', this.resizeCanvas);
+      window.addEventListener('resize', updateViewportMetrics);
+      window.addEventListener('orientationchange', updateViewportMetrics);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', updateViewportMetrics);
+      }
       this.shopBtn.onclick = () => { unlockGameFx(); emitGameFx('ui'); this.openShop(); };
       this.statsBtn.onclick = () => { unlockGameFx(); emitGameFx('ui'); this.openStats(); };
       this.settingsFab.onclick = () => { unlockGameFx(); emitGameFx('ui'); this.openSettings(); };
@@ -3954,12 +3967,12 @@
       `;
     }
     resizeCanvas() {
-      const viewportHeight = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight || 844;
+      updateViewportMetrics();
+      const viewportHeight = Math.round(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--viewport-h')) || window.innerHeight || 844);
       const wrapRect = this.canvasWrap.getBoundingClientRect();
       const wrapWidth = Math.round(wrapRect.width || this.canvasWrap.clientWidth || 480);
       const wrapHeight = Math.round(wrapRect.height || this.canvasWrap.clientHeight || 0);
-      const safeBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom')) || 0;
-      const availableHeight = Math.round(viewportHeight - wrapRect.top + safeBottom);
+      const availableHeight = Math.round(viewportHeight - wrapRect.top);
       const cssWidth = Math.max(240, wrapWidth);
       const cssHeight = Math.max(320, Math.min(wrapHeight || availableHeight, availableHeight));
       const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
