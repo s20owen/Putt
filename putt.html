@@ -37,7 +37,7 @@
       -webkit-touch-callout: none;
     }
     #app {
-      min-height: 100dvh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -57,11 +57,12 @@
     }
     #canvasWrap {
       width: 100%;
-      flex: 1;
+      flex: 1 1 auto;
       min-height: 0;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: stretch;
+      justify-content: stretch;
+      overflow: hidden;
     }
     canvas {
       background: white;
@@ -77,9 +78,10 @@
       inset: 0;
       background: rgba(255,255,255,0.96);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: calc(var(--safe-top) + 18px) calc(var(--safe-right) + 18px) calc(var(--safe-bottom) + 18px) calc(var(--safe-left) + 18px);
+      overflow-y: auto;
       z-index: 120;
     }
     .menu-card {
@@ -90,6 +92,7 @@
       background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
       box-shadow: 0 20px 50px rgba(0,0,0,0.14);
       text-align: left;
+      margin: auto 0;
     }
     .menu-card h2 {
       margin: 0 0 8px;
@@ -192,13 +195,16 @@
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.6);
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: calc(var(--safe-top) + 16px) calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 16px) calc(var(--safe-left) + 16px);
+      overflow-y: auto;
       z-index: 99;
     }
     #scorecard .card {
       width: min(100%, 340px);
+      max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 32px);
+      overflow: auto;
       background: #fff;
       border-radius: 18px;
       padding: 18px;
@@ -711,7 +717,7 @@
     }
     @media (max-width: 430px) {
       #app {
-        gap: 8px;
+        gap: 4px;
       }
       #ui {
         gap: 4px 8px;
@@ -719,11 +725,11 @@
     }
     @media (max-width: 360px), (max-height: 640px) {
       #app {
-        gap: 6px;
-        padding: calc(var(--safe-top) + 6px) calc(var(--safe-right) + 6px) calc(var(--safe-bottom) + 8px) calc(var(--safe-left) + 6px);
+        gap: 2px;
+        padding: calc(var(--safe-top) + 4px) calc(var(--safe-right) + 4px) calc(var(--safe-bottom) + 4px) calc(var(--safe-left) + 4px);
       }
       h1 {
-        font-size: 24px;
+        font-size: 22px;
       }
       #ui {
         font-size: 12px;
@@ -756,20 +762,21 @@
     }
     @media (max-width: 520px) {
       #app {
-        padding: calc(var(--safe-top) + 6px) 0 calc(var(--safe-bottom) + 10px) 0;
-        gap: 2px;
+        padding: calc(var(--safe-top) + 2px) 0 0 0;
+        gap: 0;
       }
       h1 {
         display: block;
         width: 100%;
         text-align: center;
-        font-size: clamp(18px, 5.4vw, 24px);
+        font-size: clamp(16px, 5.2vw, 22px);
         line-height: 1;
-        padding: 0 12px;
+        padding: 0 10px 2px;
         box-sizing: border-box;
       }
       #canvasWrap {
         width: 100vw;
+        flex: 1 1 auto;
       }
       #scorecard .card,
       #shopModal .card,
@@ -777,12 +784,19 @@
       #settingsModal .card,
       #replayModal .card {
         width: min(100%, 100vw - 18px);
-        max-height: min(88dvh, 760px);
-        padding: 16px;
+        max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 16px);
+        padding: 14px;
       }
       .buttons {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      #scorecard table {
+        font-size: 13px;
+        margin: 10px 0;
+      }
+      #scorecard th, #scorecard td {
+        padding: 5px 6px;
       }
       canvas {
         border-radius: 0;
@@ -910,7 +924,7 @@
   <div id="startMenu">
     <div class="menu-card">
       <h2>Start A Round</h2>
-      <p>Choose a difficulty, then decide whether you want the normal run length or a full 18-hole card.</p>
+      <p>Pick a difficulty and round length, then tee off.</p>
       <div class="menu-section-label">Mode</div>
       <div class="mode-toggle">
         <button id="modeStandardBtn" class="active" data-mode="standard">Standard</button>
@@ -3368,29 +3382,14 @@
       if (!navigator.share) return false;
       const simplePayload = { title, text, url: window.location.href };
       const payload = { files: [file], title, text };
-      if (isAppleMobileShareTarget()) {
-        try {
-          await navigator.share(simplePayload);
-          return true;
-        } catch (error) {
-          if (error && error.name === 'AbortError') return true;
-        }
-      }
       try {
-        await navigator.share(payload);
-        return true;
+        const canShareFiles = !navigator.canShare || navigator.canShare({ files: [file] });
+        if (canShareFiles) {
+          await navigator.share(payload);
+          return true;
+        }
       } catch (error) {
         if (error && error.name === 'AbortError') return true;
-      }
-      if (navigator.canShare) {
-        try {
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share(payload);
-            return true;
-          }
-        } catch (error) {
-          if (error && error.name === 'AbortError') return true;
-        }
       }
       try {
         await navigator.share(simplePayload);
@@ -3868,14 +3867,11 @@
     }
     resizeCanvas() {
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 844;
-      const wrapWidth = this.canvasWrap.clientWidth || 480;
-      const titleHeight = document.querySelector('h1').offsetHeight || 42;
-      const isCompactViewport = window.innerWidth <= 360 || viewportHeight <= 640;
-      const reserved = titleHeight + (isCompactViewport ? 8 : 18);
-      const wrapHeight = this.canvasWrap.clientHeight || 0;
-      const maxHeight = Math.max(320, wrapHeight || (viewportHeight - reserved));
-      const cssWidth = wrapWidth;
-      const cssHeight = maxHeight;
+      const wrapRect = this.canvasWrap.getBoundingClientRect();
+      const wrapWidth = Math.round(wrapRect.width || this.canvasWrap.clientWidth || 480);
+      const wrapHeight = Math.round(wrapRect.height || this.canvasWrap.clientHeight || 0);
+      const cssWidth = Math.max(240, wrapWidth);
+      const cssHeight = Math.max(320, wrapHeight || viewportHeight - 48);
       const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
 
       this.canvas.style.width = `${cssWidth}px`;
@@ -5849,12 +5845,12 @@ class SpeedPad {
       const target = document.getElementById(`menu${preset.label}Meta`);
       if (!target) continue;
       const base = key === "beginner"
-        ? "Open fairways, gentler obstacle pressure, and the easiest reads. Starts with a straight opener."
+        ? "Cleanest lanes and the easiest reads."
         : key === "average"
-          ? "Balanced routing, mixed hazards, and steadier decision-making. Starts with a simple turn."
-          : "Tighter lanes, denser hazards, and more forced interactions. Starts with a bent opener.";
+          ? "Balanced hazards and route choices."
+          : "Tighter lanes and harder hazard pressure.";
       const holeCount = useFullCard ? 18 : preset.holeCount;
-      target.textContent = `${holeCount} holes. ${base} Best: ${formatBestLabel(record)}. Reward track: ${formatTrackStatus(progress.difficultyTracks[key])}.`;
+      target.textContent = `${holeCount} holes. ${base} Best: ${formatBestLabel(record)}. Track: ${formatTrackStatus(progress.difficultyTracks[key])}.`;
     }
     if (progressGrid) {
       progressGrid.innerHTML = Object.entries(PROGRESSION_TREE).map(([key, branch]) => {
