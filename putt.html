@@ -4649,7 +4649,7 @@
     }
 
     if (!this.levelComplete && this.ball.inHole(this.hole)) {
-      if (this.ball.speed() < 1.5) {
+      if (this.ball.speed() < 1.9) {
         this.levelComplete = true;
         this.sinkPulse = 1;
         this.sinkFlash = 1;
@@ -5224,11 +5224,11 @@
     return {
       ...preview,
       points: preview.points.map((point, index) => ({
-        x: point.x + (index === 0 ? 0 : splitOffset * 120 * (index / Math.max(1, preview.points.length - 1))),
+        x: point.x + (index === 0 ? 0 : splitOffset * 180 * (index / Math.max(1, preview.points.length - 1))),
         y: point.y
       })),
       landingPoint: preview.landingPoint ? {
-        x: preview.landingPoint.x + splitOffset * 120,
+        x: preview.landingPoint.x + splitOffset * 180,
         y: preview.landingPoint.y
       } : null
     };
@@ -5257,6 +5257,7 @@
       this.pulseFrames = 0;
       this.pulseStrength = 0;
       this.pulseTriggered = false;
+      this.pulseFlash = 0;
       this.trailHistory = [];
       this.bounds = null;
       this.applyLoadout(loadout || { cosmetic: BALL_COSMETICS[0], trail: TRAIL_SHOP[0], ability: ABILITY_SHOP[0] });
@@ -5277,6 +5278,7 @@
       this.pulseFrames = this.ability.id === "pulse_core" ? Math.max(10, 14 - this.abilityTier) : 0;
       this.pulseStrength = this.ability.id === "pulse_core" ? (0.85 + this.abilityTier * 0.18) : 0;
       this.pulseTriggered = false;
+      this.pulseFlash = 0;
       if (this.ability.id === "air_hopper" && this.shotHopsRemaining > 0) {
         this.startHop(power / this.getMaxPower());
       }
@@ -5333,7 +5335,7 @@
     }
     getSplitPreviewOffset() {
       if (this.ability.id !== "split_core") return 0;
-      return 0.015 + this.abilityTier * 0.007;
+      return 0.028 + this.abilityTier * 0.01;
     }
     getCurveDirectionFromAim(dx, dy) {
       if (this.ability.id !== "curve_core") return 1;
@@ -5396,6 +5398,7 @@
             this.vy += (this.vy / speedNow) * this.pulseStrength;
           }
           this.pulseTriggered = true;
+          this.pulseFlash = 1;
         }
       }
       this.vx *= this.getRollFriction(); this.vy *= this.getRollFriction();
@@ -5434,6 +5437,7 @@
         this.jumpPeakScale = 1;
         this.jumpStrength = 0;
       }
+      this.pulseFlash *= 0.84;
       this.clampToBounds();
       if (this.trail.id !== "none" && this.speed() > 0.12) {
         this.trailHistory.push({ x: this.x, y: this.y, life: 1 });
@@ -5732,6 +5736,23 @@
       const renderRadiusY = Math.max(this.radius * this.visualScale * this.visualScaleY, 0.8);
       const airborneFade = 1 - jumpAlpha * 0.18;
       ctx.globalAlpha = airborneFade;
+      if (this.ability.id === "pulse_core" && this.pulseFrames > 0) {
+        const charge = this.pulseFrames / Math.max(1, 14 - this.abilityTier);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, Math.max(renderRadiusX, renderRadiusY) + 5 + (1 - charge) * 4, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(17,17,17,${0.18 + (1 - charge) * 0.18})`;
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([3, 5]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      if (this.pulseFlash > 0.03) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, Math.max(renderRadiusX, renderRadiusY) + 8 + this.pulseFlash * 8, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(17,17,17,${this.pulseFlash * 0.38})`;
+        ctx.lineWidth = 1.6 + this.pulseFlash * 1.4;
+        ctx.stroke();
+      }
       this.renderBallShell(ctx, renderRadiusX, renderRadiusY);
       if (this.ability.id !== "none_ability" && this.abilityTier > 0) {
         this.renderCoreGlyph(ctx, renderRadiusX, renderRadiusY);
