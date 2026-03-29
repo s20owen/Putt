@@ -37,6 +37,7 @@
       -webkit-touch-callout: none;
     }
     #app {
+      min-height: 100svh;
       height: 100dvh;
       display: flex;
       flex-direction: column;
@@ -86,6 +87,8 @@
     }
     .menu-card {
       width: min(100%, 390px);
+      max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);
+      overflow: auto;
       border: 2px solid #111827;
       border-radius: 24px;
       padding: 22px 18px;
@@ -787,9 +790,25 @@
         max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 16px);
         padding: 14px;
       }
+      #scorecard .card h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+      #roundSummary,
+      #unlockNote {
+        font-size: 13px;
+        line-height: 1.35;
+      }
       .buttons {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      button.primary,
+      button.secondary {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 15px;
       }
       #scorecard table {
         font-size: 13px;
@@ -797,6 +816,27 @@
       }
       #scorecard th, #scorecard td {
         padding: 5px 6px;
+      }
+      .menu-card {
+        width: min(100%, 100vw - 14px);
+        border-radius: 20px;
+        padding: 14px 14px 18px;
+      }
+      .menu-card h2 {
+        font-size: 22px;
+      }
+      .menu-card p {
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .difficulty-btn {
+        padding: 12px 14px;
+      }
+      .difficulty-btn strong {
+        font-size: 15px;
+      }
+      .difficulty-btn span {
+        font-size: 12px;
       }
       canvas {
         border-radius: 0;
@@ -1098,7 +1138,7 @@
       id: "power_core",
       type: "ability",
       name: "Power Core",
-      cost: 18,
+      cost: 16,
       maxTier: 3,
       description: "Charge stronger shots with a higher max power."
     },
@@ -1106,7 +1146,7 @@
       id: "true_roll",
       type: "ability",
       name: "True Roll",
-      cost: 22,
+      cost: 20,
       maxTier: 3,
       description: "Keeps momentum a little longer and eases sand drag."
     },
@@ -1122,7 +1162,7 @@
       id: "curve_core",
       type: "ability",
       name: "Curve Core",
-      cost: 20,
+      cost: 18,
       maxTier: 3,
       description: "Adds a steady hook to shots so they bend around the lane."
     },
@@ -1130,7 +1170,7 @@
       id: "air_hopper",
       type: "ability",
       name: "Air Hopper",
-      cost: 24,
+      cost: 22,
       maxTier: 3,
       description: "Skips over obstacles mid-roll with a quick hop pop."
     }
@@ -1146,7 +1186,7 @@
   );
   function getAbilityTierCost(item, nextTier) {
     if (!item || item.type !== "ability" || !nextTier) return item ? item.cost : 0;
-    return item.cost + (nextTier - 1) * 12;
+    return item.cost + (nextTier - 1) * 10;
   }
   const DIFFICULTY_PRESETS = {
     beginner: {
@@ -1676,7 +1716,8 @@
   function starsForHole(par, shots) {
     if (shots <= Math.max(1, par - 1)) return 3;
     if (shots <= par) return 2;
-    if (shots === par + 1) return 1;
+    if (shots <= par + 1) return 1;
+    if (shots === par + 2 && par >= 6) return 1;
     return 0;
   }
 
@@ -3870,8 +3911,10 @@
       const wrapRect = this.canvasWrap.getBoundingClientRect();
       const wrapWidth = Math.round(wrapRect.width || this.canvasWrap.clientWidth || 480);
       const wrapHeight = Math.round(wrapRect.height || this.canvasWrap.clientHeight || 0);
+      const safeBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom')) || 0;
+      const availableHeight = Math.round(viewportHeight - wrapRect.top - safeBottom);
       const cssWidth = Math.max(240, wrapWidth);
-      const cssHeight = Math.max(320, wrapHeight || viewportHeight - 48);
+      const cssHeight = Math.max(320, Math.min(wrapHeight || availableHeight, availableHeight));
       const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
 
       this.canvas.style.width = `${cssWidth}px`;
