@@ -1412,10 +1412,22 @@
     guideFill: "rgba(255,255,255,0.9)"
   };
   const DEBUG_PARAMS = new URLSearchParams(window.location.search);
+  const DEBUG_LAYOUTS = new Set([
+    "straight",
+    "left_turn",
+    "right_turn",
+    "z_shape",
+    "horseshoe",
+    "full_circle",
+    "switchback",
+    "hook_left",
+    "hook_right"
+  ]);
   const DEBUG_FLAGS = {
     forceFalseHole: DEBUG_PARAMS.get('forceFalseHole') === '1',
     autostartDifficulty: DEBUG_PARAMS.get('autostart'),
-    debugHole: Math.max(1, Number(DEBUG_PARAMS.get('hole')) || 1)
+    debugHole: Math.max(1, Number(DEBUG_PARAMS.get('hole')) || 1),
+    forceLayout: DEBUG_LAYOUTS.has(DEBUG_PARAMS.get('forceLayout')) ? DEBUG_PARAMS.get('forceLayout') : null
   };
   function getTodayKey() {
     const now = new Date();
@@ -1491,9 +1503,9 @@
     }
     const choices = layoutType === "straight"
       ? ["fan_tunnel", "shutter_run", "magnetic_maze", "bounce_forge", "shutter_stack"]
-      : layoutType === "z_shape" || layoutType === "horseshoe"
+      : layoutType === "z_shape" || layoutType === "horseshoe" || layoutType === "switchback"
         ? ["magnetic_maze", "shutter_run", "bounce_forge", "rail_crossfire"]
-        : ["shutter_run", "bounce_forge", "fan_tunnel", "rail_crossfire"];
+      : ["shutter_run", "bounce_forge", "fan_tunnel", "rail_crossfire"];
     return SETPIECE_TEMPLATES[choices[randInt(rng, 0, choices.length - 1)]] || SETPIECE_TEMPLATES.none;
   }
   function getUnlockedSetpieceIds(progress) {
@@ -2144,6 +2156,7 @@
   }
 
   function pickLayoutType(rng, holeIndex, difficultyKey = "average") {
+    if (DEBUG_FLAGS.forceLayout) return DEBUG_FLAGS.forceLayout;
     if (holeIndex === 0) {
       if (difficultyKey === "beginner") return "straight";
       if (difficultyKey === "hardcore") return "z_shape";
@@ -2151,10 +2164,10 @@
     }
     if (holeIndex === 1) return difficultyKey === "hardcore" ? "horseshoe" : (rng() > 0.5 ? "left_turn" : "right_turn");
     const choices = difficultyKey === "beginner"
-      ? ["straight", "left_turn", "right_turn", "z_shape"]
+      ? ["straight", "left_turn", "right_turn", "z_shape", "hook_left", "hook_right"]
       : difficultyKey === "hardcore"
-        ? ["left_turn", "right_turn", "z_shape", "horseshoe", "full_circle", "full_circle"]
-        : ["straight", "left_turn", "right_turn", "z_shape", "horseshoe", "full_circle"];
+        ? ["left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle", "full_circle"]
+        : ["straight", "left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle"];
     return choices[randInt(rng, 0, choices.length - 1)];
   }
 
@@ -2175,6 +2188,15 @@
     }
     if (layoutType === "horseshoe") {
       return { width: 1180, height: 1380 };
+    }
+    if (layoutType === "switchback") {
+      return { width: 1220, height: 1460 };
+    }
+    if (layoutType === "curved_sweep") {
+      return { width: 1260, height: 1500 };
+    }
+    if (layoutType === "hook_left" || layoutType === "hook_right") {
+      return { width: 1160, height: 1360 };
     }
     return { width: 1280, height: 1280 };
   }
@@ -2224,6 +2246,47 @@
         { x: px(0.24), y: py(0.14) },
         { x: px(0.82), y: py(0.14) },
         { x: px(0.82), y: py(0.84) }
+      ];
+    }
+    if (layoutType === "switchback") {
+      return [
+        { x: px(0.28), y: py(0.93) },
+        { x: px(0.28), y: py(0.72) },
+        { x: px(0.78), y: py(0.72) },
+        { x: px(0.78), y: py(0.48) },
+        { x: px(0.24), y: py(0.48) },
+        { x: px(0.24), y: py(0.24) },
+        { x: px(0.78), y: py(0.24) },
+        { x: px(0.78), y: py(0.08) }
+      ];
+    }
+    if (layoutType === "curved_sweep") {
+      return [
+        { x: px(0.34), y: py(0.93) },
+        { x: px(0.28), y: py(0.72) },
+        { x: px(0.74), y: py(0.52) },
+        { x: px(0.66), y: py(0.24) },
+        { x: px(0.42), y: py(0.08) }
+      ];
+    }
+    if (layoutType === "hook_left") {
+      return [
+        { x: px(0.7), y: py(0.93) },
+        { x: px(0.7), y: py(0.64) },
+        { x: px(0.3), y: py(0.64) },
+        { x: px(0.3), y: py(0.36) },
+        { x: px(0.74), y: py(0.36) },
+        { x: px(0.74), y: py(0.08) }
+      ];
+    }
+    if (layoutType === "hook_right") {
+      return [
+        { x: px(0.3), y: py(0.93) },
+        { x: px(0.3), y: py(0.64) },
+        { x: px(0.7), y: py(0.64) },
+        { x: px(0.7), y: py(0.36) },
+        { x: px(0.26), y: py(0.36) },
+        { x: px(0.26), y: py(0.08) }
       ];
     }
     return [
@@ -2345,7 +2408,11 @@
       preferredLayoutType,
       "left_turn",
       "right_turn",
+      "curved_sweep",
+      "hook_left",
+      "hook_right",
       "horseshoe",
+      "switchback",
       "z_shape",
       "straight"
     ].filter((value, index, array) => array.indexOf(value) === index);
@@ -2605,6 +2672,18 @@
     if (layoutType === "horseshoe") {
       return [[0, 5], [0, 4], [0, 3], [0, 2], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5]];
     }
+    if (layoutType === "switchback") {
+      return [[0, 7], [0, 6], [0, 5], [1, 5], [2, 5], [2, 4], [2, 3], [1, 3], [0, 3], [0, 2], [0, 1], [1, 1], [2, 1], [2, 0]];
+    }
+    if (layoutType === "curved_sweep") {
+      return [[1, 7], [1, 6], [1, 5], [2, 4], [3, 4], [3, 3], [3, 2], [2, 1], [1, 0]];
+    }
+    if (layoutType === "hook_left") {
+      return [[1, 6], [1, 5], [1, 4], [0, 4], [0, 3], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0]];
+    }
+    if (layoutType === "hook_right") {
+      return [[1, 6], [1, 5], [1, 4], [2, 4], [2, 3], [2, 2], [1, 2], [0, 2], [0, 1], [0, 0]];
+    }
     return [[1, 6], [0, 6], [0, 5], [0, 4], [0, 3], [0, 2], [0, 1], [1, 1], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [1, 5], [1, 4], [1, 3], [1, 2], [1, 0]];
   }
 
@@ -2616,6 +2695,143 @@
       list[j] = tmp;
     }
     return list;
+  }
+
+  function sampleQuadraticBezier(p0, p1, p2, steps = 18) {
+    const points = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const mt = 1 - t;
+      points.push({
+        x: mt * mt * p0.x + 2 * mt * t * p1.x + t * t * p2.x,
+        y: mt * mt * p0.y + 2 * mt * t * p1.y + t * t * p2.y
+      });
+    }
+    return points;
+  }
+
+  function makeRotatedWallSegment(a, b, thickness, extra = thickness) {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const length = Math.hypot(dx, dy);
+    if (length < 2) return null;
+    const angle = Math.atan2(dy, dx);
+    const width = length + extra;
+    const cx = (a.x + b.x) / 2;
+    const cy = (a.y + b.y) / 2;
+    return {
+      x: Math.round(cx - width / 2),
+      y: Math.round(cy - thickness / 2),
+      width: Math.round(width),
+      height: thickness,
+      rotation: Math.round((angle * 180) / Math.PI)
+    };
+  }
+
+  function buildCurvedSweepWorld(holeIndex, rng) {
+    const width = 1260;
+    const height = 1500;
+    const wallThickness = 14;
+    const corridorHalf = 98 + Math.min(18, holeIndex * 2);
+    const cellSize = holeIndex <= 1 ? 196 : 208 + (holeIndex >= 6 ? 10 : 0);
+    const pointsA = sampleQuadraticBezier(
+      { x: width * 0.34, y: height * 0.93 },
+      { x: width * 0.18, y: height * 0.68 },
+      { x: width * 0.72, y: height * 0.52 },
+      14
+    );
+    const pointsB = sampleQuadraticBezier(
+      { x: width * 0.72, y: height * 0.52 },
+      { x: width * 0.84, y: height * 0.24 },
+      { x: width * 0.42, y: height * 0.08 },
+      14
+    );
+    const centerline = pointsA.concat(pointsB.slice(1));
+    const walls = [];
+    for (let i = 0; i < centerline.length - 1; i++) {
+      const a = centerline[i];
+      const b = centerline[i + 1];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const len = Math.hypot(dx, dy);
+      if (len < 2) continue;
+      const dir = { x: dx / len, y: dy / len };
+      const perp = { x: -dir.y, y: dir.x };
+      const leftA = { x: a.x + perp.x * corridorHalf, y: a.y + perp.y * corridorHalf };
+      const leftB = { x: b.x + perp.x * corridorHalf, y: b.y + perp.y * corridorHalf };
+      const rightA = { x: a.x - perp.x * corridorHalf, y: a.y - perp.y * corridorHalf };
+      const rightB = { x: b.x - perp.x * corridorHalf, y: b.y - perp.y * corridorHalf };
+      const leftWall = makeRotatedWallSegment(leftA, leftB, wallThickness, wallThickness + 6);
+      const rightWall = makeRotatedWallSegment(rightA, rightB, wallThickness, wallThickness + 6);
+      if (leftWall) walls.push(leftWall);
+      if (rightWall) walls.push(rightWall);
+    }
+    const startDir = {
+      x: centerline[1].x - centerline[0].x,
+      y: centerline[1].y - centerline[0].y
+    };
+    const startLen = Math.hypot(startDir.x, startDir.y) || 1;
+    const startUnit = { x: startDir.x / startLen, y: startDir.y / startLen };
+    const endDir = {
+      x: centerline[centerline.length - 1].x - centerline[centerline.length - 2].x,
+      y: centerline[centerline.length - 1].y - centerline[centerline.length - 2].y
+    };
+    const endLen = Math.hypot(endDir.x, endDir.y) || 1;
+    const endUnit = { x: endDir.x / endLen, y: endDir.y / endLen };
+    const startPerp = { x: -startUnit.y, y: startUnit.x };
+    const endPerp = { x: -endUnit.y, y: endUnit.x };
+    const startCapA = { x: centerline[0].x + startPerp.x * corridorHalf, y: centerline[0].y + startPerp.y * corridorHalf };
+    const startCapB = { x: centerline[0].x - startPerp.x * corridorHalf, y: centerline[0].y - startPerp.y * corridorHalf };
+    const endCapA = { x: centerline[centerline.length - 1].x + endPerp.x * corridorHalf, y: centerline[centerline.length - 1].y + endPerp.y * corridorHalf };
+    const endCapB = { x: centerline[centerline.length - 1].x - endPerp.x * corridorHalf, y: centerline[centerline.length - 1].y - endPerp.y * corridorHalf };
+    const startCap = makeRotatedWallSegment(startCapA, startCapB, wallThickness, wallThickness);
+    const endCap = makeRotatedWallSegment(endCapA, endCapB, wallThickness, wallThickness);
+    if (startCap) walls.push(startCap);
+    if (endCap) walls.push(endCap);
+
+    const margins = getAnchorMargins("straight", holeIndex);
+    const anchorCount = holeIndex >= 6 ? 10 : 9;
+    const cells = [];
+    for (let i = 0; i < anchorCount; i++) {
+      const t = anchorCount === 1 ? 0.5 : i / (anchorCount - 1);
+      const sample = samplePolylineWithMargins(centerline, t, margins.start, margins.middle, margins.end);
+      const rect = {
+        x: Math.round(sample.x - cellSize / 2),
+        y: Math.round(sample.y - cellSize / 2),
+        width: cellSize,
+        height: cellSize
+      };
+      cells.push({
+        index: i,
+        col: i,
+        row: 0,
+        cx: Math.round(sample.x),
+        cy: Math.round(sample.y),
+        rect
+      });
+    }
+    const ballStart = {
+      x: Math.round(cells[0].cx + startUnit.x * cellSize * 0.3),
+      y: Math.round(cells[0].cy + startUnit.y * cellSize * 0.3)
+    };
+    const hole = {
+      x: Math.round(cells[cells.length - 1].cx - endUnit.x * cellSize * 0.3),
+      y: Math.round(cells[cells.length - 1].cy - endUnit.y * cellSize * 0.3),
+      radius: 10
+    };
+    return {
+      width,
+      height,
+      cellSize,
+      wallThickness,
+      cells,
+      walls,
+      ballStart,
+      hole,
+      holeApproach: { x: Math.round(endUnit.x), y: Math.round(endUnit.y) },
+      falseHoles: [],
+      pathPoints: centerline
+    };
   }
 
   function getCellDirection(cells, index) {
@@ -2786,6 +3002,9 @@
   }
 
   function getCellWorld(layoutType, holeIndex, rng, difficultyKey = "average") {
+    if (layoutType === "curved_sweep") {
+      return buildCurvedSweepWorld(holeIndex, rng);
+    }
     const rawCells = getCellLayout(layoutType);
     const falseBranch = buildFalseHoleBranch(rawCells, rng, difficultyKey, holeIndex);
     const allRawCells = rawCells.concat(falseBranch.branchCells);
@@ -2978,6 +3197,83 @@
     return walls;
   }
 
+  function rectsOverlap(a, b, padding = 0) {
+    return (
+      a.x + a.width + padding > b.x &&
+      a.x < b.x + b.width + padding &&
+      a.y + a.height + padding > b.y &&
+      a.y < b.y + b.height + padding
+    );
+  }
+
+  function getHazardBounds(kind, item) {
+    if (kind === "spinner" || kind === "bumper" || kind === "magnet") {
+      return {
+        x: item.x - item.radius,
+        y: item.y - item.radius,
+        width: item.radius * 2,
+        height: item.radius * 2
+      };
+    }
+    if (kind === "sand") {
+      if (item.radius) {
+        return {
+          x: item.x - item.radius,
+          y: item.y - item.radius,
+          width: item.radius * 2,
+          height: item.radius * 2
+        };
+      }
+      return { x: item.x, y: item.y, width: item.width, height: item.height };
+    }
+    if (kind === "pad" || kind === "fan" || kind === "shutter" || kind === "staticShutter" || kind === "rail") {
+      return { x: item.x, y: item.y, width: item.width, height: item.height };
+    }
+    if (kind === "teleport") {
+      return [
+        {
+          x: item.a.x - item.radius,
+          y: item.a.y - item.radius,
+          width: item.radius * 2,
+          height: item.radius * 2
+        },
+        {
+          x: item.b.x - item.radius,
+          y: item.b.y - item.radius,
+          width: item.radius * 2,
+          height: item.radius * 2
+        }
+      ];
+    }
+    return null;
+  }
+
+  function pruneHazardOverlaps(holeData) {
+    const placed = [];
+    const keepIfClear = (kind, item, padding = 14) => {
+      const bounds = getHazardBounds(kind, item);
+      const boundsList = Array.isArray(bounds) ? bounds : bounds ? [bounds] : [];
+      const overlaps = placed.some(existing =>
+        boundsList.some(bound => rectsOverlap(bound, existing, padding))
+      );
+      if (overlaps) return false;
+      boundsList.forEach(bound => placed.push(bound));
+      return true;
+    };
+
+    holeData.spinners = holeData.spinners.filter(item => keepIfClear("spinner", item, 18));
+    holeData.bumpers = holeData.bumpers.filter(item => keepIfClear("bumper", item, 16));
+    holeData.sandTraps = holeData.sandTraps.filter(item => keepIfClear("sand", item, item.radius ? 20 : 14));
+    holeData.pads = holeData.pads.filter(item => keepIfClear("pad", item, 12));
+    holeData.fanZones = holeData.fanZones.filter(item => keepIfClear("fan", item, 14));
+    holeData.shutterDoors = holeData.shutterDoors.filter(item => keepIfClear("shutter", item, 16));
+    holeData.staticShutters = holeData.staticShutters.filter(item => keepIfClear("staticShutter", item, 16));
+    holeData.magneticZones = holeData.magneticZones.filter(item => keepIfClear("magnet", item, 20));
+    holeData.ricochetRails = holeData.ricochetRails.filter(item => keepIfClear("rail", item, 16));
+    holeData.teleports = holeData.teleports.filter(item => keepIfClear("teleport", item, 18));
+    return holeData;
+  }
+
   function generateHole(holeIndex, courseSeed, difficultyKey = "average", progress = null) {
     const difficulty = holeIndex;
     const holeSeed = (courseSeed + holeIndex * 9973) >>> 0;
@@ -3034,8 +3330,12 @@
       0.98
     );
     const isLargeHole = holeIndex >= 5;
+    const contestLateLane = settings.key !== "beginner" && (settings.key === "hardcore" ? holeIndex >= 2 : holeIndex >= 5);
+    const hardContestLane = contestLateLane && (isLargeHole || settings.key === "hardcore");
     const pressureStartRatio = settings.key === "hardcore" ? 0.16 : settings.key === "average" ? 0.2 : 0.32;
     const obstacleMargin = wallThickness * 0.5 + 12;
+    const shutterChanceScale = settings.key === "hardcore" ? 1.28 : settings.key === "average" ? 1.18 : 1;
+    const staticShutterChanceScale = settings.key === "hardcore" ? 1.34 : settings.key === "average" ? 1.2 : 1;
     const takeOpenCell = predicate => {
       for (const index of candidateIndices) {
         if (safeMajor.has(index)) continue;
@@ -3092,6 +3392,16 @@
         perp
       };
     };
+    const getCentralContestSide = (index, fallbackLaneSign = 1, spread = 0.03) => {
+      if (!hardContestLane) return fallbackLaneSign * cellSize * spread;
+      const jitter = cellSize * (settings.key === "hardcore" ? 0.045 : 0.032);
+      return randRange(rng, -jitter, jitter);
+    };
+    const getCentralContestAlong = (index, base = 0) => {
+      if (!hardContestLane) return base;
+      const range = cellSize * (settings.key === "hardcore" ? 0.12 : 0.08);
+      return base + randRange(rng, -range, range);
+    };
     const placePadAtCell = (index, boost, alongOffset = 0, sideOffset = 0, useIncoming = false) => {
       const isSlowPad = boost < 1;
       const incoming = getCellIncomingDirection(cells, index);
@@ -3121,6 +3431,14 @@
       safeMajor.add(index);
       return true;
     };
+    const reserveClusterCells = (...indices) => {
+      for (const index of indices) {
+        if (index == null || index < 0 || index >= cells.length) return false;
+        if (safeMajor.has(index)) return false;
+      }
+      indices.forEach(index => safeMajor.add(index));
+      return true;
+    };
     const getTemplateIndices = (count, startRatio = 0.28, endRatio = 0.82) => {
       const first = Math.max(startBufferCells, Math.floor((cells.length - 1) * startRatio));
       const last = Math.min(cells.length - endBufferCells - 1, Math.ceil((cells.length - 1) * endRatio));
@@ -3145,6 +3463,18 @@
     let mirroredFalseCupSand = false;
     let realCupHasSand = false;
     let falseCupHasSand = false;
+    const clusterHeavyMode = settings.key !== "beginner" && isLargeHole;
+    const clusterHeavyHardcore = settings.key === "hardcore" && holeIndex >= 5;
+    const freeformDensityScale = clusterHeavyHardcore ? 0.52 : clusterHeavyMode ? 0.68 : 1;
+    const pressureClusterCells = settings.key !== "beginner" && holeIndex >= 4
+      ? getTemplateIndices(
+          settings.key === "hardcore"
+            ? (holeIndex >= 7 ? 3 : 2)
+            : (isLargeHole ? 2 : 1),
+          0.3,
+          0.84
+        )
+      : [];
 
     if (!isEarlyTurnHole && setpiece.id !== "none") {
       if (setpiece.id === "shutter_run") {
@@ -3331,10 +3661,10 @@
       const hardcoreEarlyHole = settings.key === "hardcore" && holeIndex <= 3;
       const padCount = clamp(Math.max(
         hardcoreEarlyHole ? 2 : 1,
-        Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale)
+        Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale * freeformDensityScale)
       ), 1, 4);
       for (let i = 0; i < padCount; i++) {
-        const padIndex = (settings.key !== "beginner" && i === 0)
+        const padIndex = (settings.key !== "beginner" && i < (clusterHeavyMode ? 2 : 1))
           ? takePressureCell(index => index > 1 && index < cells.length - 1)
           : takeOpenCell(index => index > 1 && index < cells.length - 1);
         if (padIndex == null) break;
@@ -3343,11 +3673,11 @@
         const boost = turning
           ? 0.8 + rng() * 0.08
           : (rng() > 0.45 ? 1.08 + rng() * 0.18 : 0.82 + rng() * 0.07);
-        const alongOffset = turning ? -cellSize * 0.12 : cellSize * 0.06;
+        const alongOffset = getCentralContestAlong(padIndex, turning ? -cellSize * 0.12 : cellSize * 0.06);
         const laneContest = settings.key !== "beginner" && i === 0 && !turning;
         const baseSide = laneSign * cellSize * (turning ? 0.2 : 0.16);
         const sideOffset = laneContest
-          ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.01 : 0.03)
+          ? getCentralContestSide(padIndex, laneSign, isLargeHole ? 0.01 : 0.03)
           : baseSide * (i === 0 ? 1 - lanePressure * 0.85 : 1 - lanePressure * 0.45);
         placePadAtCell(padIndex, boost, alongOffset, sideOffset, turning);
       }
@@ -3356,23 +3686,24 @@
         Math.max(
           settings.key === "hardcore" && holeIndex >= 1 ? 1 : 0,
           holeIndex > 1
-            ? Math.round((archetype === "gauntlet" ? 2 + Math.floor(holeIndex / 4) : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale)
+            ? Math.round((archetype === "gauntlet" ? 2 + Math.floor(holeIndex / 4) : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale * freeformDensityScale)
             : 0
         ),
         0,
         4
       );
       for (let i = 0; i < spinnerCount; i++) {
-        const spinnerIndex = (settings.key !== "beginner" && i === 0)
+        const spinnerIndex = (settings.key !== "beginner" && i < (clusterHeavyMode ? 2 : 1))
           ? takePressureCell(index => index > 1 && index < cells.length - 2)
           : takeOpenCell(index => index > 1 && index < cells.length - 2);
         if (spinnerIndex == null) break;
         const laneSign = getLaneSign(spinnerIndex + i);
         const laneContest = settings.key !== "beginner" && i === 0;
         const sideOffset = laneContest
-          ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.008 : 0.025)
+          ? getCentralContestSide(spinnerIndex, laneSign, isLargeHole ? 0.008 : 0.025)
           : laneSign * cellSize * 0.18 * (i === 0 ? 1 - lanePressure * 1.08 : 1 - lanePressure * 0.52);
-        const anchor = getObstacleCenter(spinnerIndex, 0, sideOffset, false, cellSize * 0.2);
+        const alongOffset = laneContest ? getCentralContestAlong(spinnerIndex, 0) : 0;
+        const anchor = getObstacleCenter(spinnerIndex, alongOffset, sideOffset, false, cellSize * 0.2);
         spinners.push({
           x: Math.round(anchor.x),
           y: Math.round(anchor.y),
@@ -3384,14 +3715,14 @@
         Math.max(
           settings.key === "hardcore" && holeIndex >= 1 ? 1 : 0,
           holeIndex > 0
-            ? Math.round((archetype === "islands" ? 2 : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale)
+            ? Math.round((archetype === "islands" ? 2 : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale * (clusterHeavyHardcore ? 0.62 : clusterHeavyMode ? 0.78 : 1))
             : 0
         ),
         0,
         3
       );
       for (let i = 0; i < sandCount; i++) {
-        const sandIndex = (settings.key !== "beginner" && i === 0)
+        const sandIndex = (settings.key !== "beginner" && i < (clusterHeavyMode ? 2 : 1))
           ? takePressureCell(index => index > 1 && index < cells.length - 1)
           : takeOpenCell(index => index > 1 && index < cells.length - 1);
         if (sandIndex == null) break;
@@ -3399,10 +3730,11 @@
         const turning = isTurnCell(cells, sandIndex);
         const laneContest = settings.key !== "beginner" && i === 0 && !turning;
         const sideOffset = laneContest
-          ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.008 : 0.02)
+          ? getCentralContestSide(sandIndex, laneSign, isLargeHole ? 0.008 : 0.02)
           : laneSign * cellSize * 0.16 * (i === 0 ? 1 - lanePressure * 0.95 : 1 - lanePressure * 0.4);
-        const anchor = getObstacleCenter(sandIndex, 0, sideOffset, false, cellSize * 0.26);
-        const trapWidth = Math.round(cellSize * (laneContest ? 0.48 : turning ? 0.46 + lanePressure * 0.08 : 0.34 + lanePressure * 0.16));
+        const alongOffset = laneContest ? getCentralContestAlong(sandIndex, 0) : 0;
+        const anchor = getObstacleCenter(sandIndex, alongOffset, sideOffset, false, cellSize * 0.26);
+        const trapWidth = Math.round(cellSize * (laneContest ? (settings.key === "hardcore" ? 0.58 : 0.52) : turning ? 0.46 + lanePressure * 0.08 : 0.34 + lanePressure * 0.16));
         const adjustedTrapWidth = laneContest && isLargeHole ? Math.round(cellSize * 0.56) : trapWidth;
         const trapHeight = Math.round(cellSize * (turning ? 0.46 : 0.56));
         const trapPos = clampRectToCell(sandIndex, anchor.x - adjustedTrapWidth / 2, anchor.y - trapHeight / 2, adjustedTrapWidth, trapHeight);
@@ -3417,13 +3749,13 @@
       const bumperCount = clamp(
         Math.max(
           settings.key === "hardcore" && holeIndex >= 2 ? 1 : 0,
-          holeIndex > 1 ? Math.round((archetype === "gauntlet" ? 2 : 1) * settings.obstacleScale) : 0
+          holeIndex > 1 ? Math.round((archetype === "gauntlet" ? 2 : 1) * settings.obstacleScale * freeformDensityScale) : 0
         ),
         0,
         3
       );
       for (let i = 0; i < bumperCount; i++) {
-        const bumperIndex = (settings.key !== "beginner" && i === 0)
+        const bumperIndex = (settings.key !== "beginner" && i < (clusterHeavyMode ? 2 : 1))
           ? takePressureCell(index => index > 2 && index < cells.length - 2)
           : takeOpenCell(index => index > 2 && index < cells.length - 2);
         if (bumperIndex == null) break;
@@ -3431,9 +3763,9 @@
         const laneContest = settings.key !== "beginner" && i === 0;
         const anchor = getObstacleCenter(
           bumperIndex,
-          isTurnCell(cells, bumperIndex) ? -cellSize * 0.08 : 0,
+          laneContest ? getCentralContestAlong(bumperIndex, isTurnCell(cells, bumperIndex) ? -cellSize * 0.08 : 0) : (isTurnCell(cells, bumperIndex) ? -cellSize * 0.08 : 0),
           laneContest
-            ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.01 : 0.03)
+            ? getCentralContestSide(bumperIndex, laneSign, isLargeHole ? 0.01 : 0.03)
             : laneSign * cellSize * 0.22 * (i === 0 ? 1 - lanePressure : 1 - lanePressure * 0.42),
           false,
           cellSize * 0.17
@@ -3446,7 +3778,7 @@
       }
 
       if ((archetype === "splitter" || holeIndex >= 5) && rng() > (settings.key === "hardcore" ? 0.16 : 0.3)) {
-        const blockerCount = clamp(Math.round((archetype === "splitter" ? 2 : 1) * settings.obstacleScale), 1, 3);
+        const blockerCount = clamp(Math.round((archetype === "splitter" ? 2 : 1) * settings.obstacleScale * (clusterHeavyMode ? 0.7 : 1)), 1, 3);
         for (let i = 0; i < blockerCount; i++) {
           const blockerIndex = (settings.key !== "beginner" && i === 0)
             ? takePressureCell(index => index > 1 && index < cells.length - 1)
@@ -3458,8 +3790,8 @@
 
       if (holeIndex >= 4 && settings.key !== "beginner") {
         const chokeCount = settings.key === "hardcore"
-          ? (holeIndex >= 2 ? (holeIndex >= 7 ? 2 : 1) : 0)
-          : (holeIndex >= 6 ? 1 : 0);
+          ? (holeIndex >= 2 ? (holeIndex >= 7 ? 3 : holeIndex >= 5 ? 2 : 1) : 0)
+          : (holeIndex >= 6 ? (isLargeHole ? 2 : 1) : 0);
         for (let i = 0; i < chokeCount; i++) {
           const chokeIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
           if (chokeIndex == null) break;
@@ -3511,7 +3843,7 @@
         }
       }
 
-      if ((holeIndex >= 3 || (settings.key === "hardcore" && holeIndex >= 1)) && rng() < settings.advancedHazardChance) {
+      if ((holeIndex >= 3 || (settings.key === "hardcore" && holeIndex >= 1)) && rng() < Math.min(0.96, settings.advancedHazardChance * shutterChanceScale)) {
         const shutterIndex = takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (shutterIndex != null) {
           const rect = cells[shutterIndex].rect;
@@ -3528,7 +3860,7 @@
         }
       }
 
-      if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < settings.advancedHazardChance * 0.82) {
+      if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < Math.min(0.94, settings.advancedHazardChance * 0.82 * staticShutterChanceScale)) {
         const staticShutterIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (staticShutterIndex != null) {
           const rect = cells[staticShutterIndex].rect;
@@ -3549,8 +3881,8 @@
         if (magnetIndex != null) {
           const anchor = getObstacleCenter(
             magnetIndex,
-            0,
-            settings.key === "hardcore" ? 0 : settings.key === "average" ? getLaneSign(magnetIndex) * cellSize * 0.02 : getLaneSign(magnetIndex) * cellSize * 0.06,
+            contestLateLane ? getCentralContestAlong(magnetIndex, 0) : 0,
+            contestLateLane ? getCentralContestSide(magnetIndex, getLaneSign(magnetIndex), settings.key === "average" ? 0.02 : 0.06) : (settings.key === "hardcore" ? 0 : settings.key === "average" ? getLaneSign(magnetIndex) * cellSize * 0.02 : getLaneSign(magnetIndex) * cellSize * 0.06),
             false,
             cellSize * 0.19
           );
@@ -3567,7 +3899,7 @@
       if ((holeIndex >= 5 || (settings.key === "hardcore" && holeIndex >= 3)) && settings.key !== "beginner" && rng() < settings.advancedHazardChance * 0.72) {
         const railIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (railIndex != null) {
-          const anchor = getObstacleCenter(railIndex, 0, settings.key === "hardcore" ? 0 : getLaneSign(railIndex) * cellSize * (isLargeHole ? 0.01 : 0.025), false, cellSize * 0.24);
+          const anchor = getObstacleCenter(railIndex, contestLateLane ? getCentralContestAlong(railIndex, 0) : 0, contestLateLane ? getCentralContestSide(railIndex, getLaneSign(railIndex), isLargeHole ? 0.01 : 0.025) : (settings.key === "hardcore" ? 0 : getLaneSign(railIndex) * cellSize * (isLargeHole ? 0.01 : 0.025)), false, cellSize * 0.24);
           const direction = getCellDirection(cells, railIndex);
           const baseRotation = Math.abs(direction.y) > 0.5 ? 45 : 135;
           ricochetRails.push({
@@ -3582,13 +3914,17 @@
 
       if ((holeIndex >= 5 || (settings.key === "hardcore" && holeIndex >= 3)) && settings.key !== "beginner") {
         const comboCount = settings.key === "hardcore"
-          ? (holeIndex >= 2 ? (holeIndex >= 7 ? 2 : 1) : 0)
-          : (holeIndex >= 7 ? 1 : 0);
+          ? (holeIndex >= 2 ? (holeIndex >= 7 ? 3 : holeIndex >= 5 ? 2 : 1) : 0)
+          : (holeIndex >= 7 ? (isLargeHole ? 2 : 1) : 0);
         for (let i = 0; i < comboCount; i++) {
           const comboIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells - 1);
           if (comboIndex == null) break;
           const nextIndex = Math.min(cells.length - endBufferCells - 1, comboIndex + 1);
-          const comboType = ["shutter_fan", "magnet_rail", "sand_bumper"][randInt(rng, 0, 2)];
+          if (!reserveClusterCells(nextIndex)) continue;
+          const comboTypePool = settings.key === "hardcore"
+            ? ["shutter_fan", "shutter_fan", "magnet_rail", "sand_bumper"]
+            : ["shutter_fan", "magnet_rail", "sand_bumper"];
+          const comboType = comboTypePool[randInt(rng, 0, comboTypePool.length - 1)];
 
           if (comboType === "shutter_fan") {
             const rect = cells[comboIndex].rect;
@@ -3651,6 +3987,64 @@
           }
           comboTemplateCount++;
         }
+      }
+
+      if (pressureClusterCells.length) {
+        pressureClusterCells.forEach((clusterIndex, clusterOffset) => {
+          if (clusterIndex == null) return;
+          const nextIndex = Math.min(cells.length - endBufferCells - 1, clusterIndex + 1);
+          if (!reserveClusterCells(nextIndex)) return;
+          const clusterType = settings.key === "hardcore"
+            ? ["center_choke", "sand_lock", "rail_pull"][clusterOffset % 3]
+            : ["center_choke", "sand_lock"][clusterOffset % 2];
+          if (clusterType === "center_choke") {
+            walls.push(makeLaneChokeBlocker(cells[clusterIndex].rect, getCellDirection(cells, clusterIndex), rng, settings.key));
+            chokeBlockerCount++;
+            const spinnerAnchor = getObstacleCenter(nextIndex, 0, 0, false, cellSize * 0.2);
+            spinners.push({
+              x: Math.round(spinnerAnchor.x),
+              y: Math.round(spinnerAnchor.y),
+              radius: Math.round(cellSize * 0.2)
+            });
+          } else if (clusterType === "sand_lock") {
+            const sandAnchor = getObstacleCenter(clusterIndex, 0, 0, false, cellSize * 0.2);
+            const trapWidth = Math.round(cellSize * (settings.key === "hardcore" ? 0.64 : 0.56));
+            const trapHeight = Math.round(cellSize * 0.54);
+            const trapPos = clampRectToCell(clusterIndex, sandAnchor.x - trapWidth / 2, sandAnchor.y - trapHeight / 2, trapWidth, trapHeight, wallThickness * 0.5 + 16);
+            sandTraps.push({
+              x: trapPos.x,
+              y: trapPos.y,
+              width: trapWidth,
+              height: trapHeight
+            });
+            const bumperAnchor = getObstacleCenter(nextIndex, 0, 0, false, cellSize * 0.17);
+            bumpers.push({
+              x: Math.round(bumperAnchor.x),
+              y: Math.round(bumperAnchor.y),
+              radius: Math.round(cellSize * 0.1)
+            });
+          } else {
+            const magnetAnchor = getObstacleCenter(clusterIndex, 0, 0, false, cellSize * 0.17);
+            magneticZones.push({
+              x: Math.round(magnetAnchor.x),
+              y: Math.round(magnetAnchor.y),
+              radius: Math.round(cellSize * 0.2),
+              strength: 0.3,
+              mode: "pull"
+            });
+            const railAnchor = getObstacleCenter(nextIndex, 0, 0, false, cellSize * 0.2);
+            const direction = getCellDirection(cells, nextIndex);
+            const baseRotation = Math.abs(direction.y) > 0.5 ? 45 : 135;
+            ricochetRails.push({
+              x: Math.round(railAnchor.x - 28),
+              y: Math.round(railAnchor.y - 7),
+              width: 56,
+              height: 14,
+              rotation: clusterOffset % 2 === 0 ? baseRotation : 180 - baseRotation
+            });
+          }
+          comboTemplateCount++;
+        });
       }
 
       if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < (settings.key === "hardcore" ? 0.58 : 0.26)) {
@@ -3718,7 +4112,7 @@
       8
     );
 
-    return {
+    return pruneHazardOverlaps({
       id: holeIndex + 1,
       seed: holeSeed,
       archetype,
@@ -3746,7 +4140,7 @@
       ricochetRails,
       holeGuardStyle: settings.key !== "beginner" && (holeIndex >= 3 || settings.key === "hardcore") ? "mirrored" : "none",
       mirroredFalseCupSand
-    };
+    });
   }
 
   function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null) {
@@ -5395,13 +5789,14 @@
       this.ball.vy *= 1.004;
     }
     if (this.modifier.id === "crosswind_left" || this.modifier.id === "crosswind_right") {
-      if (speed > 0.2) {
-        const wind = 0.005 + Math.min(0.007, speed * 0.0018);
+      if (speed > 0.16) {
+        const windScale = clamp((speed - 0.16) / 0.9, 0.2, 1);
+        const wind = (0.0032 + Math.min(0.0042, speed * 0.0011)) * windScale;
         const resist = this.ball.getFieldResistance ? this.ball.getFieldResistance() : 1;
         this.ball.vx += (this.modifier.id === "crosswind_left" ? -wind : wind) * resist;
-      } else if (speed > 0.02) {
-        this.ball.vx *= 0.94;
-        this.ball.vy *= 0.94;
+      } else if (speed > 0.03) {
+        this.ball.vx *= 0.88;
+        this.ball.vy *= 0.91;
       }
     }
   }
@@ -5914,12 +6309,13 @@
       }
       if (this.modifier.id === "crosswind_left" || this.modifier.id === "crosswind_right") {
         const ghostSpeed = ghost.speed();
-        if (ghostSpeed > 0.2) {
-          const wind = 0.005 + Math.min(0.007, ghostSpeed * 0.0018);
+        if (ghostSpeed > 0.16) {
+          const windScale = clamp((ghostSpeed - 0.16) / 0.9, 0.2, 1);
+          const wind = (0.0032 + Math.min(0.0042, ghostSpeed * 0.0011)) * windScale;
           ghost.vx += (this.modifier.id === "crosswind_left" ? -wind : wind) * ghost.getFieldResistance();
-        } else if (ghostSpeed > 0.02) {
-          ghost.vx *= 0.94;
-          ghost.vy *= 0.94;
+        } else if (ghostSpeed > 0.03) {
+          ghost.vx *= 0.88;
+          ghost.vy *= 0.91;
         }
       }
       if (ghost.jumpGhostFrames > 0) {
