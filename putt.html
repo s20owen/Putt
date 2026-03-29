@@ -1004,7 +1004,8 @@
 
   const STORAGE_KEY = "putt-mobile-progress-v1";
   const DEFAULT_SETTINGS = {
-    soundEnabled: true,
+    gameAudioEnabled: true,
+    uiAudioEnabled: true,
     hapticsEnabled: true,
     reduceMotion: false,
     replayQuality: "high"
@@ -1024,7 +1025,7 @@
       id: "graphite",
       type: "cosmetic",
       name: "Graphite",
-      cost: 8,
+      cost: 12,
       description: "Dark matte finish with bright edge.",
       fill: "#111111",
       stroke: "#f3f4f6",
@@ -1034,7 +1035,7 @@
       id: "bullseye",
       type: "cosmetic",
       name: "Bullseye",
-      cost: 14,
+      cost: 18,
       description: "Target ring for a precise look.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1044,7 +1045,7 @@
       id: "eclipse",
       type: "cosmetic",
       name: "Eclipse",
-      cost: 20,
+      cost: 26,
       description: "Half-black split shell with contrast edge.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1076,7 +1077,7 @@
       id: "blueprint",
       type: "cosmetic",
       name: "Blueprint",
-      cost: 24,
+      cost: 28,
       description: "Draft-line shell with precise construction marks.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1087,7 +1088,7 @@
       id: "obsidian_ring",
       type: "cosmetic",
       name: "Obsidian Ring",
-      cost: 28,
+      cost: 34,
       description: "Dark shell with a crisp inner tournament ring.",
       fill: "#111111",
       stroke: "#f9fafb",
@@ -1098,7 +1099,7 @@
       id: "monogram",
       type: "cosmetic",
       name: "Monogram",
-      cost: 26,
+      cost: 32,
       description: "Minimal luxury shell with centered stamp details.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1108,7 +1109,7 @@
       id: "halftone_ghost",
       type: "cosmetic",
       name: "Halftone Ghost",
-      cost: 30,
+      cost: 38,
       description: "Rare dotted shell that shifts with the light.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1118,7 +1119,7 @@
       id: "signal",
       type: "cosmetic",
       name: "Signal",
-      cost: 34,
+      cost: 44,
       description: "Rare target-ring shell with bold centered contrast.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1129,7 +1130,7 @@
       id: "glitch_ink",
       type: "cosmetic",
       name: "Glitch Ink",
-      cost: 32,
+      cost: 40,
       description: "Offset linework shell with a rare misprint feel.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1149,7 +1150,7 @@
       id: "dashes",
       type: "trail",
       name: "Dash Trail",
-      cost: 10,
+      cost: 14,
       description: "Short black chase marks behind the ball.",
       color: "rgba(17,17,17,0.55)"
     },
@@ -1157,7 +1158,7 @@
       id: "comet",
       type: "trail",
       name: "Comet Trail",
-      cost: 16,
+      cost: 22,
       description: "Soft grey glow that lingers a touch longer.",
       color: "rgba(75,85,99,0.38)"
     },
@@ -1165,7 +1166,7 @@
       id: "pulse",
       type: "trail",
       name: "Pulse Trail",
-      cost: 22,
+      cost: 30,
       description: "Alternating black and white echoes on quick shots.",
       color: "rgba(17,17,17,0.52)",
       accent: "rgba(255,255,255,0.88)"
@@ -1186,7 +1187,7 @@
       id: "preview_path",
       type: "upgrade",
       name: "Preview Path",
-      cost: 30,
+      cost: 100,
       description: "Unlock the full predicted shot path while aiming."
     }
   ];
@@ -1203,7 +1204,7 @@
       id: "power_core",
       type: "ability",
       name: "Power Core",
-      cost: 16,
+      cost: 18,
       maxTier: 3,
       description: "Charge stronger shots with a higher max power."
     },
@@ -1211,7 +1212,7 @@
       id: "true_roll",
       type: "ability",
       name: "True Roll",
-      cost: 20,
+      cost: 24,
       maxTier: 3,
       description: "Keeps momentum a little longer and eases sand drag."
     },
@@ -1219,7 +1220,7 @@
       id: "soft_shell",
       type: "ability",
       name: "Soft Shell",
-      cost: 16,
+      cost: 18,
       maxTier: 3,
       description: "Tames bumpers, walls, and spinner hits for more control."
     },
@@ -1227,7 +1228,7 @@
       id: "curve_core",
       type: "ability",
       name: "Curve Core",
-      cost: 18,
+      cost: 22,
       maxTier: 3,
       description: "Adds a steady hook to shots so they bend around the lane."
     },
@@ -1235,7 +1236,7 @@
       id: "air_hopper",
       type: "ability",
       name: "Air Hopper",
-      cost: 22,
+      cost: 26,
       maxTier: 3,
       description: "Skips over obstacles mid-roll with a quick hop pop."
     },
@@ -1243,7 +1244,7 @@
       id: "bank_shot",
       type: "ability",
       name: "Bank Shot Core",
-      cost: 24,
+      cost: 28,
       maxTier: 3,
       description: "Keeps rebounds lively and more reliable off walls."
     },
@@ -1251,7 +1252,7 @@
       id: "anchor_core",
       type: "ability",
       name: "Anchor Core",
-      cost: 22,
+      cost: 26,
       maxTier: 3,
       description: "Resists wind, fans, and magnetic pull for steadier lines."
     },
@@ -1259,7 +1260,7 @@
       id: "split_core",
       type: "ability",
       name: "Split Core",
-      cost: 28,
+      cost: 34,
       maxTier: 3,
       description: "Shows a second projected line so the risky route is easier to read."
     },
@@ -1267,7 +1268,7 @@
       id: "pulse_core",
       type: "ability",
       name: "Pulse Core",
-      cost: 26,
+      cost: 30,
       maxTier: 3,
       description: "Kicks the ball once mid-roll with a delayed burst."
     },
@@ -1275,7 +1276,7 @@
       id: "needle_core",
       type: "ability",
       name: "Needle Core",
-      cost: 30,
+      cost: 36,
       maxTier: 3,
       description: "Shrinks the ball slightly for tighter gaps, but bad contacts hit harder."
     }
@@ -1291,7 +1292,7 @@
   );
   function getAbilityTierCost(item, nextTier) {
     if (!item || item.type !== "ability" || !nextTier) return item ? item.cost : 0;
-    return item.cost + (nextTier - 1) * 10;
+    return item.cost + (nextTier - 1) * 14;
   }
   const DIFFICULTY_PRESETS = {
     beginner: {
@@ -1322,7 +1323,7 @@
       lanePressureBias: 0.18,
       startBufferBonus: -1,
       modifierChance: 0.66,
-      advancedHazardChance: 0.72
+      advancedHazardChance: 0.82
     }
   };
   const HOLE_MODIFIERS = {
@@ -1343,8 +1344,7 @@
       label: "Beginner Branch",
       description: "Control and readability rewards for learning the course.",
       nodes: [
-        { id: "rookie_preview", name: "Preview Wiring", desc: "Open up the aiming toolkit early.", clearsRequired: 1, reward: { type: "owned_item", id: "preview_path" } },
-        { id: "steady_roll", name: "Steady Roll", desc: "Make your baseline shots hold speed more cleanly.", clearsRequired: 2, prereqs: ["rookie_preview"], reward: { type: "ability_level", id: "true_roll", tier: 1 } },
+        { id: "steady_roll", name: "Steady Roll", desc: "Make your baseline shots hold speed more cleanly.", clearsRequired: 1, reward: { type: "ability_level", id: "true_roll", tier: 1 } },
         { id: "shell_guard", name: "Shell Guard", desc: "Add forgiveness against bumpers and bad angles.", clearsRequired: 3, prereqs: ["steady_roll"], reward: { type: "ability_level", id: "soft_shell", tier: 1 } }
       ]
     },
@@ -1397,7 +1397,9 @@
     fan_tunnel: { id: "fan_tunnel", name: "Fan Tunnel" },
     needle_lane: { id: "needle_lane", name: "Needle Lane" },
     relay_orbit: { id: "relay_orbit", name: "Relay Orbit" },
-    lockstep: { id: "lockstep", name: "Lockstep" }
+    lockstep: { id: "lockstep", name: "Lockstep" },
+    shutter_stack: { id: "shutter_stack", name: "Shutter Stack" },
+    rail_crossfire: { id: "rail_crossfire", name: "Rail Crossfire" }
   };
   const VISUAL_STYLE = {
     ink: "#111111",
@@ -1408,6 +1410,12 @@
     utilityFill: "rgba(229,231,235,0.74)",
     hazardFill: "rgba(229,231,235,0.88)",
     guideFill: "rgba(255,255,255,0.9)"
+  };
+  const DEBUG_PARAMS = new URLSearchParams(window.location.search);
+  const DEBUG_FLAGS = {
+    forceFalseHole: DEBUG_PARAMS.get('forceFalseHole') === '1',
+    autostartDifficulty: DEBUG_PARAMS.get('autostart'),
+    debugHole: Math.max(1, Number(DEBUG_PARAMS.get('hole')) || 1)
   };
   function getTodayKey() {
     const now = new Date();
@@ -1430,6 +1438,42 @@
     const relation = diff === 0 ? "E" : diff > 0 ? `+${diff}` : `${diff}`;
     return `${record.strokes} shots (${relation})`;
   }
+  function getDailyStreak(progress) {
+    const keys = Object.keys(progress?.dailyBestRounds || {})
+      .map(key => key.split(":")[0])
+      .filter(Boolean)
+      .sort();
+    if (!keys.length) return 0;
+    let streak = 0;
+    let cursor = new Date(`${getTodayKey()}T00:00:00`);
+    const seen = new Set(keys);
+    while (seen.has(cursor.toISOString().slice(0, 10))) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
+  }
+  function getCollectionProgress(progress) {
+    const cosmeticTotal = BALL_COSMETICS.filter(item => item.cost > 0).length;
+    const trailTotal = TRAIL_SHOP.filter(item => item.cost > 0).length;
+    const abilityTotal = ABILITY_SHOP.filter(item => item.cost > 0).length;
+    const owned = progress?.ownedItems || {};
+    const levels = progress?.abilityLevels || {};
+    const cosmeticsOwned = BALL_COSMETICS.filter(item => item.cost > 0 && owned[item.id]).length;
+    const trailsOwned = TRAIL_SHOP.filter(item => item.cost > 0 && owned[item.id]).length;
+    const abilitiesOwned = ABILITY_SHOP.filter(item => item.cost > 0 && (owned[item.id] || (levels[item.id] || 0) > 0)).length;
+    const total = cosmeticTotal + trailTotal + abilityTotal;
+    return {
+      owned: cosmeticsOwned + trailsOwned + abilitiesOwned,
+      total,
+      cosmeticsOwned,
+      cosmeticTotal,
+      trailsOwned,
+      trailTotal,
+      abilitiesOwned,
+      abilityTotal
+    };
+  }
 
   function pickSetpieceTemplate(rng, holeIndex, difficultyKey, layoutType) {
     if (holeIndex < 3) return SETPIECE_TEMPLATES.none;
@@ -1441,27 +1485,29 @@
     if (rng() > chance) return SETPIECE_TEMPLATES.none;
     if (holeIndex >= 5 && rng() < (difficultyKey === "hardcore" ? 0.34 : 0.2)) {
       const signatureChoices = layoutType === "straight"
-        ? ["needle_lane", "relay_orbit", "lockstep"]
-        : ["relay_orbit", "lockstep", "needle_lane"];
+        ? ["needle_lane", "relay_orbit", "lockstep", "rail_crossfire"]
+        : ["relay_orbit", "lockstep", "needle_lane", "shutter_stack"];
       return SETPIECE_TEMPLATES[signatureChoices[randInt(rng, 0, signatureChoices.length - 1)]] || SETPIECE_TEMPLATES.none;
     }
     const choices = layoutType === "straight"
-      ? ["fan_tunnel", "shutter_run", "magnetic_maze", "bounce_forge"]
+      ? ["fan_tunnel", "shutter_run", "magnetic_maze", "bounce_forge", "shutter_stack"]
       : layoutType === "z_shape" || layoutType === "horseshoe"
-        ? ["magnetic_maze", "shutter_run", "bounce_forge"]
-        : ["shutter_run", "bounce_forge", "fan_tunnel"];
+        ? ["magnetic_maze", "shutter_run", "bounce_forge", "rail_crossfire"]
+        : ["shutter_run", "bounce_forge", "fan_tunnel", "rail_crossfire"];
     return SETPIECE_TEMPLATES[choices[randInt(rng, 0, choices.length - 1)]] || SETPIECE_TEMPLATES.none;
   }
   function getUnlockedSetpieceIds(progress) {
     const unlocked = new Set(["none"]);
     const tree = progress?.treeUnlocks || {};
-    if (tree.rookie_preview || tree.steady_roll) unlocked.add("fan_tunnel");
+    if (tree.steady_roll) unlocked.add("fan_tunnel");
     if (tree.curve_starter || tree.power_starter || tree.curve_drive) unlocked.add("bounce_forge");
     if (tree.hopper_frame) unlocked.add("magnetic_maze");
     if (tree.impact_core || tree.hardline_curve) unlocked.add("shutter_run");
     if (tree.shell_guard) unlocked.add("needle_lane");
     if (tree.curve_drive) unlocked.add("relay_orbit");
     if (tree.hardline_curve) unlocked.add("lockstep");
+    if (tree.impact_core) unlocked.add("shutter_stack");
+    if (tree.power_starter || tree.curve_drive) unlocked.add("rail_crossfire");
     return unlocked;
   }
   function pickProgressionSetpiece(rng, holeIndex, difficultyKey, layoutType, progress) {
@@ -1498,6 +1544,60 @@
 
   function lerp(a, b, t) {
     return a + (b - a) * t;
+  }
+  function renderCosmeticSvgPreview(item) {
+    const ring = item.ring ? `<circle cx="26" cy="26" r="8" fill="none" stroke="${item.ring}" stroke-width="2" />` : "";
+    const split = item.split
+      ? `<path d="M26 14 A12 12 0 0 1 26 38 L26 14Z" fill="#111111" />`
+      : "";
+    const outline = `<circle cx="26" cy="26" r="12" fill="${item.fill}" stroke="${item.stroke}" stroke-width="2.5" />`;
+    let pattern = "";
+    if (item.skinPattern === "blueprint") {
+      pattern = `
+        <path d="M18 28 H34 M23 17 V35 M19 19 L33 33" fill="none" stroke="#9ca3af" stroke-width="1.6" stroke-linecap="round" />
+        <circle cx="31" cy="21" r="1.6" fill="#111111" />
+      `;
+    } else if (item.skinPattern === "obsidian_ring") {
+      pattern = `
+        <circle cx="26" cy="26" r="5.2" fill="#f9fafb" />
+        <circle cx="26" cy="26" r="2.2" fill="#111111" />
+      `;
+    } else if (item.skinPattern === "monogram") {
+      pattern = `
+        <path d="M18 21 H34 M18 31 H34" fill="none" stroke="#111111" stroke-width="1.6" stroke-linecap="round" />
+        <circle cx="26" cy="26" r="2.8" fill="#111111" />
+      `;
+    } else if (item.skinPattern === "halftone_ghost") {
+      pattern = `
+        <circle cx="22" cy="20" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="27" cy="19" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="31" cy="22" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="21" cy="26" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="26" cy="26" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="31" cy="27" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="23" cy="31" r="1.1" fill="rgba(17,17,17,0.22)" />
+        <circle cx="28" cy="32" r="1.1" fill="rgba(17,17,17,0.22)" />
+      `;
+    } else if (item.skinPattern === "signal") {
+      pattern = `
+        <circle cx="26" cy="26" r="3" fill="none" stroke="#111111" stroke-width="1.3" />
+        <circle cx="26" cy="26" r="6.2" fill="none" stroke="rgba(17,17,17,0.8)" stroke-width="1.2" />
+        <circle cx="26" cy="26" r="9.1" fill="none" stroke="rgba(17,17,17,0.6)" stroke-width="1.1" />
+      `;
+    } else if (item.skinPattern === "glitch_ink") {
+      pattern = `
+        <ellipse cx="24.5" cy="27" rx="9" ry="9" fill="none" stroke="rgba(17,17,17,0.3)" stroke-width="1.2" />
+        <path d="M18 28 L33 25" fill="none" stroke="#111111" stroke-width="1.5" stroke-linecap="round" />
+      `;
+    }
+    return `
+      <svg width="36" height="36" viewBox="0 0 52 52" aria-hidden="true">
+        ${outline}
+        ${split}
+        ${ring}
+        ${pattern}
+      </svg>
+    `;
   }
   function roundedRectPath(ctx, x, y, width, height, radius = 12) {
     const r = Math.max(0, Math.min(radius, width / 2, height / 2));
@@ -1610,6 +1710,9 @@
       ? window.__game.progress.settings
       : DEFAULT_SETTINGS;
   }
+  function isUiFx(name) {
+    return ["ui", "buy", "equip", "tree", "replay"].includes(name);
+  }
 
   function shouldPlayFx(key, debounceMs = 0) {
     const now = performance.now();
@@ -1646,51 +1749,102 @@
   }
 
   function emitGameFx(name, intensity = 1) {
-    if (!getLiveSettings().soundEnabled) return;
+    const settings = getLiveSettings();
+    if (isUiFx(name) ? !settings.uiAudioEnabled : !settings.gameAudioEnabled) return;
     intensity = clamp(intensity, 0.2, 1.4);
     if (name === "ui") {
       if (!shouldPlayFx("ui", 50)) return;
-      playTone({ freq: 620, toFreq: 700, duration: 0.03, gain: 0.008, type: "square" });
+      playTone({ freq: 620, toFreq: 700, duration: 0.03, gain: 0.006, type: "square" });
+      return;
+    }
+    if (name === "buy") {
+      if (!shouldPlayFx("buy", 60)) return;
+      playTone({ freq: 420, toFreq: 560, duration: 0.05, gain: 0.007, type: "triangle" });
+      playTone({ freq: 620, toFreq: 760, duration: 0.045, gain: 0.005, type: "sine", when: 0.02 });
+      return;
+    }
+    if (name === "equip") {
+      if (!shouldPlayFx("equip", 60)) return;
+      playTone({ freq: 520, toFreq: 620, duration: 0.035, gain: 0.005, type: "square" });
+      return;
+    }
+    if (name === "tree") {
+      if (!shouldPlayFx("tree", 100)) return;
+      playTone({ freq: 360, toFreq: 420, duration: 0.06, gain: 0.007, type: "triangle" });
+      playTone({ freq: 520, toFreq: 660, duration: 0.06, gain: 0.006, type: "sine", when: 0.04 });
+      playTone({ freq: 720, toFreq: 880, duration: 0.08, gain: 0.005, type: "sine", when: 0.09 });
+      return;
+    }
+    if (name === "replay") {
+      if (!shouldPlayFx("replay", 90)) return;
+      playTone({ freq: 300, toFreq: 460, duration: 0.07, gain: 0.006, type: "triangle" });
       return;
     }
     if (name === "shot") {
       if (!shouldPlayFx("shot", 55)) return;
-      playTone({ freq: 340 + intensity * 110, toFreq: 190 + intensity * 34, duration: 0.1, gain: 0.02 + intensity * 0.008, type: "triangle" });
-      playTone({ freq: 700 + intensity * 110, toFreq: 340, duration: 0.07, gain: 0.008, type: "sine", when: 0.01 });
+      playTone({ freq: 760 + intensity * 80, toFreq: 620, duration: 0.018, gain: 0.0045, type: "square" });
+      playTone({ freq: 340 + intensity * 120, toFreq: 180 + intensity * 38, duration: 0.11, gain: 0.013 + intensity * 0.006, type: "triangle", when: 0.008 });
+      playTone({ freq: 210 + intensity * 70, toFreq: 120, duration: 0.12, gain: 0.008 + intensity * 0.004, type: "sine", when: 0.012 });
+      playTone({ freq: 980 + intensity * 120, toFreq: 420, duration: 0.08, gain: 0.005 + intensity * 0.002, type: "sine", when: 0.016 });
       pulseHaptics(10, "shot", 40);
       return;
     }
     if (name === "wall") {
       if (!shouldPlayFx("wall", 75)) return;
-      playTone({ freq: 170 + intensity * 52, toFreq: 120, duration: 0.035, gain: 0.012 + intensity * 0.006, type: "square" });
+      playTone({ freq: 168 + intensity * 46, toFreq: 126, duration: 0.03, gain: 0.008 + intensity * 0.003, type: "square" });
       pulseHaptics(8, "wall", 55);
       return;
     }
     if (name === "bumper") {
       if (!shouldPlayFx("bumper", 95)) return;
-      playTone({ freq: 250 + intensity * 84, toFreq: 150, duration: 0.07, gain: 0.016 + intensity * 0.007, type: "sine" });
-      playTone({ freq: 490, toFreq: 240, duration: 0.05, gain: 0.008, type: "triangle", when: 0.012 });
+      playTone({ freq: 260 + intensity * 84, toFreq: 150, duration: 0.07, gain: 0.014 + intensity * 0.005, type: "sine" });
+      playTone({ freq: 540, toFreq: 240, duration: 0.05, gain: 0.007, type: "triangle", when: 0.012 });
       pulseHaptics([10, 18, 10], "bumper", 70);
       return;
     }
     if (name === "spinner") {
       if (!shouldPlayFx("spinner", 110)) return;
-      playTone({ freq: 520, toFreq: 250, duration: 0.055, gain: 0.014, type: "square" });
+      playTone({ freq: 540, toFreq: 260, duration: 0.05, gain: 0.01, type: "square" });
       pulseHaptics([8, 16, 8], "spinner", 80);
+      return;
+    }
+    if (name === "sand") {
+      if (!shouldPlayFx("sand", 120)) return;
+      playTone({ freq: 140, toFreq: 110, duration: 0.05, gain: 0.0045, type: "triangle" });
+      return;
+    }
+    if (name === "shutter") {
+      if (!shouldPlayFx("shutter", 100)) return;
+      playTone({ freq: 200, toFreq: 150, duration: 0.045, gain: 0.008, type: "square" });
+      playTone({ freq: 280, toFreq: 180, duration: 0.035, gain: 0.004, type: "triangle", when: 0.008 });
+      pulseHaptics(8, "shutter", 80);
+      return;
+    }
+    if (name === "rail") {
+      if (!shouldPlayFx("rail", 95)) return;
+      playTone({ freq: 410, toFreq: 620, duration: 0.04, gain: 0.008, type: "square" });
+      playTone({ freq: 260, toFreq: 180, duration: 0.03, gain: 0.004, type: "triangle", when: 0.01 });
+      pulseHaptics([8, 12, 8], "rail", 80);
       return;
     }
     if (name === "teleport") {
       if (!shouldPlayFx("teleport", 130)) return;
-      playTone({ freq: 240, toFreq: 520, duration: 0.1, gain: 0.014, type: "sine" });
-      playTone({ freq: 360, toFreq: 720, duration: 0.08, gain: 0.008, type: "triangle", when: 0.02 });
+      playTone({ freq: 220, toFreq: 540, duration: 0.1, gain: 0.012, type: "sine" });
+      playTone({ freq: 340, toFreq: 760, duration: 0.08, gain: 0.007, type: "triangle", when: 0.02 });
       pulseHaptics(12, "teleport", 110);
+      return;
+    }
+    if (name === "rim") {
+      if (!shouldPlayFx("rim", 120)) return;
+      playTone({ freq: 860, toFreq: 620, duration: 0.035, gain: 0.006, type: "square" });
+      playTone({ freq: 440, toFreq: 360, duration: 0.04, gain: 0.0035, type: "triangle", when: 0.01 });
       return;
     }
     if (name === "sink") {
       if (!shouldPlayFx("sink", 250)) return;
-      playTone({ freq: 330, toFreq: 330, duration: 0.1, gain: 0.016, type: "triangle" });
-      playTone({ freq: 440, toFreq: 440, duration: 0.1, gain: 0.014, type: "triangle", when: 0.07 });
-      playTone({ freq: 660, toFreq: 660, duration: 0.14, gain: 0.012, type: "triangle", when: 0.14 });
+      playTone({ freq: 330, toFreq: 330, duration: 0.1, gain: 0.014, type: "triangle" });
+      playTone({ freq: 440, toFreq: 440, duration: 0.1, gain: 0.012, type: "triangle", when: 0.07 });
+      playTone({ freq: 660, toFreq: 660, duration: 0.14, gain: 0.011, type: "triangle", when: 0.14 });
       pulseHaptics([12, 26, 16], "sink", 250);
     }
   }
@@ -1744,6 +1898,10 @@
       const parsed = JSON.parse(raw);
       const stars = Math.max(0, Number(parsed.stars) || 0);
       const settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
+      if (Object.prototype.hasOwnProperty.call(parsed.settings || {}, "soundEnabled")) {
+        settings.gameAudioEnabled = Boolean(parsed.settings.soundEnabled);
+        settings.uiAudioEnabled = Boolean(parsed.settings.soundEnabled);
+      }
       const ownedItems = { classic: true, none: true, none_ability: true, ...(parsed.ownedItems || {}) };
       const abilityLevels = { ...(parsed.abilityLevels || {}) };
       const bestRounds = { ...(parsed.bestRounds || {}) };
@@ -1976,7 +2134,7 @@
       if (difficultyKey === "hardcore") return "gauntlet";
       return "slalom";
     }
-    if (holeIndex === 1) return "slalom";
+    if (holeIndex === 1) return difficultyKey === "hardcore" ? "gauntlet" : "slalom";
     const choices = difficultyKey === "beginner"
       ? ["slalom", "fairway", "islands"]
       : difficultyKey === "hardcore"
@@ -1991,7 +2149,7 @@
       if (difficultyKey === "hardcore") return "z_shape";
       return rng() > 0.5 ? "left_turn" : "right_turn";
     }
-    if (holeIndex === 1) return rng() > 0.5 ? "left_turn" : "right_turn";
+    if (holeIndex === 1) return difficultyKey === "hardcore" ? "horseshoe" : (rng() > 0.5 ? "left_turn" : "right_turn");
     const choices = difficultyKey === "beginner"
       ? ["straight", "left_turn", "right_turn", "z_shape"]
       : difficultyKey === "hardcore"
@@ -2537,16 +2695,109 @@
     };
   }
 
-  function getCellWorld(layoutType, holeIndex) {
+  function makeLaneChokeBlocker(rect, direction, rng, difficultyKey = "average") {
+    const thickness = 14;
+    const reach = difficultyKey === "hardcore" ? 0.5 : 0.42;
+    if (Math.abs(direction.y) > 0.5) {
+      const fromLeft = rng() < 0.5;
+      const width = Math.round(rect.width * reach);
+      return {
+        x: Math.round(fromLeft ? rect.x + rect.width * 0.08 : rect.x + rect.width - width - rect.width * 0.08),
+        y: Math.round(rect.y + rect.height * 0.5 - thickness / 2),
+        width,
+        height: thickness
+      };
+    }
+    const fromTop = rng() < 0.5;
+    const height = Math.round(rect.height * reach);
+    return {
+      x: Math.round(rect.x + rect.width * 0.5 - thickness / 2),
+      y: Math.round(fromTop ? rect.y + rect.height * 0.08 : rect.y + rect.height - height - rect.height * 0.08),
+      width: thickness,
+      height
+    };
+  }
+
+  function buildFalseHoleBranch(rawCells, rng, difficultyKey, holeIndex) {
+    if (difficultyKey === "beginner") return { branchCells: [], falseHole: null };
+    const chance = difficultyKey === "hardcore"
+      ? (holeIndex >= 2 ? 0.78 : 0)
+      : (holeIndex >= 4 ? 0.34 : 0);
+    if (chance <= 0 || (!DEBUG_FLAGS.forceFalseHole && rng() > chance)) return { branchCells: [], falseHole: null };
+
+    const occupied = new Set(rawCells.map(([col, row]) => `${col},${row}`));
+    const candidates = [];
+    for (let index = 2; index < rawCells.length - 2; index++) {
+      const [prevCol, prevRow] = rawCells[index - 1];
+      const [col, row] = rawCells[index];
+      const [nextCol, nextRow] = rawCells[index + 1];
+      const incoming = { x: Math.sign(col - prevCol), y: Math.sign(row - prevRow) };
+      const outgoing = { x: Math.sign(nextCol - col), y: Math.sign(nextRow - row) };
+      if (incoming.x !== outgoing.x || incoming.y !== outgoing.y) continue;
+
+      const sideOptions = rng() < 0.5
+        ? [{ x: -outgoing.y, y: outgoing.x }, { x: outgoing.y, y: -outgoing.x }]
+        : [{ x: outgoing.y, y: -outgoing.x }, { x: -outgoing.y, y: outgoing.x }];
+
+      for (const sideDir of sideOptions) {
+        const targetLength = difficultyKey === "hardcore"
+          ? (rng() < 0.58 ? 3 : 2)
+          : 2;
+        for (let length = targetLength; length >= 2; length--) {
+          const branchCells = [];
+          let clear = true;
+          for (let step = 1; step <= length; step++) {
+            const branchCol = col + sideDir.x * step;
+            const branchRow = row + sideDir.y * step;
+            if (occupied.has(`${branchCol},${branchRow}`)) {
+              clear = false;
+              break;
+            }
+            branchCells.push([branchCol, branchRow]);
+          }
+          if (!clear) continue;
+          candidates.push({
+            anchorIndex: index,
+            branchCells,
+            sideDir,
+            entry: [col, row]
+          });
+          break;
+        }
+      }
+    }
+
+    if (!candidates.length) return { branchCells: [], falseHole: null };
+    const preferred = candidates.filter(candidate =>
+      candidate.anchorIndex >= Math.floor(rawCells.length * 0.35) &&
+      candidate.anchorIndex <= Math.ceil(rawCells.length * 0.82)
+    );
+    const pool = preferred.length ? preferred : candidates;
+    const pick = pool[randInt(rng, 0, pool.length - 1)];
+    return {
+      branchCells: pick.branchCells,
+      falseHole: {
+        anchorIndex: pick.anchorIndex,
+        branchLength: pick.branchCells.length,
+        entry: pick.entry,
+        sideDir: pick.sideDir
+      }
+    };
+  }
+
+  function getCellWorld(layoutType, holeIndex, rng, difficultyKey = "average") {
     const rawCells = getCellLayout(layoutType);
-    const minX = Math.min(...rawCells.map(([x]) => x));
-    const maxX = Math.max(...rawCells.map(([x]) => x));
-    const minY = Math.min(...rawCells.map(([, y]) => y));
-    const maxY = Math.max(...rawCells.map(([, y]) => y));
+    const falseBranch = buildFalseHoleBranch(rawCells, rng, difficultyKey, holeIndex);
+    const allRawCells = rawCells.concat(falseBranch.branchCells);
+    const minX = Math.min(...allRawCells.map(([x]) => x));
+    const maxX = Math.max(...allRawCells.map(([x]) => x));
+    const minY = Math.min(...allRawCells.map(([, y]) => y));
+    const maxY = Math.max(...allRawCells.map(([, y]) => y));
     const cols = maxX - minX + 1;
     const rows = maxY - minY + 1;
-    const cellSize = holeIndex <= 1 ? 208 : 224;
-    const margin = holeIndex <= 1 ? 120 : 132;
+    const sizeBoost = holeIndex >= 7 ? 28 : holeIndex >= 5 ? 14 : 0;
+    const cellSize = holeIndex <= 1 ? 208 : 224 + sizeBoost;
+    const margin = (holeIndex <= 1 ? 120 : 132) + Math.round(sizeBoost * 0.55);
     const wallThickness = 14;
     const cells = rawCells.map(([x, y], index) => {
       const col = x - minX;
@@ -2566,10 +2817,29 @@
         rect
       };
     });
+    const branchCells = falseBranch.branchCells.map(([x, y], index) => {
+      const col = x - minX;
+      const row = y - minY;
+      const rect = {
+        x: margin + col * cellSize,
+        y: margin + row * cellSize,
+        width: cellSize,
+        height: cellSize
+      };
+      return {
+        index,
+        col,
+        row,
+        cx: rect.x + rect.width / 2,
+        cy: rect.y + rect.height / 2,
+        rect
+      };
+    });
+    const allCells = cells.concat(branchCells);
 
-    const occupied = new Set(cells.map(cell => `${cell.col},${cell.row}`));
+    const occupied = new Set(allCells.map(cell => `${cell.col},${cell.row}`));
     const walls = [];
-    for (const cell of cells) {
+    for (const cell of allCells) {
       const { x, y, width, height } = cell.rect;
       if (!occupied.has(`${cell.col},${cell.row - 1}`)) {
         walls.push({ x, y: y - wallThickness / 2, width, height: wallThickness });
@@ -2598,6 +2868,27 @@
       y: Math.round(cells[cells.length - 1].cy - endDirection.y * endInset),
       radius: 10
     };
+    const falseHoles = [];
+    if (falseBranch.falseHole && branchCells.length) {
+      const branchEnd = branchCells[branchCells.length - 1];
+      const branchPrev = branchCells.length > 1 ? branchCells[branchCells.length - 2] : cells[falseBranch.falseHole.anchorIndex];
+      const branchDirection = {
+        x: Math.sign(branchEnd.cx - branchPrev.cx),
+        y: Math.sign(branchEnd.cy - branchPrev.cy)
+      };
+      const falseEndInset = cellSize * 0.3;
+      falseHoles.push({
+        x: Math.round(branchEnd.cx - branchDirection.x * falseEndInset),
+        y: Math.round(branchEnd.cy - branchDirection.y * falseEndInset),
+        radius: 10,
+        approachDirX: branchDirection.x,
+        approachDirY: branchDirection.y,
+        ejectDirX: -branchDirection.x,
+        ejectDirY: -branchDirection.y,
+        branchEntryX: branchCells[0].cx,
+        branchEntryY: branchCells[0].cy
+      });
+    }
 
     return {
       width: cols * cellSize + margin * 2,
@@ -2608,8 +2899,83 @@
       walls,
       ballStart,
       hole,
+      holeApproach: endDirection,
+      falseHoles,
       pathPoints: cells.map(cell => ({ x: cell.cx, y: cell.cy }))
     };
+  }
+
+  function makeHoleGuardWalls(hole, approachDir, style = "v", wallThickness = 14) {
+    const dir = approachDir || { x: 0, y: -1 };
+    const perp = getPerp(dir);
+    const walls = [];
+    if (style === "pocket") {
+      const sideLength = 48;
+      const sideOffset = 20;
+      const mouthDistance = 24;
+      const backDistance = 42;
+      if (Math.abs(dir.y) > 0.5) {
+        walls.push({
+          x: Math.round(hole.x - sideOffset - wallThickness / 2),
+          y: Math.round(hole.y - backDistance),
+          width: wallThickness,
+          height: sideLength
+        });
+        walls.push({
+          x: Math.round(hole.x + sideOffset - wallThickness / 2),
+          y: Math.round(hole.y - backDistance),
+          width: wallThickness,
+          height: sideLength
+        });
+        walls.push({
+          x: Math.round(hole.x - sideOffset),
+          y: Math.round(hole.y - backDistance),
+          width: sideOffset * 2,
+          height: wallThickness
+        });
+      } else {
+        walls.push({
+          x: Math.round(hole.x - backDistance),
+          y: Math.round(hole.y - sideOffset - wallThickness / 2),
+          width: sideLength,
+          height: wallThickness
+        });
+        walls.push({
+          x: Math.round(hole.x - backDistance),
+          y: Math.round(hole.y + sideOffset - wallThickness / 2),
+          width: sideLength,
+          height: wallThickness
+        });
+        walls.push({
+          x: Math.round(hole.x - backDistance),
+          y: Math.round(hole.y - sideOffset),
+          width: wallThickness,
+          height: sideOffset * 2
+        });
+      }
+      return walls;
+    }
+
+    const frontX = hole.x + dir.x * 30;
+    const frontY = hole.y + dir.y * 30;
+    const armLength = 38;
+    const spread = 18;
+    const angle = Math.abs(dir.y) > 0.5 ? 35 : -35;
+    walls.push({
+      x: Math.round(frontX + perp.x * spread - armLength / 2),
+      y: Math.round(frontY + perp.y * spread - wallThickness / 2),
+      width: armLength,
+      height: wallThickness,
+      rotation: Math.abs(dir.y) > 0.5 ? angle : 90 + angle
+    });
+    walls.push({
+      x: Math.round(frontX - perp.x * spread - armLength / 2),
+      y: Math.round(frontY - perp.y * spread - wallThickness / 2),
+      width: armLength,
+      height: wallThickness,
+      rotation: Math.abs(dir.y) > 0.5 ? -angle : 90 - angle
+    });
+    return walls;
   }
 
   function generateHole(holeIndex, courseSeed, difficultyKey = "average", progress = null) {
@@ -2626,10 +2992,12 @@
       wallThickness,
       ballStart,
       hole,
+      holeApproach,
       pathPoints,
       cells,
-      walls
-    } = getCellWorld(layoutType, holeIndex);
+      walls,
+      falseHoles
+    } = getCellWorld(layoutType, holeIndex, rng, settings.key);
     const spinners = [];
     const pads = [];
     const sandTraps = [];
@@ -2639,6 +3007,7 @@
     const shutterDoors = [];
     const staticShutters = [];
     const magneticZones = [];
+    const ricochetRails = [];
     const setpiece = pickProgressionSetpiece(rng, holeIndex, settings.key, layoutType, progress);
     const teleportPalette = ["#0ea5e9", "#f97316", "#10b981", "#ec4899"];
     const modifier = pickHoleModifier(rng, holeIndex, settings.key);
@@ -2658,10 +3027,14 @@
     for (let i = 1; i < cells.length - 1; i++) candidateIndices.push(i);
     shuffleInPlace(candidateIndices, rng);
     const lanePressure = clamp(
-      (holeIndex >= 7 ? 0.85 : holeIndex >= 5 ? 0.6 : holeIndex >= 3 ? 0.35 : 0.12) + settings.lanePressureBias,
+      (holeIndex >= 7 ? 0.92 : holeIndex >= 5 ? 0.72 : holeIndex >= 3 ? 0.4 : 0.12) +
+      settings.lanePressureBias +
+      (settings.key === "hardcore" ? 0.12 : settings.key === "average" ? 0.08 : 0),
       0.05,
-      0.95
+      0.98
     );
+    const isLargeHole = holeIndex >= 5;
+    const pressureStartRatio = settings.key === "hardcore" ? 0.16 : settings.key === "average" ? 0.2 : 0.32;
     const obstacleMargin = wallThickness * 0.5 + 12;
     const takeOpenCell = predicate => {
       for (const index of candidateIndices) {
@@ -2676,7 +3049,7 @@
       const pressured = takeOpenCell(index => {
         if (predicate && !predicate(index)) return false;
         if (settings.key === "beginner") return false;
-        if (index < Math.max(startBufferCells + 1, Math.floor(cells.length * 0.32))) return false;
+        if (index < Math.max(startBufferCells + 1, Math.floor(cells.length * (isLargeHole ? pressureStartRatio - 0.04 : pressureStartRatio)))) return false;
         return !isTurnCell(cells, index);
       });
       return pressured != null ? pressured : takeOpenCell(predicate);
@@ -2765,6 +3138,13 @@
       }
       return list;
     };
+    let comboTemplateCount = 0;
+    let chokeBlockerCount = 0;
+    let circularSandCount = 0;
+    let holeGuardCount = 0;
+    let mirroredFalseCupSand = false;
+    let realCupHasSand = false;
+    let falseCupHasSand = false;
 
     if (!isEarlyTurnHole && setpiece.id !== "none") {
       if (setpiece.id === "shutter_run") {
@@ -2911,6 +3291,36 @@
         });
         const exitIndex = getTemplateIndices(1, 0.74, 0.82)[0];
         if (exitIndex != null) placePadAtCell(exitIndex, 1.16, cellSize * 0.04, 0, false);
+      } else if (setpiece.id === "shutter_stack") {
+        const shutterIndices = getTemplateIndices(settings.key === "hardcore" ? 4 : 3, 0.24, 0.8);
+        shutterIndices.forEach((index, i) => {
+          const rect = cells[index].rect;
+          const direction = getCellDirection(cells, index);
+          const vertical = Math.abs(direction.y) > 0.5;
+          const major = vertical ? rect.width : rect.height;
+          const size = Math.round(major * 0.22);
+          const offset = i % 2 === 0 ? -major * 0.16 : major * 0.16;
+          staticShutters.push({
+            x: Math.round(vertical ? rect.x + rect.width * 0.5 + offset - size / 2 : rect.x + rect.width * 0.2),
+            y: Math.round(vertical ? rect.y + rect.height * 0.2 : rect.y + rect.height * 0.5 + offset - size / 2),
+            width: Math.round(vertical ? size : rect.width * 0.6),
+            height: Math.round(vertical ? rect.height * 0.6 : size)
+          });
+        });
+      } else if (setpiece.id === "rail_crossfire") {
+        const railIndices = getTemplateIndices(settings.key === "hardcore" ? 3 : 2, 0.28, 0.82);
+        railIndices.forEach((index, i) => {
+          const anchor = getObstacleCenter(index, 0, getLaneSign(index + i) * cellSize * 0.05, false, cellSize * 0.22);
+          const direction = getCellDirection(cells, index);
+          const baseRotation = Math.abs(direction.y) > 0.5 ? 45 : 135;
+          ricochetRails.push({
+            x: Math.round(anchor.x - 26),
+            y: Math.round(anchor.y - 7),
+            width: 52,
+            height: 14,
+            rotation: (i % 2 === 0 ? baseRotation : 180 - baseRotation)
+          });
+        });
       }
     }
 
@@ -2918,7 +3328,11 @@
       const endPadIndex = Math.max(1, cells.length - 2);
       placePadAtCell(endPadIndex, 0.84, cellSize * 0.08, cellSize * 0.08, false);
     } else {
-      const padCount = clamp(Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale), 1, 4);
+      const hardcoreEarlyHole = settings.key === "hardcore" && holeIndex <= 3;
+      const padCount = clamp(Math.max(
+        hardcoreEarlyHole ? 2 : 1,
+        Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale)
+      ), 1, 4);
       for (let i = 0; i < padCount; i++) {
         const padIndex = (settings.key !== "beginner" && i === 0)
           ? takePressureCell(index => index > 1 && index < cells.length - 1)
@@ -2933,16 +3347,21 @@
         const laneContest = settings.key !== "beginner" && i === 0 && !turning;
         const baseSide = laneSign * cellSize * (turning ? 0.2 : 0.16);
         const sideOffset = laneContest
-          ? laneSign * cellSize * 0.05
-          : baseSide * (i === 0 ? 1 - lanePressure * 0.7 : 1 - lanePressure * 0.35);
+          ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.01 : 0.03)
+          : baseSide * (i === 0 ? 1 - lanePressure * 0.85 : 1 - lanePressure * 0.45);
         placePadAtCell(padIndex, boost, alongOffset, sideOffset, turning);
       }
 
-      const spinnerCount = holeIndex > 1 ? clamp(
-        Math.round((archetype === "gauntlet" ? 2 + Math.floor(holeIndex / 4) : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale),
+      const spinnerCount = clamp(
+        Math.max(
+          settings.key === "hardcore" && holeIndex >= 1 ? 1 : 0,
+          holeIndex > 1
+            ? Math.round((archetype === "gauntlet" ? 2 + Math.floor(holeIndex / 4) : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale)
+            : 0
+        ),
         0,
         4
-      ) : 0;
+      );
       for (let i = 0; i < spinnerCount; i++) {
         const spinnerIndex = (settings.key !== "beginner" && i === 0)
           ? takePressureCell(index => index > 1 && index < cells.length - 2)
@@ -2951,8 +3370,8 @@
         const laneSign = getLaneSign(spinnerIndex + i);
         const laneContest = settings.key !== "beginner" && i === 0;
         const sideOffset = laneContest
-          ? laneSign * cellSize * 0.04
-          : laneSign * cellSize * 0.18 * (i === 0 ? 1 - lanePressure : 1 - lanePressure * 0.45);
+          ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.008 : 0.025)
+          : laneSign * cellSize * 0.18 * (i === 0 ? 1 - lanePressure * 1.08 : 1 - lanePressure * 0.52);
         const anchor = getObstacleCenter(spinnerIndex, 0, sideOffset, false, cellSize * 0.2);
         spinners.push({
           x: Math.round(anchor.x),
@@ -2961,11 +3380,16 @@
         });
       }
 
-      const sandCount = holeIndex > 0 ? clamp(
-        Math.round((archetype === "islands" ? 2 : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale),
+      const sandCount = clamp(
+        Math.max(
+          settings.key === "hardcore" && holeIndex >= 1 ? 1 : 0,
+          holeIndex > 0
+            ? Math.round((archetype === "islands" ? 2 : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale)
+            : 0
+        ),
         0,
         3
-      ) : 0;
+      );
       for (let i = 0; i < sandCount; i++) {
         const sandIndex = (settings.key !== "beginner" && i === 0)
           ? takePressureCell(index => index > 1 && index < cells.length - 1)
@@ -2975,25 +3399,29 @@
         const turning = isTurnCell(cells, sandIndex);
         const laneContest = settings.key !== "beginner" && i === 0 && !turning;
         const sideOffset = laneContest
-          ? laneSign * cellSize * 0.03
-          : laneSign * cellSize * 0.16 * (i === 0 ? 1 - lanePressure * 0.8 : 1 - lanePressure * 0.35);
+          ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.008 : 0.02)
+          : laneSign * cellSize * 0.16 * (i === 0 ? 1 - lanePressure * 0.95 : 1 - lanePressure * 0.4);
         const anchor = getObstacleCenter(sandIndex, 0, sideOffset, false, cellSize * 0.26);
         const trapWidth = Math.round(cellSize * (laneContest ? 0.48 : turning ? 0.46 + lanePressure * 0.08 : 0.34 + lanePressure * 0.16));
+        const adjustedTrapWidth = laneContest && isLargeHole ? Math.round(cellSize * 0.56) : trapWidth;
         const trapHeight = Math.round(cellSize * (turning ? 0.46 : 0.56));
-        const trapPos = clampRectToCell(sandIndex, anchor.x - trapWidth / 2, anchor.y - trapHeight / 2, trapWidth, trapHeight);
+        const trapPos = clampRectToCell(sandIndex, anchor.x - adjustedTrapWidth / 2, anchor.y - trapHeight / 2, adjustedTrapWidth, trapHeight);
         sandTraps.push({
           x: trapPos.x,
           y: trapPos.y,
-          width: trapWidth,
+          width: adjustedTrapWidth,
           height: trapHeight
         });
       }
 
-      const bumperCount = holeIndex > 1 ? clamp(
-        Math.round((archetype === "gauntlet" ? 2 : 1) * settings.obstacleScale),
+      const bumperCount = clamp(
+        Math.max(
+          settings.key === "hardcore" && holeIndex >= 2 ? 1 : 0,
+          holeIndex > 1 ? Math.round((archetype === "gauntlet" ? 2 : 1) * settings.obstacleScale) : 0
+        ),
         0,
         3
-      ) : 0;
+      );
       for (let i = 0; i < bumperCount; i++) {
         const bumperIndex = (settings.key !== "beginner" && i === 0)
           ? takePressureCell(index => index > 2 && index < cells.length - 2)
@@ -3005,8 +3433,8 @@
           bumperIndex,
           isTurnCell(cells, bumperIndex) ? -cellSize * 0.08 : 0,
           laneContest
-            ? laneSign * cellSize * 0.05
-            : laneSign * cellSize * 0.22 * (i === 0 ? 1 - lanePressure * 0.85 : 1 - lanePressure * 0.35),
+            ? laneSign * cellSize * (settings.key === "hardcore" ? 0 : isLargeHole ? 0.01 : 0.03)
+            : laneSign * cellSize * 0.22 * (i === 0 ? 1 - lanePressure : 1 - lanePressure * 0.42),
           false,
           cellSize * 0.17
         );
@@ -3028,9 +3456,25 @@
         }
       }
 
+      if (holeIndex >= 4 && settings.key !== "beginner") {
+        const chokeCount = settings.key === "hardcore"
+          ? (holeIndex >= 2 ? (holeIndex >= 7 ? 2 : 1) : 0)
+          : (holeIndex >= 6 ? 1 : 0);
+        for (let i = 0; i < chokeCount; i++) {
+          const chokeIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
+          if (chokeIndex == null) break;
+          walls.push(makeLaneChokeBlocker(cells[chokeIndex].rect, getCellDirection(cells, chokeIndex), rng, settings.key));
+          chokeBlockerCount++;
+        }
+      }
+
       if (holeIndex > 3 && cells.length >= 8 && (settings.key !== "beginner" || rng() > 0.45)) {
-        const firstTeleportIndex = takeOpenCell(index => index >= 2 && index <= Math.floor(cells.length / 2));
-        const secondTeleportIndex = takeOpenCell(index => index >= Math.floor(cells.length / 2) && index < cells.length - 1);
+        const firstTeleportIndex = settings.key === "hardcore"
+          ? takePressureCell(index => index >= 2 && index <= Math.floor(cells.length / 2))
+          : takeOpenCell(index => index >= 2 && index <= Math.floor(cells.length / 2));
+        const secondTeleportIndex = settings.key === "hardcore"
+          ? takePressureCell(index => index >= Math.floor(cells.length / 2) && index < cells.length - 1)
+          : takeOpenCell(index => index >= Math.floor(cells.length / 2) && index < cells.length - 1);
         if (firstTeleportIndex != null && secondTeleportIndex != null) {
           const firstAnchor = getObstacleCenter(firstTeleportIndex, 0, getLaneSign(firstTeleportIndex) * cellSize * 0.18, false, cellSize * 0.19);
           const secondAnchor = getObstacleCenter(secondTeleportIndex, 0, getLaneSign(secondTeleportIndex + 1) * cellSize * 0.18, false, cellSize * 0.19);
@@ -3043,7 +3487,7 @@
         }
       }
 
-      if (holeIndex >= 2 && rng() < settings.advancedHazardChance) {
+      if ((holeIndex >= 2 || settings.key === "hardcore") && rng() < settings.advancedHazardChance) {
         const fanIndex = settings.key === "hardcore"
           ? takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells)
           : takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
@@ -3051,7 +3495,7 @@
           const anchor = getObstacleCenter(
             fanIndex,
             0,
-            settings.key === "hardcore" ? getLaneSign(fanIndex) * cellSize * 0.04 : getLaneSign(fanIndex) * cellSize * 0.1,
+            settings.key === "hardcore" ? 0 : settings.key === "average" ? getLaneSign(fanIndex) * cellSize * 0.02 : getLaneSign(fanIndex) * cellSize * 0.08,
             false,
             cellSize * 0.25
           );
@@ -3067,7 +3511,7 @@
         }
       }
 
-      if (holeIndex >= 3 && rng() < settings.advancedHazardChance) {
+      if ((holeIndex >= 3 || (settings.key === "hardcore" && holeIndex >= 1)) && rng() < settings.advancedHazardChance) {
         const shutterIndex = takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (shutterIndex != null) {
           const rect = cells[shutterIndex].rect;
@@ -3084,7 +3528,7 @@
         }
       }
 
-      if (holeIndex >= 4 && settings.key !== "beginner" && rng() < settings.advancedHazardChance * 0.82) {
+      if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < settings.advancedHazardChance * 0.82) {
         const staticShutterIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (staticShutterIndex != null) {
           const rect = cells[staticShutterIndex].rect;
@@ -3098,7 +3542,7 @@
         }
       }
 
-      if (holeIndex >= 4 && rng() < settings.advancedHazardChance) {
+      if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && rng() < settings.advancedHazardChance) {
         const magnetIndex = settings.key === "hardcore"
           ? takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells)
           : takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
@@ -3106,7 +3550,7 @@
           const anchor = getObstacleCenter(
             magnetIndex,
             0,
-            settings.key === "hardcore" ? getLaneSign(magnetIndex) * cellSize * 0.03 : getLaneSign(magnetIndex) * cellSize * 0.08,
+            settings.key === "hardcore" ? 0 : settings.key === "average" ? getLaneSign(magnetIndex) * cellSize * 0.02 : getLaneSign(magnetIndex) * cellSize * 0.06,
             false,
             cellSize * 0.19
           );
@@ -3119,6 +3563,133 @@
           });
         }
       }
+
+      if ((holeIndex >= 5 || (settings.key === "hardcore" && holeIndex >= 3)) && settings.key !== "beginner" && rng() < settings.advancedHazardChance * 0.72) {
+        const railIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells);
+        if (railIndex != null) {
+          const anchor = getObstacleCenter(railIndex, 0, settings.key === "hardcore" ? 0 : getLaneSign(railIndex) * cellSize * (isLargeHole ? 0.01 : 0.025), false, cellSize * 0.24);
+          const direction = getCellDirection(cells, railIndex);
+          const baseRotation = Math.abs(direction.y) > 0.5 ? 45 : 135;
+          ricochetRails.push({
+            x: Math.round(anchor.x - 24),
+            y: Math.round(anchor.y - 6),
+            width: 48,
+            height: 12,
+            rotation: rng() < 0.5 ? baseRotation : 180 - baseRotation
+          });
+        }
+      }
+
+      if ((holeIndex >= 5 || (settings.key === "hardcore" && holeIndex >= 3)) && settings.key !== "beginner") {
+        const comboCount = settings.key === "hardcore"
+          ? (holeIndex >= 2 ? (holeIndex >= 7 ? 2 : 1) : 0)
+          : (holeIndex >= 7 ? 1 : 0);
+        for (let i = 0; i < comboCount; i++) {
+          const comboIndex = takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells - 1);
+          if (comboIndex == null) break;
+          const nextIndex = Math.min(cells.length - endBufferCells - 1, comboIndex + 1);
+          const comboType = ["shutter_fan", "magnet_rail", "sand_bumper"][randInt(rng, 0, 2)];
+
+          if (comboType === "shutter_fan") {
+            const rect = cells[comboIndex].rect;
+            const direction = getCellDirection(cells, comboIndex);
+            shutterDoors.push({
+              x: Math.round(Math.abs(direction.y) > 0.5 ? rect.x + rect.width * 0.22 : rect.x + rect.width * 0.5 - 8),
+              y: Math.round(Math.abs(direction.y) > 0.5 ? rect.y + rect.height * 0.5 - 8 : rect.y + rect.height * 0.22),
+              width: Math.round(Math.abs(direction.y) > 0.5 ? rect.width * 0.56 : 16),
+              height: Math.round(Math.abs(direction.y) > 0.5 ? 16 : rect.height * 0.56),
+              period: settings.key === "hardcore" ? 76 : 92,
+              closedFrames: settings.key === "hardcore" ? 54 : 46,
+              phase: randInt(rng, 0, 70)
+            });
+            const fanAnchor = getObstacleCenter(nextIndex, 0, 0, false, cellSize * 0.24);
+            fanZones.push({
+              x: Math.round(fanAnchor.x - (Math.abs(fanAnchor.direction.y) > 0.5 ? 22 : cellSize * 0.3)),
+              y: Math.round(fanAnchor.y - (Math.abs(fanAnchor.direction.y) > 0.5 ? cellSize * 0.22 : 22)),
+              width: Math.round(Math.abs(fanAnchor.direction.y) > 0.5 ? 44 : cellSize * 0.6),
+              height: Math.round(Math.abs(fanAnchor.direction.y) > 0.5 ? cellSize * 0.44 : 44),
+              forceX: Math.round(fanAnchor.direction.x * 100) / 100,
+              forceY: Math.round(fanAnchor.direction.y * 100) / 100,
+              power: settings.key === "hardcore" ? 0.18 : 0.13
+            });
+          } else if (comboType === "magnet_rail") {
+            const magnetAnchor = getObstacleCenter(comboIndex, 0, 0, false, cellSize * 0.18);
+            magneticZones.push({
+              x: Math.round(magnetAnchor.x),
+              y: Math.round(magnetAnchor.y),
+              radius: Math.round(cellSize * 0.19),
+              strength: settings.key === "hardcore" ? 0.32 : 0.24,
+              mode: rng() > 0.45 ? "pull" : "push"
+            });
+            const railAnchor = getObstacleCenter(nextIndex, 0, 0, false, cellSize * 0.22);
+            const direction = getCellDirection(cells, nextIndex);
+            const baseRotation = Math.abs(direction.y) > 0.5 ? 45 : 135;
+            ricochetRails.push({
+              x: Math.round(railAnchor.x - 26),
+              y: Math.round(railAnchor.y - 7),
+              width: 52,
+              height: 14,
+              rotation: rng() < 0.5 ? baseRotation : 180 - baseRotation
+            });
+          } else {
+            const sandAnchor = getObstacleCenter(comboIndex, 0, 0, false, cellSize * 0.24);
+            const trapWidth = Math.round(cellSize * 0.54);
+            const trapHeight = Math.round(cellSize * 0.54);
+            const trapPos = clampRectToCell(comboIndex, sandAnchor.x - trapWidth / 2, sandAnchor.y - trapHeight / 2, trapWidth, trapHeight);
+            sandTraps.push({
+              x: trapPos.x,
+              y: trapPos.y,
+              width: trapWidth,
+              height: trapHeight
+            });
+            const bumperAnchor = getObstacleCenter(nextIndex, 0, 0, false, cellSize * 0.17);
+            bumpers.push({
+              x: Math.round(bumperAnchor.x),
+              y: Math.round(bumperAnchor.y),
+              radius: Math.round(cellSize * 0.11)
+            });
+          }
+          comboTemplateCount++;
+        }
+      }
+
+      if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < (settings.key === "hardcore" ? 0.58 : 0.26)) {
+        const cupTrapRadius = Math.round(cellSize * (settings.key === "hardcore" ? 0.34 : 0.3));
+        sandTraps.push({
+          x: hole.x,
+          y: hole.y,
+          radius: cupTrapRadius,
+          innerRadius: hole.radius + 20
+        });
+        circularSandCount++;
+        realCupHasSand = true;
+        if (falseHoles.length) {
+          falseHoles.forEach(falseHole => {
+            sandTraps.push({
+              x: falseHole.x,
+              y: falseHole.y,
+              radius: cupTrapRadius,
+              innerRadius: falseHole.radius + 20
+            });
+          });
+          mirroredFalseCupSand = true;
+          falseCupHasSand = true;
+        }
+      }
+
+    }
+
+    if (settings.key !== "beginner" && (holeIndex >= 3 || settings.key === "hardcore")) {
+      const guardStyle = rng() < 0.48 ? "pocket" : "v";
+      if (!realCupHasSand) {
+        makeHoleGuardWalls(hole, holeApproach, guardStyle, wallThickness).forEach(wall => walls.push(wall));
+        holeGuardCount++;
+      }
+      falseHoles.forEach(falseHole => {
+        if (falseCupHasSand) return;
+        makeHoleGuardWalls(falseHole, { x: falseHole.approachDirX, y: falseHole.approachDirY }, guardStyle, wallThickness).forEach(wall => walls.push(wall));
+        holeGuardCount++;
+      });
     }
 
     const par = clamp(
@@ -3133,8 +3704,15 @@
         shutterDoors.length * 0.25 +
         staticShutters.length * 0.22 +
         magneticZones.length * 0.35 +
+        ricochetRails.length * 0.3 +
+        comboTemplateCount * (settings.key === "hardcore" ? 0.9 : 0.65) +
+        chokeBlockerCount * (settings.key === "hardcore" ? 0.55 : 0.35) +
+        circularSandCount * (settings.key === "hardcore" ? 0.4 : 0.25) +
+        holeGuardCount * (settings.key === "hardcore" ? 0.42 : 0.24) +
         (setpiece.id !== "none" ? 0.55 : 0) +
-        (layoutType !== "straight" ? 0.4 : 0)
+        (layoutType !== "straight" ? 0.4 : 0) +
+        (holeIndex >= 5 ? 0.35 : 0) +
+        (settings.key === "hardcore" ? 0.45 : settings.key === "average" ? 0.2 : 0)
       ),
       2,
       8
@@ -3153,6 +3731,7 @@
       height,
       ballStart,
       hole,
+      falseHoles,
       pathPoints,
       walls,
       spinners,
@@ -3163,7 +3742,10 @@
       fanZones,
       shutterDoors,
       staticShutters,
-      magneticZones
+      magneticZones,
+      ricochetRails,
+      holeGuardStyle: settings.key !== "beginner" && (holeIndex >= 3 || settings.key === "hardcore") ? "mirrored" : "none",
+      mirroredFalseCupSand
     };
   }
 
@@ -3303,11 +3885,12 @@
       this.loadLevel();
     }
     refreshMetaUi() {
+      const previewItem = ITEM_LOOKUP.preview_path;
       document.getElementById('difficultyLabel').textContent = this.difficulty.label;
       document.getElementById('themeLabel').textContent = this.theme.name;
       document.getElementById('challengeLabel').textContent = this.challengeRule.name;
       document.getElementById('starCount').textContent = this.progress.stars;
-      document.getElementById('previewStatus').textContent = this.hasOwnedItem('preview_path') ? 'Owned' : '30 stars';
+      document.getElementById('previewStatus').textContent = this.hasOwnedItem('preview_path') ? 'Owned' : `${previewItem.cost} stars`;
       this.shopFab.classList.toggle('disabled', this.challengeRule.id === 'no_shop_loadout');
       this.shopStars.textContent = `Stars: ${this.progress.stars}`;
       this.renderShop();
@@ -3349,6 +3932,7 @@
         current.rewardClaimed = true;
         this.progress.ownedItems[reward.rewardId] = true;
         rewardMessage = `${reward.rewardLabel} unlocked.`;
+        emitGameFx('tree');
         const item = ITEM_LOOKUP[reward.rewardId];
         if (item?.type === "cosmetic") this.progress.equippedCosmetic = reward.rewardId;
         if (item?.type === "trail") this.progress.equippedTrail = reward.rewardId;
@@ -3512,12 +4096,16 @@
     }
     renderStats() {
       const stats = this.progress.stats;
+      const streak = getDailyStreak(this.progress);
+      const collection = getCollectionProgress(this.progress);
       const cards = [
         { label: 'Rounds', value: stats.roundsCompleted },
         { label: 'Holes', value: stats.holesCompleted },
         { label: 'Shots', value: stats.totalShots },
         { label: 'Stars Earned', value: stats.totalStarsEarned },
         { label: 'Best Streak', value: stats.bestCleanStreak },
+        { label: 'Daily Streak', value: streak },
+        { label: 'Collection', value: `${collection.owned}/${collection.total}` },
         { label: 'Shares', value: stats.totalShares }
       ];
       this.statsGrid.innerHTML = cards.map(card => `
@@ -3528,19 +4116,27 @@
       `).join("");
       this.statsSubhead.textContent = `${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Standard'} • Theme ${this.theme.name}`;
       this.statsNotes.innerHTML = `
+        <strong>Loadout profile</strong><br />
         Favorite ball: <strong>${this.getFavoriteFromUsage(stats.usage.cosmetics, 'Classic')}</strong><br />
         Favorite core: <strong>${this.getFavoriteFromUsage(stats.usage.abilities, 'Standard Core')}</strong><br />
-        Favorite trail: <strong>${this.getFavoriteFromUsage(stats.usage.trails, 'No Trail')}</strong><br />
-        Best by difficulty: Beginner ${formatBestLabel(this.progress.bestRounds.beginner)}, Average ${formatBestLabel(this.progress.bestRounds.average)}, Hardcore ${formatBestLabel(this.progress.bestRounds.hardcore)}.<br />
-        Tree progress: Beginner ${this.getBranchClears('beginner')} clears, Average ${this.getBranchClears('average')} clears, Hardcore ${this.getBranchClears('hardcore')} clears. Ready nodes: <strong>${this.getTreeReadyCount()}</strong>.
+        Favorite trail: <strong>${this.getFavoriteFromUsage(stats.usage.trails, 'No Trail')}</strong><br /><br />
+        <strong>Best cards</strong><br />
+        Beginner ${formatBestLabel(this.progress.bestRounds.beginner)} · Average ${formatBestLabel(this.progress.bestRounds.average)} · Hardcore ${formatBestLabel(this.progress.bestRounds.hardcore)}.<br /><br />
+        <strong>Progression</strong><br />
+        Beginner ${this.getBranchClears('beginner')} clears · Average ${this.getBranchClears('average')} clears · Hardcore ${this.getBranchClears('hardcore')} clears.<br />
+        Ready nodes: <strong>${this.getTreeReadyCount()}</strong> · Collection: <strong>${collection.owned}/${collection.total}</strong>.
       `;
     }
     renderSettings() {
       const settings = { ...DEFAULT_SETTINGS, ...(this.progress.settings || {}) };
       this.settingsList.innerHTML = `
         <label class="settings-row">
-          <div><strong>Sound</strong><span>Shots, collisions, and sink chimes.</span></div>
-          <input type="checkbox" data-setting="soundEnabled" ${settings.soundEnabled ? 'checked' : ''} />
+          <div><strong>Game Audio</strong><span>Shots, impacts, hazards, and cup sounds.</span></div>
+          <input type="checkbox" data-setting="gameAudioEnabled" ${settings.gameAudioEnabled ? 'checked' : ''} />
+        </label>
+        <label class="settings-row">
+          <div><strong>UI Audio</strong><span>Menus, shop actions, unlocks, and replay controls.</span></div>
+          <input type="checkbox" data-setting="uiAudioEnabled" ${settings.uiAudioEnabled ? 'checked' : ''} />
         </label>
         <label class="settings-row">
           <div><strong>Haptics</strong><span>Use vibration feedback where available.</span></div>
@@ -3558,6 +4154,12 @@
           <option value="ultra" ${settings.replayQuality === 'ultra' ? 'selected' : ''}>Ultra</option>
         </select>
       </label>
+      <div class="summary-block">
+        <strong>Active tuning</strong><br />
+        Share mode: <strong>${settings.replayQuality.toUpperCase()}</strong> replay output.<br />
+        Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong>.
+        <div style="margin-top:10px;"><button type="button" class="secondary" data-setting-action="ping">Test Audio</button></div>
+      </div>
       `;
       this.settingsList.querySelectorAll('[data-setting]').forEach(control => {
         control.onchange = () => {
@@ -3566,6 +4168,15 @@
           saveProgress(this.progress);
         };
       });
+      const pingBtn = this.settingsList.querySelector('[data-setting-action="ping"]');
+      if (pingBtn) {
+        pingBtn.onclick = () => {
+          unlockGameFx();
+          emitGameFx('ui');
+          emitGameFx('shot', 0.65);
+          setTimeout(() => emitGameFx('rim', 0.6), 90);
+        };
+      }
     }
     openSettings() {
       this.renderSettings();
@@ -3590,7 +4201,14 @@
       if (this.lastReplayPreviewUrl) URL.revokeObjectURL(this.lastReplayPreviewUrl);
       this.lastReplayExport = exportResult;
       this.lastReplayPreviewUrl = URL.createObjectURL(exportResult.blob);
-      this.replayPreview.innerHTML = `<img src="${this.lastReplayPreviewUrl}" alt="Replay preview" />`;
+      emitGameFx('replay');
+      this.replayPreview.innerHTML = `
+        <img src="${this.lastReplayPreviewUrl}" alt="Replay preview" />
+        <div class="summary-block" style="margin:0;border-radius:0;border-left:none;border-right:none;border-bottom:none;">
+          <strong>Replay card</strong><br />
+          Starts at the first shot, carries through the sink, and exports as a shareable GIF.
+        </div>
+      `;
       this.replayMeta.textContent = this.modeKey === 'daily'
         ? `Daily ${getTodayKey()} • Seed ${this.seed} • Beat my score.`
         : `Hole ${this.currentLevelIndex + 1} replay • Seed ${this.seed}`;
@@ -3654,7 +4272,8 @@
       if (this.modeKey !== 'daily') return '';
       const diff = totalShots - totalPar;
       const relation = diff === 0 ? 'even par' : diff > 0 ? `+${diff}` : `${diff}`;
-      return `${getTodayKey()} • Seed ${this.seed} • Finished ${relation}. Beat my score.`;
+      const medal = getRoundMedal(totalPar, totalShots);
+      return `${getTodayKey()} • Seed ${this.seed} • ${medal} pace at ${relation}. Beat my score.`;
     }
     buildScorecardImageCanvas() {
       const width = 860;
@@ -3856,6 +4475,7 @@
       if (item.type === 'trail') this.progress.equippedTrail = id;
       if (item.type === 'ability') this.progress.equippedAbility = id;
       saveProgress(this.progress);
+      emitGameFx('buy');
       this.refreshMetaUi();
       this.applyCurrentLoadout();
     }
@@ -3868,12 +4488,12 @@
       if (item.type === 'trail') this.progress.equippedTrail = id;
       if (item.type === 'ability') this.progress.equippedAbility = id;
       saveProgress(this.progress);
+      emitGameFx('equip');
       this.refreshMetaUi();
       this.applyCurrentLoadout();
     }
     renderShop() {
       const featured = this.getDailyFeaturedOffer();
-      const hidePreviewShopItem = this.isTreeNodeUnlocked('rookie_preview') || this.getBranchClears('beginner') > 0;
       this.shopTabButtons.forEach(button => button.classList.toggle('active', button.dataset.shopTab === this.currentShopTab));
       const treeMarkup = `
         <section class="shop-section">
@@ -3896,7 +4516,6 @@
               <h3>${section.title}</h3>
               ${section.items
                 .filter(item => !item.trackReward || this.hasOwnedItem(item.id))
-                .filter(item => !(hidePreviewShopItem && item.id === 'preview_path'))
                 .map(item => this.renderShopItem(item, featured)).join("")}
             </section>
           `).join("");
@@ -4007,7 +4626,7 @@
           ? (equipped ? "Default core · equipped" : "Default core")
           : `Tier ${this.getAbilityTier(item.id)}/${item.maxTier}`)
         : item.id === 'preview_path' && !owned
-        ? 'Unlockable in Beginner Branch or via stars'
+        ? `Costs ${cost} stars`
         : owned
         ? (equipped ? "Owned · equipped" : "Owned")
         : featured.itemId === item.id
@@ -4085,17 +4704,7 @@
           </svg>
         `;
       }
-      const ring = item.ring ? `<circle cx="26" cy="26" r="8" fill="none" stroke="${item.ring}" stroke-width="2" />` : "";
-      const split = item.split
-        ? `<path d="M26 14 A12 12 0 0 1 26 38 L26 14Z" fill="#111111" />`
-        : "";
-      return `
-        <svg width="36" height="36" viewBox="0 0 52 52" aria-hidden="true">
-          <circle cx="26" cy="26" r="12" fill="${item.fill}" stroke="${item.stroke}" stroke-width="2.5" />
-          ${split}
-          ${ring}
-        </svg>
-      `;
+      return renderCosmeticSvgPreview(item);
     }
     resizeCanvas() {
       updateViewportMetrics();
@@ -4190,8 +4799,9 @@
       document.getElementById('totalPar').textContent = totalPar;
       document.getElementById('totalShots').textContent = totalShots;
       document.getElementById('totalRoundStars').textContent = totalStars;
-      if (!this.hasOwnedItem('preview_path') && this.progress.stars >= 30) {
-        this.unlockNote.textContent = `You have ${this.progress.stars} stars. Preview Path is available in the shop for 30 stars.`;
+      const previewCost = ITEM_LOOKUP.preview_path?.cost || 100;
+      if (!this.hasOwnedItem('preview_path') && this.progress.stars >= previewCost) {
+        this.unlockNote.textContent = `You have ${this.progress.stars} stars. Preview Path is available in the shop for ${previewCost} stars.`;
       } else {
         const daily = this.getDailyFeaturedOffer();
         const featuredItem = ITEM_LOOKUP[daily.itemId];
@@ -4209,11 +4819,14 @@
         this.scorecardEl.style.display = 'flex';
         if (isLast) {
           const bestLabel = formatBestLabel(this.getBestRoundRecord());
+          const socialLine = this.modeKey === 'daily'
+            ? `${this.getDailyChallengeSummary(totalPar, totalShots)}<br />`
+            : `Seed ${this.seed} • ${this.difficulty.label} card finished ${totalShots - totalPar === 0 ? 'even par' : totalShots > totalPar ? `+${totalShots - totalPar}` : `${totalShots - totalPar}`}.<br />`;
           this.roundSummaryEl.style.display = 'block';
           this.roundSummaryEl.innerHTML = `
             <strong>${roundMedal} medal</strong><br />
             ${bestImproved ? "New best round." : "Best remains"} ${bestLabel}.<br />
-            ${this.modeKey === 'daily' ? `${this.getDailyChallengeSummary(totalPar, totalShots)}<br />` : ''}
+            ${socialLine}
             ${trackUpdate ? `Track: ${formatTrackStatus(trackUpdate.track)}.` : ""}
           `;
           this.unlockNote.textContent = `${trackUpdate?.rewardMessage || `${roundMedal} medal banked for ${this.difficulty.label}.`}`;
@@ -4246,7 +4859,8 @@
     showRewardBurst({ starsEarned, resultLabel, streakBonus, cleanStreak }, onDone) {
       if (this.rewardTimer) clearTimeout(this.rewardTimer);
       const starsMarkup = starsEarned > 0 ? "★".repeat(starsEarned) : "·";
-      const canAffordPreview = !this.hasOwnedItem('preview_path') && this.progress.stars >= 30;
+      const previewCost = ITEM_LOOKUP.preview_path?.cost || 100;
+      const canAffordPreview = !this.hasOwnedItem('preview_path') && this.progress.stars >= previewCost;
       const copy = canAffordPreview
         ? "Preview Path can now be bought in the shop."
         : starsEarned > 0
@@ -4276,6 +4890,7 @@
     }
     showTreeUnlockBurst(branch, node) {
       if (this.rewardTimer) clearTimeout(this.rewardTimer);
+      emitGameFx('tree');
       this.rewardBurst.innerHTML = `
         <div class="reward-card">
           <div class="reward-title">Tree Unlocked</div>
@@ -4349,12 +4964,19 @@
           pads: level.pads.length,
           sandTraps: level.sandTraps.length,
           bumpers: level.bumpers.length,
-        teleports: level.teleports.length,
-        fanZones: level.fanZones.length,
-        shutterDoors: level.shutterDoors.length,
-        staticShutters: level.staticShutters.length,
-        magneticZones: level.magneticZones.length
-      } : null,
+          teleports: level.teleports.length,
+          fanZones: level.fanZones.length,
+          shutterDoors: level.shutterDoors.length,
+          staticShutters: level.staticShutters.length,
+          magneticZones: level.magneticZones.length,
+          ricochetRails: level.ricochetRails.length,
+          falseHoles: level.falseHoles.length
+        } : null,
+        falseHoles: level ? level.falseHoles.map(hole => ({
+          x: Math.round(hole.x),
+          y: Math.round(hole.y),
+          radius: hole.radius
+        })) : [],
         camera: level ? {
           x: Math.round(level.camera.x),
           y: Math.round(level.camera.y),
@@ -4398,6 +5020,10 @@
     this.lastReplayShots = [];
     this.sinkPulse = 0;
     this.sinkFlash = 0;
+    this.cupGlow = 0;
+    this.captureGlow = 0;
+    this.sinkCelebrationFrames = 0;
+    this.falseHoleCapture = null;
     this.reduceMotion = !!getLiveSettings().reduceMotion;
 
     document.getElementById('shotCount').textContent = this.shots;
@@ -4415,6 +5041,12 @@
     this.shutterDoors = (data.shutterDoors || []).map(door => new ShutterDoor(door));
     this.staticShutters = (data.staticShutters || []).map(shutter => new StaticShutter(shutter));
     this.magneticZones = (data.magneticZones || []).map(zone => new MagneticZone(zone));
+    this.ricochetRails = (data.ricochetRails || []).map(rail => new RicochetRail(rail));
+    this.falseHoles = (data.falseHoles || []).map(hole => ({
+      ...hole,
+      cooldown: 0,
+      pulse: 0
+    }));
     this.modifier = data.modifier || HOLE_MODIFIERS.none;
     this.previewUnlocked = Boolean(loadout && loadout.previewUnlocked) && this.modifier.id !== "no_preview";
     this.ball.setHoleModifier(this.modifier);
@@ -4629,6 +5261,12 @@
   update() {
     this.sinkPulse *= 0.92;
     this.sinkFlash *= 0.86;
+    this.cupGlow *= 0.9;
+    this.captureGlow *= 0.86;
+    this.falseHoles.forEach(hole => {
+      hole.pulse *= 0.9;
+      if (hole.cooldown > 0) hole.cooldown--;
+    });
     this.ball.update();
     this.walls.forEach(w => w.collide(this.ball));
     this.spinners.forEach(s => { s.update(); s.collide(this.ball); });
@@ -4640,25 +5278,88 @@
     this.shutterDoors.forEach(door => { door.update(); door.collide(this.ball); });
     this.staticShutters.forEach(shutter => shutter.collide(this.ball));
     this.magneticZones.forEach(zone => zone.apply(this.ball));
+    this.ricochetRails.forEach(rail => rail.collide(this.ball));
     this.applyModifierForces();
     this.ball.clampSpeed(16);
     this.captureReplayFrame();
+
+    if (this.falseHoleCapture) {
+      const falseHole = this.falseHoleCapture;
+      falseHole.frames--;
+      falseHole.hole.pulse = Math.max(falseHole.hole.pulse, 0.9);
+      this.ball.x += (falseHole.hole.x - this.ball.x) * 0.38;
+      this.ball.y += (falseHole.hole.y - this.ball.y) * 0.38;
+      this.ball.vx *= 0.72;
+      this.ball.vy *= 0.72;
+      this.ball.visualScale = lerp(this.ball.visualScale, 0.9, 0.24);
+      this.ball.visualScaleX = lerp(this.ball.visualScaleX, 0.9, 0.24);
+      this.ball.visualScaleY = lerp(this.ball.visualScaleY, 0.9, 0.24);
+      if (falseHole.frames <= 0) {
+        this.ball.x = falseHole.hole.x + falseHole.hole.ejectDirX * (falseHole.hole.radius + this.ball.radius + 5);
+        this.ball.y = falseHole.hole.y + falseHole.hole.ejectDirY * (falseHole.hole.radius + this.ball.radius + 5);
+        this.ball.vx = falseHole.hole.ejectDirX * 4.8;
+        this.ball.vy = falseHole.hole.ejectDirY * 4.8;
+        falseHole.hole.cooldown = 80;
+        falseHole.hole.pulse = 1;
+        this.falseHoleCapture = null;
+        emitGameFx('bumper', 0.78);
+      }
+    } else if (!this.levelComplete) {
+      for (const falseHole of this.falseHoles) {
+        if (falseHole.cooldown > 0) continue;
+        const dx = falseHole.x - this.ball.x;
+        const dy = falseHole.y - this.ball.y;
+        const dist = Math.hypot(dx, dy);
+        const speed = this.ball.speed();
+        if (dist < falseHole.radius + 12 && speed < 3.2) {
+          this.falseHoleCapture = { hole: falseHole, frames: this.reduceMotion ? 7 : 12 };
+          falseHole.pulse = 1;
+          emitGameFx('rim', Math.min(1.1, Math.max(0.4, speed / 3)));
+          break;
+        }
+      }
+    }
 
     if (this.ball.speed() > 0.1) {
       this.camera.centerOn(this.ball.x, this.ball.y, 0.5, 0.7);
     }
 
+    const dxHole = this.hole.x - this.ball.x;
+    const dyHole = this.hole.y - this.ball.y;
+    const distToHole = Math.hypot(dxHole, dyHole);
+    const speed = this.ball.speed();
+    const cupTuning = this.data.difficultyKey === "hardcore"
+      ? { captureRadius: 13, captureWindow: 15, maxCaptureSpeed: 2.35, settleBase: 0.014, settleScale: 0.028, dampingBase: 0.992, dampingScale: 0.008, sinkSpeed: 1.7 }
+      : this.data.difficultyKey === "average"
+        ? { captureRadius: 14, captureWindow: 16, maxCaptureSpeed: 2.55, settleBase: 0.017, settleScale: 0.034, dampingBase: 0.99, dampingScale: 0.01, sinkSpeed: 1.8 }
+        : { captureRadius: 16, captureWindow: 18, maxCaptureSpeed: 2.85, settleBase: 0.02, settleScale: 0.04, dampingBase: 0.988, dampingScale: 0.012, sinkSpeed: 1.9 };
+    if (!this.levelComplete && distToHole < this.hole.radius + cupTuning.captureRadius && speed < cupTuning.maxCaptureSpeed && distToHole > 0.001) {
+      const capture = 1 - clamp((distToHole - this.hole.radius) / cupTuning.captureWindow, 0, 1);
+      const settle = cupTuning.settleBase + capture * cupTuning.settleScale;
+      this.ball.vx += (dxHole / distToHole) * settle;
+      this.ball.vy += (dyHole / distToHole) * settle;
+      this.ball.vx *= cupTuning.dampingBase - capture * cupTuning.dampingScale;
+      this.ball.vy *= cupTuning.dampingBase - capture * cupTuning.dampingScale;
+      this.captureGlow = Math.max(this.captureGlow, 0.24 + capture * 0.34);
+    }
+    if (!this.levelComplete && distToHole < this.hole.radius + this.ball.radius + 6 && distToHole > this.hole.radius - 1 && speed > 1.05) {
+      emitGameFx('rim', Math.min(1, speed / 4));
+    }
+
     if (!this.levelComplete && this.ball.inHole(this.hole)) {
-      if (this.ball.speed() < 1.9) {
+      if (this.ball.speed() < cupTuning.sinkSpeed) {
         this.levelComplete = true;
         this.sinkPulse = 1;
         this.sinkFlash = 1;
+        this.cupGlow = 1;
+        this.sinkCelebrationFrames = this.reduceMotion ? 18 : 36;
         emitGameFx('sink');
         this.ball.vx = 0; this.ball.vy = 0;
         const sinkInterval = setInterval(() => {
           this.ball.x += (this.hole.x - this.ball.x) * 0.4;
           this.ball.y += (this.hole.y - this.ball.y) * 0.4;
           this.ball.radius *= 0.85;
+          this.cupGlow = Math.max(this.cupGlow, 0.8);
           this.camera.centerOn(this.hole.x, this.hole.y, 0.5, 0.56);
           this.captureReplayFrame();
         }, 16);
@@ -4668,6 +5369,10 @@
           this.onComplete(this.shots);
         }, 600);
       }
+    }
+    if (this.sinkCelebrationFrames > 0) {
+      this.sinkCelebrationFrames--;
+      this.camera.centerOn(this.hole.x, this.hole.y, 0.5, 0.56);
     }
   }
 
@@ -4741,6 +5446,7 @@
     this.shutterDoors.forEach(door => door.render(ctx));
     this.staticShutters.forEach(shutter => shutter.render(ctx));
     this.magneticZones.forEach(zone => zone.render(ctx));
+    this.ricochetRails.forEach(rail => rail.render(ctx));
     this.pads.forEach(p => p.render(ctx));
     const startPoint = this.data.ballStart || this.data.start || { x: this.ball.x, y: this.ball.y };
     ctx.save();
@@ -4757,6 +5463,13 @@
     ctx.arc(this.hole.x, this.hole.y, this.hole.radius + 10, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(255,255,255,0.54)";
     ctx.fill();
+    if (this.captureGlow > 0.02 || this.cupGlow > 0.02) {
+      ctx.beginPath();
+      ctx.arc(this.hole.x, this.hole.y, this.hole.radius + 14 + this.captureGlow * 10 + this.cupGlow * 12, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(17,17,17,${0.12 + this.captureGlow * 0.16 + this.cupGlow * 0.18})`;
+      ctx.lineWidth = 1.4 + this.cupGlow * 1.6;
+      ctx.stroke();
+    }
     if (this.sinkPulse > 0.02) {
       ctx.beginPath();
       ctx.arc(this.hole.x, this.hole.y, this.hole.radius + 10 + this.sinkPulse * 24, 0, Math.PI * 2);
@@ -4774,6 +5487,30 @@
     ctx.arc(this.hole.x, this.hole.y, this.hole.radius, 0, Math.PI*2);
     ctx.fillStyle = "black";
     ctx.fill();
+    this.falseHoles.forEach(falseHole => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(falseHole.x, falseHole.y, falseHole.radius + 8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${0.42 + falseHole.pulse * 0.2})`;
+      ctx.fill();
+      if (falseHole.pulse > 0.03) {
+        ctx.beginPath();
+        ctx.arc(falseHole.x, falseHole.y, falseHole.radius + 10 + falseHole.pulse * 18, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(17,17,17,${falseHole.pulse * 0.26})`;
+        ctx.lineWidth = 1.4 + falseHole.pulse * 1.4;
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(falseHole.x, falseHole.y, falseHole.radius + 3, 0, Math.PI * 2);
+      ctx.strokeStyle = VISUAL_STYLE.ink;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(falseHole.x, falseHole.y, falseHole.radius, 0, Math.PI * 2);
+      ctx.fillStyle = VISUAL_STYLE.ink;
+      ctx.fill();
+      ctx.restore();
+    });
   }
 
   async exportReplayClip(theme, challengeRule, difficulty) {
@@ -4860,6 +5597,7 @@
       this.shutterDoors.forEach(door => door.render(exportCtx));
       this.staticShutters.forEach(shutter => shutter.render(exportCtx));
       this.magneticZones.forEach(zone => zone.render(exportCtx));
+      this.ricochetRails.forEach(rail => rail.render(exportCtx));
       this.pads.forEach(p => p.render(exportCtx));
       const activeShotOverlay = this.lastReplayShots.find(shot => frame.sourceIndex >= shot.frameIndex && frame.sourceIndex <= shot.frameIndex + shotOverlayWindow);
       if (activeShotOverlay && Math.abs(frame.sourceIndex - activeShotOverlay.frameIndex) <= shotOverlayWindow * 0.45) {
@@ -4928,6 +5666,21 @@
       exportCtx.arc(this.hole.x, this.hole.y, this.hole.radius, 0, Math.PI * 2);
       exportCtx.fillStyle = '#111111';
       exportCtx.fill();
+      this.falseHoles.forEach(falseHole => {
+        exportCtx.beginPath();
+        exportCtx.arc(falseHole.x, falseHole.y, falseHole.radius + 6, 0, Math.PI * 2);
+        exportCtx.fillStyle = 'rgba(255,255,255,0.48)';
+        exportCtx.fill();
+        exportCtx.beginPath();
+        exportCtx.arc(falseHole.x, falseHole.y, falseHole.radius + 3, 0, Math.PI * 2);
+        exportCtx.strokeStyle = '#111111';
+        exportCtx.lineWidth = 1.4;
+        exportCtx.stroke();
+        exportCtx.beginPath();
+        exportCtx.arc(falseHole.x, falseHole.y, falseHole.radius, 0, Math.PI * 2);
+        exportCtx.fillStyle = '#111111';
+        exportCtx.fill();
+      });
       const jumpAlpha = frame.jumpTotalFrames > 0 ? Math.sin((1 - frame.jumpFrames / frame.jumpTotalFrames) * Math.PI) : 0;
       if (jumpAlpha > 0.02) {
         exportCtx.beginPath();
@@ -5060,6 +5813,12 @@
     if (this.sinkFlash > 0.02) {
       ctx.save();
       ctx.fillStyle = `rgba(255,255,255,${0.18 * this.sinkFlash})`;
+      ctx.fillRect(0, 0, this.camera.canvasWidth, this.camera.canvasHeight);
+      ctx.restore();
+    }
+    if (this.sinkCelebrationFrames > 0) {
+      ctx.save();
+      ctx.fillStyle = `rgba(17,17,17,${0.06 + this.sinkCelebrationFrames / 520})`;
       ctx.fillRect(0, 0, this.camera.canvasWidth, this.camera.canvasHeight);
       ctx.restore();
     }
@@ -5199,6 +5958,9 @@
       }
       for (const zone of this.magneticZones) {
         zone.apply(ghost);
+      }
+      for (const rail of this.ricochetRails) {
+        rail.collide(ghost);
       }
       if (frame % 6 === 5) {
         points.push({ x: ghost.x, y: ghost.y });
@@ -5881,14 +6643,48 @@
   }
 
   class SandTrap {
-    constructor({ x, y, width, height }) {
+    constructor({ x, y, width, height, radius = null, innerRadius = 0 }) {
       this.x = x;
       this.y = y;
       this.width = width;
       this.height = height;
+      this.radius = radius;
+      this.innerRadius = innerRadius || 0;
     }
     render(ctx) {
       ctx.save();
+      if (this.radius) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        if (this.innerRadius > 0) {
+          ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI * 2, true);
+        }
+        ctx.fillStyle = VISUAL_STYLE.hazardFill;
+        ctx.fill("evenodd");
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius - 2, 0, Math.PI * 2);
+        if (this.innerRadius > 0) {
+          ctx.arc(this.x, this.y, Math.max(0, this.innerRadius + 2), 0, Math.PI * 2, true);
+        }
+        ctx.clip("evenodd");
+        drawDiagonalStripeField(ctx, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2, 18, 10, "rgba(17,17,17,0.18)", 2);
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = VISUAL_STYLE.ink;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        if (this.innerRadius > 0) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = VISUAL_STYLE.ink;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+        ctx.restore();
+        return;
+      }
       fillRoundedRect(ctx, this.x, this.y, this.width, this.height, 10, VISUAL_STYLE.hazardFill);
       drawDiagonalStripeField(ctx, this.x + 2, this.y + 2, this.width - 4, this.height - 4, 18, 10, "rgba(17,17,17,0.18)", 2);
       strokeRoundedRect(ctx, this.x, this.y, this.width, this.height, 10, VISUAL_STYLE.ink, 2);
@@ -5896,6 +6692,17 @@
     }
     apply(ball) {
       if (ball.isGhostJumping && ball.isGhostJumping()) return;
+      if (this.radius) {
+        const dist = Math.hypot(ball.x - this.x, ball.y - this.y);
+        if (dist < this.radius && dist > this.innerRadius) {
+          if (ball.tryJumpObstacle && ball.tryJumpObstacle()) return;
+          const sandFactor = ball.getSandFactor();
+          ball.vx *= sandFactor;
+          ball.vy *= sandFactor;
+          if (ball.isLiveBall && ball.speed() > 0.2) emitGameFx('sand', Math.min(1, ball.speed() / 5));
+        }
+        return;
+      }
       if (
         ball.x > this.x && ball.x < this.x + this.width &&
         ball.y > this.y && ball.y < this.y + this.height
@@ -5904,6 +6711,7 @@
         const sandFactor = ball.getSandFactor();
         ball.vx *= sandFactor;
         ball.vy *= sandFactor;
+        if (ball.isLiveBall && ball.speed() > 0.2) emitGameFx('sand', Math.min(1, ball.speed() / 5));
       }
     }
   }
@@ -5962,6 +6770,7 @@
       this.cooldown = 0;
     }
     renderGate(ctx, gate) {
+      const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 280);
       ctx.beginPath();
       ctx.arc(gate.x, gate.y, this.radius, 0, Math.PI * 2);
       ctx.fillStyle = VISUAL_STYLE.paper;
@@ -5976,18 +6785,23 @@
       ctx.setLineDash([3, 4]);
       ctx.stroke();
       ctx.setLineDash([]);
-    ctx.beginPath();
-    ctx.moveTo(gate.x - this.radius * 0.3, gate.y);
-    ctx.lineTo(gate.x + this.radius * 0.3, gate.y);
-    ctx.moveTo(gate.x, gate.y - this.radius * 0.3);
-    ctx.lineTo(gate.x, gate.y + this.radius * 0.3);
-    ctx.strokeStyle = VISUAL_STYLE.ink;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(gate.x, gate.y, this.radius * 0.18, 0, Math.PI * 2);
-    ctx.fillStyle = VISUAL_STYLE.ink;
-    ctx.fill();
-  }
+      ctx.beginPath();
+      ctx.moveTo(gate.x - this.radius * 0.3, gate.y);
+      ctx.lineTo(gate.x + this.radius * 0.3, gate.y);
+      ctx.moveTo(gate.x, gate.y - this.radius * 0.3);
+      ctx.lineTo(gate.x, gate.y + this.radius * 0.3);
+      ctx.strokeStyle = VISUAL_STYLE.ink;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(gate.x, gate.y, this.radius * (0.18 + pulse * 0.08), 0, Math.PI * 2);
+      ctx.fillStyle = VISUAL_STYLE.ink;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(gate.x, gate.y, this.radius * (0.76 + pulse * 0.16), 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(17,17,17,${0.12 + pulse * 0.18})`;
+      ctx.lineWidth = 1.2 + pulse * 0.8;
+      ctx.stroke();
+    }
     render(ctx) {
       this.renderGate(ctx, this.a);
       this.renderGate(ctx, this.b);
@@ -6028,6 +6842,7 @@ class FanZone {
     this.power = power;
   }
   render(ctx) {
+    const phase = (performance.now() / 420) % 1;
     ctx.save();
     fillRoundedRect(ctx, this.x, this.y, this.width, this.height, 12, VISUAL_STYLE.utilityFill);
     drawDotGrid(ctx, this.x + 2, this.y + 2, this.width - 4, this.height - 4, 14, 1, "rgba(17,17,17,0.12)");
@@ -6052,7 +6867,7 @@ class FanZone {
     ctx.fillStyle = "#111111";
     ctx.fill();
     for (let i = 1; i <= 3; i++) {
-      const lead = len + 8 + i * 8;
+      const lead = len + 6 + i * 8 + phase * 6;
       ctx.beginPath();
       ctx.moveTo(cx + this.forceX * lead - this.forceY * 5, cy + this.forceY * lead + this.forceX * 5);
       ctx.lineTo(cx + this.forceX * lead + this.forceY * 5, cy + this.forceY * lead - this.forceX * 5);
@@ -6089,6 +6904,7 @@ class ShutterDoor extends Wall {
   render(ctx) {
     ctx.save();
     const closed = this.isClosedAt();
+    const progress = ((this.frame + this.phase) % this.period) / this.period;
     ctx.globalAlpha = closed ? 1 : 0.24;
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.rotate(this.rotation);
@@ -6100,11 +6916,23 @@ class ShutterDoor extends Wall {
     } else {
       strokeRoundedRect(ctx, -this.width / 2 + 1, -this.height / 2 + 1, this.width - 2, this.height - 2, 3, VISUAL_STYLE.paper, 1.4, [8, 6]);
     }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = VISUAL_STYLE.paper;
+    if (this.width >= this.height) {
+      ctx.fillRect(-this.width / 2 + progress * this.width, -this.height / 2 - 4, 10, 3);
+    } else {
+      ctx.fillRect(-this.width / 2 - 4, -this.height / 2 + progress * this.height, 3, 10);
+    }
     ctx.restore();
   }
   collide(ball, offset = 0) {
     if (!this.isClosedAt(offset)) return;
+    const beforeVx = ball.vx;
+    const beforeVy = ball.vy;
     super.collide(ball);
+    if (ball.isLiveBall && (beforeVx !== ball.vx || beforeVy !== ball.vy)) {
+      emitGameFx('shutter', Math.min(1.1, ball.speed() / 7));
+    }
   }
 }
 
@@ -6123,6 +6951,43 @@ class StaticShutter extends Wall {
     }
     ctx.restore();
   }
+  collide(ball) {
+    const beforeVx = ball.vx;
+    const beforeVy = ball.vy;
+    super.collide(ball);
+    if (ball.isLiveBall && (beforeVx !== ball.vx || beforeVy !== ball.vy)) {
+      emitGameFx('shutter', Math.min(1.1, ball.speed() / 7));
+    }
+  }
+}
+
+class RicochetRail extends Wall {
+  render(ctx) {
+    const pulse = 0.72 + Math.sin(performance.now() / 240) * 0.08;
+    ctx.save();
+    ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+    ctx.rotate(this.rotation);
+    fillRoundedRect(ctx, -this.width / 2, -this.height / 2, this.width, this.height, 6, VISUAL_STYLE.ink);
+    drawDiagonalStripeField(ctx, -this.width / 2 + 2, -this.height / 2 + 2, this.width - 4, this.height - 4, 10, 9, `rgba(255,255,255,${0.26 + pulse * 0.18})`, 1.8);
+    ctx.strokeStyle = VISUAL_STYLE.paper;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(-this.width * 0.22, -this.height * 0.2);
+    ctx.lineTo(this.width * 0.18, 0);
+    ctx.lineTo(-this.width * 0.22, this.height * 0.2);
+    ctx.stroke();
+    ctx.restore();
+  }
+  collide(ball) {
+    const beforeVx = ball.vx;
+    const beforeVy = ball.vy;
+    super.collide(ball);
+    if (beforeVx === ball.vx && beforeVy === ball.vy) return;
+    const bounceFactor = ball.getBounceFactor ? ball.getBounceFactor(1.08) : 1.08;
+    ball.vx *= bounceFactor;
+    ball.vy *= bounceFactor;
+    if (ball.isLiveBall) emitGameFx('rail', Math.min(1.25, ball.speed() / 7));
+  }
 }
 
 class MagneticZone {
@@ -6134,6 +6999,7 @@ class MagneticZone {
     this.mode = mode || "pull";
   }
   render(ctx) {
+    const phase = performance.now() / 520;
     ctx.save();
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -6172,6 +7038,16 @@ class MagneticZone {
       ctx.fillStyle = VISUAL_STYLE.ink;
       ctx.fill();
     }
+    ctx.beginPath();
+    for (let i = 0; i < 2; i++) {
+      const orbit = phase + i * Math.PI;
+      const ox = this.x + Math.cos(orbit) * this.radius * 0.68;
+      const oy = this.y + Math.sin(orbit) * this.radius * 0.68;
+      ctx.moveTo(ox, oy);
+      ctx.arc(ox, oy, 2.2, 0, Math.PI * 2);
+    }
+    ctx.fillStyle = "rgba(17,17,17,0.6)";
+    ctx.fill();
     ctx.restore();
   }
   apply(ball) {
@@ -6323,7 +7199,8 @@ function drawObstacleGalleryTheme(theme, canvas) {
     { label: 'Magnet', x: 560, y: 314, render: () => new MagneticZone({ x: 560, y: 300, radius: 34, strength: 0.2, mode: 'pull' }).render(ctx) },
     { label: 'Boost Pad', x: 716, y: 314, render: () => new SpeedPad({ x: 662, y: 278, width: 108, height: 32, boost: 1.18, rotation: 180 }).render(ctx) },
     { label: 'Slow Pad', x: 248, y: 500, render: () => new SpeedPad({ x: 194, y: 464, width: 108, height: 32, boost: 0.82, rotation: 0 }).render(ctx) },
-    { label: 'Vertical Boost', x: 560, y: 500, render: () => new SpeedPad({ x: 544, y: 426, width: 32, height: 108, boost: 1.16, rotation: 270 }).render(ctx) }
+    { label: 'Vertical Boost', x: 560, y: 500, render: () => new SpeedPad({ x: 544, y: 426, width: 32, height: 108, boost: 1.16, rotation: 270 }).render(ctx) },
+    { label: 'Ricochet Rail', x: 716, y: 500, render: () => new RicochetRail({ x: 682, y: 468, width: 60, height: 14, rotation: 45 }).render(ctx) }
   ];
 
   for (const entry of entries) {
@@ -6370,7 +7247,12 @@ function renderObstacleGalleryPage() {
     const params = new URLSearchParams(window.location.search);
     const fromQuery = Number(params.get('seed'));
     if (Number.isInteger(fromQuery) && fromQuery >= 0) return fromQuery >>> 0;
-    return Math.floor(Date.now() % 1000000);
+    if (window.crypto && window.crypto.getRandomValues) {
+      const values = new Uint32Array(1);
+      window.crypto.getRandomValues(values);
+      return values[0] >>> 0;
+    }
+    return Math.floor((Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0);
   }
 
   let game = null;
@@ -6461,6 +7343,7 @@ function renderObstacleGalleryPage() {
       { label: 'Shots', value: stats.totalShots },
       { label: 'Stars Earned', value: stats.totalStarsEarned },
       { label: 'Best Streak', value: stats.bestCleanStreak },
+      { label: 'Daily Streak', value: getDailyStreak(progress) },
       { label: 'Shares', value: stats.totalShares }
     ];
     statsGrid.innerHTML = cards.map(card => `
@@ -6477,10 +7360,12 @@ function renderObstacleGalleryPage() {
       const item = ITEM_LOOKUP[entries[0][0]] || BALL_COSMETICS.find(ball => ball.id === entries[0][0]) || TRAIL_SHOP.find(trail => trail.id === entries[0][0]);
       return item ? item.name : entries[0][0];
     };
+    const collection = getCollectionProgress(progress);
     statsNotes.innerHTML = `
       Favorite ball: <strong>${favoriteName(stats.usage.cosmetics, 'Classic')}</strong><br />
       Favorite core: <strong>${favoriteName(stats.usage.abilities, 'Standard Core')}</strong><br />
       Favorite trail: <strong>${favoriteName(stats.usage.trails, 'No Trail')}</strong><br />
+      Collection: <strong>${collection.owned}/${collection.total}</strong><br />
       Best by difficulty: Beginner ${formatBestLabel(progress.bestRounds.beginner)}, Average ${formatBestLabel(progress.bestRounds.average)}, Hardcore ${formatBestLabel(progress.bestRounds.hardcore)}.
     `;
     statsModal.style.display = 'flex';
@@ -6493,8 +7378,12 @@ function renderObstacleGalleryPage() {
     const settingsModal = document.getElementById('settingsModal');
     settingsList.innerHTML = `
       <label class="settings-row">
-        <div><strong>Sound</strong><span>Shots, collisions, and sink chimes.</span></div>
-        <input type="checkbox" data-setting="soundEnabled" ${settings.soundEnabled ? 'checked' : ''} />
+        <div><strong>Game Audio</strong><span>Shots, hazards, replays, and cup feedback.</span></div>
+        <input type="checkbox" data-setting="gameAudioEnabled" ${settings.gameAudioEnabled ? 'checked' : ''} />
+      </label>
+      <label class="settings-row">
+        <div><strong>UI Audio</strong><span>Menus, shop actions, tree unlocks, and taps.</span></div>
+        <input type="checkbox" data-setting="uiAudioEnabled" ${settings.uiAudioEnabled ? 'checked' : ''} />
       </label>
       <label class="settings-row">
         <div><strong>Haptics</strong><span>Use vibration feedback where available.</span></div>
@@ -6512,6 +7401,13 @@ function renderObstacleGalleryPage() {
           <option value="ultra" ${settings.replayQuality === 'ultra' ? 'selected' : ''}>Ultra</option>
         </select>
       </label>
+      <div class="settings-row settings-row-button">
+        <div><strong>Test Audio</strong><span>Preview the current mix with a quick ping.</span></div>
+        <button type="button" class="secondary" data-setting-action="ping">Test Audio</button>
+      </div>
+      <div class="summary-block" style="margin:0;">
+        Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong>.
+      </div>
     `;
     settingsList.querySelectorAll('[data-setting]').forEach(control => {
       control.onchange = () => {
@@ -6519,6 +7415,15 @@ function renderObstacleGalleryPage() {
         progress.settings[control.dataset.setting] = control.type === 'checkbox' ? control.checked : control.value;
         saveProgress(progress);
         if (window.__game) window.__game.progress.settings = { ...progress.settings };
+      };
+    });
+    settingsList.querySelectorAll('[data-setting-action]').forEach(button => {
+      button.onclick = () => {
+        if (button.dataset.settingAction !== 'ping') return;
+        unlockGameFx();
+        emitGameFx('ui');
+        emitGameFx('shot', 0.65);
+        setTimeout(() => emitGameFx('rim', 0.6), 90);
       };
     });
     settingsModal.style.display = 'flex';
@@ -6530,6 +7435,10 @@ function renderObstacleGalleryPage() {
     const seed = startModeKey === "daily" ? getDailySeedForKey(getTodayKey()) : resolveInitialSeed();
     const roundHoleCount = startRoundLengthKey === "18" ? 18 : null;
     game = new GameManager(seed, selected, startModeKey, roundHoleCount);
+    if (DEBUG_FLAGS.debugHole > 1 && DEBUG_FLAGS.debugHole <= game.levels.length) {
+      game.currentLevelIndex = DEBUG_FLAGS.debugHole - 1;
+      game.loadLevel();
+    }
     window.__game = game;
   }
 
@@ -6567,6 +7476,9 @@ function renderObstacleGalleryPage() {
     renderObstacleGalleryPage();
   } else {
     renderMenuMeta(startModeKey, startRoundLengthKey);
+    if (DEBUG_FLAGS.autostartDifficulty && DIFFICULTY_PRESETS[DEBUG_FLAGS.autostartDifficulty]) {
+      startGame(DEBUG_FLAGS.autostartDifficulty);
+    }
   }
 
   window.__game = null;
