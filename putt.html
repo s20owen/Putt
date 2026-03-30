@@ -147,6 +147,181 @@
       font-size: 12px;
       color: #4b5563;
     }
+    .menu-hero {
+      margin-top: 16px;
+      border: 2px solid #111827;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
+      color: #ffffff;
+      padding: 16px 16px 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .menu-hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .menu-hero-kicker {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.74;
+    }
+    .menu-hero-title {
+      margin-top: 4px;
+      font-size: 24px;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+    .menu-hero-copy {
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.84);
+    }
+    .menu-streak-badge {
+      min-width: 78px;
+      border-radius: 18px;
+      padding: 10px 10px 8px;
+      background: rgba(255,255,255,0.12);
+      text-align: center;
+    }
+    .menu-streak-badge strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .menu-streak-badge span {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.78);
+    }
+    .menu-hero-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .menu-calendar {
+      margin-top: 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .menu-calendar strong {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+    .calendar-strip {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .calendar-strip.long {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+    }
+    .calendar-day {
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      padding: 8px 4px;
+      text-align: center;
+      background: #fff;
+      color: #6b7280;
+      font-size: 10px;
+      line-height: 1.25;
+      min-height: 34px;
+      width: 100%;
+      font: inherit;
+      appearance: none;
+      cursor: pointer;
+    }
+    .calendar-day.done {
+      border-color: #111827;
+      background: #111827;
+      color: #fff;
+    }
+    .calendar-day.today {
+      box-shadow: inset 0 0 0 2px #111827;
+    }
+    .calendar-day.reward {
+      background: #fef3c7;
+      border-color: #d97706;
+      color: #92400e;
+    }
+    .calendar-day.missed {
+      background: #f9fafb;
+      color: #9ca3af;
+      border-style: dashed;
+    }
+    .calendar-day.failed {
+      background: #fee2e2;
+      border-color: #b91c1c;
+      color: #991b1b;
+    }
+    .calendar-day strong {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: inherit;
+      margin-bottom: 2px;
+    }
+    .calendar-day span {
+      display: block;
+    }
+    .calendar-day .calendar-status {
+      margin-top: 3px;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .calendar-day.active {
+      box-shadow: inset 0 0 0 2px #2563eb;
+    }
+    .calendar-detail {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 10px;
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.45;
+    }
+    .calendar-detail strong {
+      display: inline;
+      font-size: inherit;
+      letter-spacing: 0;
+      text-transform: none;
+      color: #111827;
+    }
+    .menu-hero-chip {
+      border-radius: 14px;
+      background: rgba(255,255,255,0.1);
+      padding: 10px 12px;
+    }
+    .menu-hero-chip strong {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 4px;
+    }
+    .menu-hero-chip span {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+    }
     .menu-progress {
       margin-top: 14px;
       border: 1px solid #d1d5db;
@@ -173,6 +348,66 @@
       gap: 12px;
       font-size: 12px;
       color: #4b5563;
+    }
+    .menu-carousel-wrap {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .menu-carousel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .menu-carousel-head strong {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+    .menu-carousel-head span {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .menu-carousel {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 100%;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .menu-carousel::-webkit-scrollbar {
+      display: none;
+    }
+    .menu-carousel-slide {
+      scroll-snap-align: start;
+      min-width: 0;
+    }
+    .menu-carousel-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .menu-carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      border: none;
+      padding: 0;
+      background: #d1d5db;
+      cursor: pointer;
+      transition: transform 120ms ease, background 120ms ease, width 120ms ease;
+    }
+    .menu-carousel-dot.active {
+      width: 20px;
+      background: #111827;
     }
     .difficulty-btn {
       width: 100%;
@@ -840,6 +1075,24 @@
       .difficulty-btn span {
         font-size: 12px;
       }
+      .menu-hero-top {
+        flex-direction: column;
+      }
+      .menu-streak-badge {
+        width: 100%;
+      }
+      .menu-hero-grid {
+        grid-template-columns: 1fr;
+      }
+      .menu-carousel-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .menu-progress-row {
+        grid-template-columns: 92px 1fr;
+        gap: 10px;
+      }
       canvas {
         border-radius: 0;
         border: none;
@@ -905,6 +1158,7 @@
         <button id="shopTabTree" data-shop-tab="tree" class="active">Core Tree</button>
         <button id="shopTabPowers" data-shop-tab="powers">Powers</button>
         <button id="shopTabSkins" data-shop-tab="skins">Ball Skins</button>
+        <button id="shopTabDaily" data-shop-tab="daily">Daily Shop</button>
       </div>
       <div id="shopList" class="shop-list"></div>
     </div>
@@ -966,12 +1220,13 @@
   <div id="startMenu">
     <div class="menu-card">
       <h2>Start A Round</h2>
-      <p>Pick a difficulty and round length, then tee off.</p>
+      <p>Daily challenge is the main card. Practice stays open if you want to test lines.</p>
       <div class="menu-section-label">Mode</div>
       <div class="mode-toggle">
-        <button id="modeStandardBtn" class="active" data-mode="standard">Standard</button>
-        <button id="modeDailyBtn" data-mode="daily">Daily</button>
+        <button id="modeDailyBtn" class="active" data-mode="daily">Daily</button>
+        <button id="modeStandardBtn" data-mode="standard">Practice</button>
       </div>
+      <div id="menuHero" class="menu-hero"></div>
       <div class="menu-section-label">Round Length</div>
       <div class="mode-toggle">
         <button class="active" data-round-length="default">Default</button>
@@ -993,13 +1248,50 @@
         </button>
       </div>
       <div id="menuNote" class="menu-note"></div>
-      <div class="menu-progress">
-        <strong>Progression</strong>
-        <div id="menuProgressGrid" class="menu-progress-grid"></div>
+      <div class="menu-calendar">
+        <strong>Daily Track</strong>
+        <div id="menuCalendar7" class="calendar-strip"></div>
+        <div id="menuCalendar30" class="calendar-strip long"></div>
+        <div id="menuCalendarDetail" class="calendar-detail"></div>
       </div>
-      <div class="menu-progress">
-        <strong>Goals</strong>
-        <div id="menuGoalsGrid" class="menu-progress-grid"></div>
+      <div class="menu-carousel-wrap">
+        <div class="menu-carousel-head">
+          <strong>Daily Feed</strong>
+          <span>Swipe for tomorrow, goals, and the grind loop.</span>
+        </div>
+        <div id="menuCarousel" class="menu-carousel">
+          <div class="menu-carousel-slide">
+            <div class="menu-progress">
+              <strong>Tomorrow&apos;s Card</strong>
+              <div id="menuTomorrowGrid" class="menu-progress-grid"></div>
+            </div>
+          </div>
+          <div class="menu-carousel-slide">
+            <div class="menu-progress">
+              <strong>Today&apos;s Board</strong>
+              <div id="menuLeaderboardGrid" class="menu-progress-grid"></div>
+            </div>
+          </div>
+          <div class="menu-carousel-slide">
+            <div class="menu-progress">
+              <strong>Come Back Rewards</strong>
+              <div id="menuRewardsGrid" class="menu-progress-grid"></div>
+            </div>
+          </div>
+          <div class="menu-carousel-slide">
+            <div class="menu-progress">
+              <strong>Progression</strong>
+              <div id="menuProgressGrid" class="menu-progress-grid"></div>
+            </div>
+          </div>
+          <div class="menu-carousel-slide">
+            <div class="menu-progress">
+              <strong>Goals</strong>
+              <div id="menuGoalsGrid" class="menu-progress-grid"></div>
+            </div>
+          </div>
+        </div>
+        <div id="menuCarouselDots" class="menu-carousel-dots"></div>
       </div>
     </div>
   </div>
@@ -1139,6 +1431,29 @@
       fill: "#ffffff",
       stroke: "#111111",
       skinPattern: "glitch_ink"
+    },
+    {
+      id: "champion_black",
+      type: "cosmetic",
+      name: "Champion Black",
+      cost: 0,
+      description: "Daily token shell with a crisp gold pressure ring.",
+      fill: "#111111",
+      stroke: "#f9fafb",
+      ring: "#f59e0b",
+      tokenReward: true
+    },
+    {
+      id: "week_crown",
+      type: "cosmetic",
+      name: "Week Crown",
+      cost: 0,
+      description: "Weekly chest shell with a crowned tournament ring.",
+      fill: "#ffffff",
+      stroke: "#111111",
+      ring: "#f59e0b",
+      skinPattern: "signal",
+      weeklyReward: true
     }
   ];
   const TRAIL_SHOP = [
@@ -1184,6 +1499,16 @@
       color: "rgba(17,17,17,0.4)",
       accent: "rgba(255,255,255,0.95)",
       trackReward: "average"
+    },
+    {
+      id: "victory_sparks",
+      type: "trail",
+      name: "Victory Sparks",
+      cost: 0,
+      description: "Daily token trail with bright finish-line sparks.",
+      color: "rgba(245,158,11,0.72)",
+      accent: "rgba(255,255,255,0.95)",
+      tokenReward: true
     }
   ];
   const UPGRADE_SHOP = [
@@ -1283,6 +1608,44 @@
       cost: 36,
       maxTier: 3,
       description: "Shrinks the ball slightly for tighter gaps, but bad contacts hit harder."
+    },
+    {
+      id: "pressure_core",
+      type: "ability",
+      name: "Pressure Core",
+      cost: 0,
+      maxTier: 1,
+      description: "Daily token core that resists fans, magnets, and sand slowdown.",
+      tokenReward: true
+    }
+  ];
+  const DAILY_TOKEN_SHOP = [
+    {
+      id: "daily_relic_shell",
+      type: "daily_reward",
+      name: "Champion Shell Relic",
+      tokenCost: 10,
+      description: "Trade Daily Tokens for the Champion Black shell.",
+      reward: { type: "owned_item", id: "champion_black" }
+    },
+    {
+      id: "daily_relic_trail",
+      type: "daily_reward",
+      name: "Victory Trail Relic",
+      tokenCost: 8,
+      description: "Trade Daily Tokens for the Victory Sparks trail.",
+      reward: { type: "owned_item", id: "victory_sparks" }
+    },
+    {
+      id: "daily_relic_core",
+      type: "daily_reward",
+      name: "Pressure Core Relic",
+      tokenCost: 14,
+      description: "Trade Daily Tokens for a rare utility core built for Daily hazard pressure.",
+      reward: { type: "bundle", rewards: [
+        { type: "owned_item", id: "pressure_core" },
+        { type: "ability_level", id: "pressure_core", tier: 1 }
+      ] }
     }
   ];
   const SHOP_SECTIONS = [
@@ -1292,7 +1655,7 @@
     { id: "abilities", title: "Abilities", items: ABILITY_SHOP }
   ];
   const ITEM_LOOKUP = Object.fromEntries(
-    SHOP_SECTIONS.flatMap(section => section.items.map(item => [item.id, item]))
+    [...SHOP_SECTIONS.flatMap(section => section.items.map(item => [item.id, item])), ...DAILY_TOKEN_SHOP.map(item => [item.id, item])]
   );
   function getAbilityTierCost(item, nextTier) {
     if (!item || item.type !== "ability" || !nextTier) return item ? item.cost : 0;
@@ -1418,6 +1781,99 @@
     { id: "hardcore_grinder", label: "Hardcore Grinder", description: "Complete 4 Hardcore rounds.", kind: "difficulty_clears", difficulty: "hardcore", target: 4, rewardStars: 38 },
     { id: "collection_half", label: "Half Collection", description: "Own 12 shop unlocks.", kind: "collection_owned", target: 12, rewardStars: 32 }
   ];
+  const WEEKLY_GOALS = [
+    { id: "weekly_clear_3", label: "Week Starter", description: "Clear 3 official Daily cards this week.", kind: "weekly_daily_clears", target: 3, rewardTokens: 4 },
+    { id: "weekly_silver_2", label: "Silver Sweep", description: "Earn Silver or better on 2 Daily cards this week.", kind: "weekly_medals_at_least", minMedal: "Silver", target: 2, rewardTokens: 5 },
+    { id: "weekly_gold_1", label: "Gold Push", description: "Earn 1 Gold Daily medal this week.", kind: "weekly_medals_at_least", minMedal: "Gold", target: 1, rewardTokens: 6 }
+  ];
+  const WEEKLY_CHEST_REWARD = {
+    stars: 24,
+    tokens: 8,
+    itemId: "week_crown"
+  };
+  const DAILY_ATTEMPT_LIMIT = 1;
+  const DAILY_LOGIN_REWARD_STARS = 7;
+  const DAILY_TOKEN_REWARDS = {
+    Gold: 3,
+    Silver: 2,
+    Bronze: 1,
+    fail: 0
+  };
+  const CALENDAR_MILESTONE_REWARDS = [
+    { days: 3, rewardStars: 12, label: "3 clears" },
+    { days: 5, rewardTokens: 2, label: "5 clears" },
+    { days: 7, rewardTokens: 3, label: "7 clears" },
+    { days: 14, rewardTokens: 5, label: "14 clears" },
+    { days: 30, rewardTokens: 10, label: "30 clears" }
+  ];
+  const MASTERY_MILESTONES = [
+    { clears: 3, level: 1, rewardStars: 10 },
+    { clears: 7, level: 2, rewardTokens: 3 },
+    { clears: 15, level: 3, rewardTokens: 6 },
+    { clears: 30, level: 4, rewardTokens: 10 }
+  ];
+  const DAILY_MECHANIC_REWARDS = [
+    { days: 1, id: "medal_chase", name: "Medal Chase", description: "Daily cards now bank official medals and a local board score." },
+    { days: 3, id: "spin_shots", name: "Spin Shots", description: "Daily runs grant Curve Core I if you have not equipped a better ability." },
+    { days: 5, id: "portal_lines", name: "Portal Lines", description: "Teleport-heavy daily cards enter the rotation more often." },
+    { days: 7, id: "trick_shots", name: "Trick Shot Rules", description: "Ricochet and one-hop trick-shot cards join the daily mix." }
+  ];
+  const DAILY_VARIANTS = {
+    wind_day: {
+      id: "wind_day",
+      name: "Wind Day",
+      description: "Crosswinds show up often and late holes lean harder into lane drift.",
+      themeIds: ["classic", "ledger"],
+      challengeChoices: ["one_shot_preview", "par_rush"],
+      spotlightChoices: ["fan_drift", "boost_grid"],
+      modifierChoices: ["crosswind_left", "crosswind_right"],
+      setpieceChoices: ["fan_tunnel", "relay_orbit"]
+    },
+    magnet_madness: {
+      id: "magnet_madness",
+      name: "Magnet Madness",
+      description: "Magnet lanes and sharp recoveries dominate the card.",
+      themeIds: ["ledger", "halftone"],
+      challengeChoices: ["par_rush", "no_shop_loadout"],
+      spotlightChoices: ["magnet_field"],
+      modifierChoices: ["no_preview", "low_gravity"],
+      setpieceChoices: ["magnetic_maze", "lockstep"]
+    },
+    portal_party: {
+      id: "portal_party",
+      name: "Portal Party",
+      description: "Portal chains and split routes start to define the later holes.",
+      themeIds: ["classic", "echo"],
+      challengeChoices: ["par_rush", "one_shot_preview"],
+      spotlightChoices: ["boost_grid", "fan_drift"],
+      modifierChoices: ["low_gravity", "crosswind_right"],
+      setpieceChoices: ["relay_orbit", "rail_crossfire"],
+      requiresReward: "portal_lines"
+    },
+    rail_day: {
+      id: "rail_day",
+      name: "Rail Day",
+      description: "Trick-shot ricochets and one-hop reads start punishing lazy lines.",
+      themeIds: ["echo", "halftone"],
+      challengeChoices: ["par_rush", "no_shop_loadout"],
+      spotlightChoices: ["sandstorm", "boost_grid"],
+      modifierChoices: ["one_hop_only", "no_preview"],
+      setpieceChoices: ["rail_crossfire", "bounce_forge", "shutter_stack"],
+      requiresReward: "trick_shots"
+    },
+    no_preview_day: {
+      id: "no_preview_day",
+      name: "No Preview Day",
+      description: "Reads matter more because planning lines must happen in your head.",
+      themeIds: ["ledger", "echo"],
+      challengeChoices: ["one_shot_preview", "no_shop_loadout"],
+      spotlightChoices: ["magnet_field", "sandstorm"],
+      modifierChoices: ["no_preview"],
+      setpieceChoices: ["needle_lane", "shutter_run"]
+    }
+  };
+  const DAILY_VARIANT_ORDER = ["wind_day", "magnet_madness", "portal_party", "rail_day", "no_preview_day"];
+  const LOCAL_LEADERBOARD_NAMES = ["Avery", "Jules", "Mina", "Theo", "Nora", "Beck", "Iris", "Milo", "Sage", "Remy"];
   const VISUAL_STYLE = {
     ink: "#111111",
     paper: "#ffffff",
@@ -1452,16 +1908,108 @@
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   }
+  function getTomorrowKey(dateKey = getTodayKey()) {
+    const date = getDateFromKey(dateKey);
+    date.setDate(date.getDate() + 1);
+    return getDateKey(date);
+  }
+  function getDateKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+  function getDateFromKey(dateKey) {
+    return new Date(`${dateKey}T00:00:00`);
+  }
   function getDailySeedForKey(dateKey) {
     let hash = 0;
     for (const char of dateKey) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
     return Math.abs(hash) % 1000000;
+  }
+  function getDailyRunKey(dateKey, difficultyKey) {
+    return `${dateKey}:${difficultyKey}`;
+  }
+  function getNextResetDate() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  }
+  function getTimeUntilNextResetLabel() {
+    const diff = Math.max(0, getNextResetDate().getTime() - Date.now());
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    if (hours <= 0) return `${Math.max(1, minutes)}m`;
+    if (minutes === 0) return `${hours}h`;
+    return `${hours}h ${minutes}m`;
+  }
+  function getWeekStartKey(dateKey = getTodayKey()) {
+    const cursor = getDateFromKey(dateKey);
+    const dayOffset = (cursor.getDay() + 6) % 7;
+    cursor.setDate(cursor.getDate() - dayOffset);
+    return getDateKey(cursor);
+  }
+  function getNextWeeklyResetDate() {
+    const now = new Date();
+    const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dayOffset = (cursor.getDay() + 6) % 7;
+    cursor.setDate(cursor.getDate() + (7 - dayOffset));
+    return cursor;
+  }
+  function getTimeUntilWeeklyResetLabel() {
+    const diff = Math.max(0, getNextWeeklyResetDate().getTime() - Date.now());
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    if (days > 0) return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h`;
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    return `${Math.max(1, minutes)}m`;
+  }
+  function formatWeekRangeLabel(weekStartKey = getWeekStartKey()) {
+    const start = getDateFromKey(weekStartKey);
+    const end = new Date(start);
+    end.setDate(end.getDate() + 6);
+    const startLabel = start.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    const endLabel = end.toLocaleDateString(undefined, { month: start.getMonth() === end.getMonth() ? undefined : "short", day: "numeric" });
+    return `${startLabel} - ${endLabel}`;
+  }
+  function formatDateLabel(dateKey) {
+    return getDateFromKey(dateKey).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
   }
   function getRoundMedal(totalPar, totalShots) {
     const diff = totalShots - totalPar;
     if (diff <= -3) return "Gold";
     if (diff <= 0) return "Silver";
     return "Bronze";
+  }
+  function getDailyRankTier(totalPar, totalShots) {
+    const diff = totalShots - totalPar;
+    if (diff <= -5) return "Gold I";
+    if (diff <= -4) return "Gold II";
+    if (diff <= -3) return "Gold III";
+    if (diff <= -2) return "Silver I";
+    if (diff <= -1) return "Silver II";
+    if (diff <= 0) return "Silver III";
+    if (diff <= 1) return "Bronze I";
+    if (diff <= 2) return "Bronze II";
+    return "Bronze III";
+  }
+  function getRankTierTargetMap(totalPar) {
+    return [
+      { name: "Gold I", shots: totalPar - 5 },
+      { name: "Gold II", shots: totalPar - 4 },
+      { name: "Gold III", shots: totalPar - 3 },
+      { name: "Silver I", shots: totalPar - 2 },
+      { name: "Silver II", shots: totalPar - 1 },
+      { name: "Silver III", shots: totalPar },
+      { name: "Bronze I", shots: totalPar + 1 },
+      { name: "Bronze II", shots: totalPar + 2 },
+      { name: "Bronze III", shots: totalPar + 3 }
+    ];
+  }
+  function getShotsToNextTier(totalPar, totalShots) {
+    const tiers = getRankTierTargetMap(totalPar);
+    for (const tier of tiers) {
+      if (totalShots <= tier.shots) continue;
+      return { next: tier.name, shots: Math.max(1, totalShots - tier.shots) };
+    }
+    return { next: null, shots: 0 };
   }
   function formatBestLabel(record) {
     if (!record) return "No best yet";
@@ -1483,6 +2031,292 @@
       cursor.setDate(cursor.getDate() - 1);
     }
     return streak;
+  }
+  function getUnlockedDailyRewards(progress) {
+    const streak = getDailyStreak(progress);
+    return DAILY_MECHANIC_REWARDS.filter(reward => streak >= reward.days);
+  }
+  function hasDailyReward(progress, rewardId) {
+    return getUnlockedDailyRewards(progress).some(reward => reward.id === rewardId);
+  }
+  function getNextDailyReward(progress) {
+    const streak = getDailyStreak(progress);
+    return DAILY_MECHANIC_REWARDS.find(reward => streak < reward.days) || null;
+  }
+  function getDailyAttemptRecord(progress, dateKey, difficultyKey) {
+    return progress?.dailyRuns?.[getDailyRunKey(dateKey, difficultyKey)] || null;
+  }
+  function getRemainingDailyAttempts(progress, dateKey, difficultyKey) {
+    const used = Math.max(0, Number(getDailyAttemptRecord(progress, dateKey, difficultyKey)?.attemptsUsed) || 0);
+    return Math.max(0, DAILY_ATTEMPT_LIMIT - used);
+  }
+  function beginDailyAttempt(progress, dateKey, difficultyKey, meta = {}) {
+    progress.dailyRuns = { ...(progress.dailyRuns || {}) };
+    const key = getDailyRunKey(dateKey, difficultyKey);
+    const current = {
+      attemptsUsed: 0,
+      completed: false,
+      failed: false,
+      bestShots: null,
+      bestMedal: null,
+      lastResult: null,
+      ...progress.dailyRuns[key]
+    };
+    if (current.attemptsUsed >= DAILY_ATTEMPT_LIMIT) return { allowed: false, record: current };
+    current.attemptsUsed += 1;
+    current.seed = meta.seed;
+    current.holeCount = meta.holeCount;
+    current.startedAt = new Date().toISOString();
+    progress.dailyRuns[key] = current;
+    return { allowed: true, record: current };
+  }
+  function completeDailyAttempt(progress, dateKey, difficultyKey, result = {}) {
+    progress.dailyRuns = { ...(progress.dailyRuns || {}) };
+    const key = getDailyRunKey(dateKey, difficultyKey);
+    const current = {
+      attemptsUsed: 0,
+      completed: false,
+      failed: false,
+      bestShots: null,
+      bestMedal: null,
+      lastResult: null,
+      ...progress.dailyRuns[key]
+    };
+    current.completed = true;
+    current.failed = Boolean(result.failed);
+    current.lastResult = result;
+    current.finishedAt = new Date().toISOString();
+    if (!result.failed && Number.isFinite(result.totalShots)) {
+      current.bestShots = current.bestShots == null ? result.totalShots : Math.min(current.bestShots, result.totalShots);
+      if (!current.bestMedal || getMedalRank(result.medal) > getMedalRank(current.bestMedal)) {
+        current.bestMedal = result.medal;
+      }
+    }
+    progress.dailyRuns[key] = current;
+    return current;
+  }
+  function claimDailyLoginReward(progress, dateKey = getTodayKey()) {
+    if (progress?.dailyLogin?.lastClaimDate === dateKey) return null;
+    progress.dailyLogin = {
+      streakClaims: 0,
+      ...(progress.dailyLogin || {})
+    };
+    progress.dailyLogin.lastClaimDate = dateKey;
+    progress.stars = Math.max(0, Number(progress.stars) || 0) + DAILY_LOGIN_REWARD_STARS;
+    return {
+      stars: DAILY_LOGIN_REWARD_STARS,
+      nextRewardIn: getTimeUntilNextResetLabel()
+    };
+  }
+  function getDailyVariant(dateKey, difficultyKey = "average", progress = null) {
+    const available = DAILY_VARIANT_ORDER
+      .map(id => DAILY_VARIANTS[id])
+      .filter(Boolean)
+      .filter(variant => !variant.requiresReward || hasDailyReward(progress || {}, variant.requiresReward));
+    if (!available.length) return DAILY_VARIANTS.wind_day;
+    const key = `${dateKey}:${difficultyKey}:variant`;
+    let hash = 0;
+    for (const char of key) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+    return available[Math.abs(hash) % available.length] || available[0];
+  }
+  function pickFromList(rng, list, fallback) {
+    if (!Array.isArray(list) || !list.length) return fallback;
+    return list[randInt(rng, 0, list.length - 1)] || fallback;
+  }
+  function getDailyHoleShotLimit(par, difficultyKey = "average", holeIndex = 0, holeCount = 9) {
+    const buffer = difficultyKey === "beginner" ? 3 : difficultyKey === "hardcore" ? 1 : 2;
+    const latePenalty = holeIndex >= Math.max(4, holeCount - 3) ? 1 : 0;
+    return Math.max(par + 1, par + buffer - latePenalty);
+  }
+  function getDailyRoundShotLimit(levels, difficultyKey = "average") {
+    const totalPar = levels.reduce((sum, level) => sum + level.par, 0);
+    const cushion = difficultyKey === "beginner" ? 9 : difficultyKey === "hardcore" ? 4 : 6;
+    return totalPar + cushion;
+  }
+  function getRoundMedalTargets(totalPar) {
+    return {
+      gold: totalPar - 3,
+      silver: totalPar,
+      bronze: totalPar + 3
+    };
+  }
+  function getShotsToNextRank(totalPar, totalShots) {
+    const targets = getRoundMedalTargets(totalPar);
+    if (totalShots <= targets.gold) return { next: null, shots: 0 };
+    if (totalShots <= targets.silver) return { next: "Gold", shots: Math.max(1, totalShots - targets.gold) };
+    if (totalShots <= targets.bronze) return { next: "Silver", shots: Math.max(1, totalShots - targets.silver) };
+    return { next: "Bronze", shots: Math.max(1, totalShots - targets.bronze) };
+  }
+  function getDailyTokenReward(medal, failed = false) {
+    if (failed) return DAILY_TOKEN_REWARDS.fail;
+    return DAILY_TOKEN_REWARDS[medal] || 0;
+  }
+  function getWeeklyRunEntries(progress, weekStartKey = getWeekStartKey()) {
+    const start = getDateFromKey(weekStartKey);
+    const nextWeek = new Date(start);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    const endExclusive = getDateKey(nextWeek);
+    return Object.entries(progress?.dailyRuns || {}).filter(([key]) => {
+      const dateKey = key.split(":")[0];
+      return dateKey >= weekStartKey && dateKey < endExclusive;
+    });
+  }
+  function getWeeklyGoalStats(progress, weekStartKey = getWeekStartKey()) {
+    const stats = {
+      clears: 0,
+      silverOrBetter: 0,
+      golds: 0
+    };
+    for (const [, record] of getWeeklyRunEntries(progress, weekStartKey)) {
+      if (!record?.completed || record?.failed) continue;
+      const medal = record?.lastResult?.medal || record?.bestMedal || "Bronze";
+      stats.clears++;
+      if (getMedalRank(medal) >= getMedalRank("Silver")) stats.silverOrBetter++;
+      if (getMedalRank(medal) >= getMedalRank("Gold")) stats.golds++;
+    }
+    return stats;
+  }
+  function getTotalDailyCompletions(progress) {
+    const completedDays = new Set(
+      Object.entries(progress?.dailyRuns || {})
+        .filter(([, record]) => record?.completed && !record?.failed)
+        .map(([key]) => key.split(":")[0])
+        .filter(Boolean)
+    );
+    return completedDays.size;
+  }
+  function formatCalendarMilestoneReward(milestone) {
+    if (!milestone) return "";
+    if (milestone.rewardTokens) return `${milestone.rewardTokens}◈`;
+    if (milestone.rewardStars) return `${milestone.rewardStars}★`;
+    return milestone.label || "Reward";
+  }
+  function claimCalendarMilestoneRewards(progress) {
+    progress.calendarMilestoneClaims = { ...(progress.calendarMilestoneClaims || {}) };
+    const total = getTotalDailyCompletions(progress);
+    const rewards = [];
+    for (const milestone of CALENDAR_MILESTONE_REWARDS) {
+      if (progress.calendarMilestoneClaims[milestone.days]) continue;
+      if (total < milestone.days) continue;
+      progress.calendarMilestoneClaims[milestone.days] = true;
+      if (milestone.rewardStars) progress.stars = Math.max(0, Number(progress.stars) || 0) + milestone.rewardStars;
+      if (milestone.rewardTokens) progress.dailyTokens = Math.max(0, Number(progress.dailyTokens) || 0) + milestone.rewardTokens;
+      rewards.push(`Calendar ${milestone.label} reward claimed: +${formatCalendarMilestoneReward(milestone)}.`);
+    }
+    return rewards;
+  }
+  function getCalendarDays(count, endDateKey = getTodayKey()) {
+    const days = [];
+    const cursor = new Date(`${endDateKey}T00:00:00`);
+    for (let i = count - 1; i >= 0; i--) {
+      const day = new Date(cursor);
+      day.setDate(cursor.getDate() - i);
+      const key = day.toISOString().slice(0, 10);
+      days.push({
+        key,
+        day: String(day.getDate()).padStart(2, "0"),
+        label: day.toLocaleDateString(undefined, { weekday: count <= 7 ? "short" : undefined, month: count > 7 ? "numeric" : undefined, day: count > 7 ? "numeric" : undefined })
+      });
+    }
+    return days;
+  }
+  function getCalendarDayRecord(progress, dateKey) {
+    const entries = Object.entries(progress?.dailyRuns || {})
+      .filter(([key, record]) => key.startsWith(`${dateKey}:`) && record?.completed);
+    if (!entries.length) return null;
+    entries.sort((a, b) => {
+      const medalA = a[1]?.lastResult?.medal || a[1]?.bestMedal || "Bronze";
+      const medalB = b[1]?.lastResult?.medal || b[1]?.bestMedal || "Bronze";
+      const rankDiff = getMedalRank(medalB) - getMedalRank(medalA);
+      if (rankDiff !== 0) return rankDiff;
+      const shotsA = Number(a[1]?.lastResult?.totalShots ?? a[1]?.bestShots ?? Infinity);
+      const shotsB = Number(b[1]?.lastResult?.totalShots ?? b[1]?.bestShots ?? Infinity);
+      return shotsA - shotsB;
+    });
+    return entries[0][1];
+  }
+  function getCalendarDayStatus(progress, dateKey) {
+    const todayKey = getTodayKey();
+    const record = getCalendarDayRecord(progress, dateKey);
+    if (record?.failed) return { code: "X", label: "Failed", classes: ["failed"], record };
+    if (record) {
+      const medal = record?.lastResult?.medal || record?.bestMedal || "Bronze";
+      const code = medal === "Gold" ? "G" : medal === "Silver" ? "S" : "B";
+      return { code, label: medal, classes: ["done"], record };
+    }
+    if (dateKey < todayKey) return { code: "—", label: "Missed", classes: ["missed"] };
+    if (dateKey === todayKey) return { code: "•", label: "Live", classes: [] };
+    return { code: "•", label: "Soon", classes: [] };
+  }
+  function getCalendarDetailCopy(progress, dateKey = getTodayKey()) {
+    const status = getCalendarDayStatus(progress, dateKey);
+    const record = status.record;
+    if (record) {
+      const variantName = getDailyVariant(dateKey, "average", progress)?.name || "Daily Challenge";
+      const shots = Number(record?.lastResult?.totalShots);
+      const par = Number(record?.lastResult?.totalPar);
+      const relation = Number.isFinite(shots) && Number.isFinite(par)
+        ? shots === par ? "E" : shots > par ? `+${shots - par}` : `${shots - par}`
+        : null;
+      const resultLine = record.failed
+        ? `Official run failed. ${record?.lastResult?.reason ? describeFailReason(record.lastResult.reason, record.lastResult) : ""}`
+        : `${status.label} medal on ${variantName}${relation ? ` • ${relation}` : ""}.`;
+      return `<strong>${formatDateLabel(dateKey)}</strong> · ${resultLine}`;
+    }
+    if (dateKey < getTodayKey()) {
+      return `<strong>${formatDateLabel(dateKey)}</strong> · No Daily clear logged. Missed days break the visible chain and delay calendar milestone rewards.`;
+    }
+    return `<strong>${formatDateLabel(dateKey)}</strong> · Daily card is still open. Clear it to stamp this slot and move the calendar rewards forward.`;
+  }
+  function renderCalendarStrip(days, progress, rewardDays = []) {
+    const rewardSet = new Set(rewardDays);
+    return days.map((day, index) => {
+      const status = getCalendarDayStatus(progress, day.key);
+      const classes = [
+        "calendar-day",
+        ...status.classes,
+        day.key === getTodayKey() ? "today" : "",
+        rewardSet.has(index + 1) ? "reward" : ""
+      ].filter(Boolean).join(" ");
+      const rewardMarker = rewardSet.has(index + 1)
+        ? CALENDAR_MILESTONE_REWARDS.find(item => item.days === index + 1)
+        : null;
+      return `<button class="${classes}" type="button" data-calendar-day="${day.key}" aria-label="${day.label} ${status.label}">
+        <strong>${day.day}</strong>
+        <span>${days.length <= 7 ? day.label.slice(0, 3) : day.label}</span>
+        <span class="calendar-status">${rewardMarker ? `${status.code} · ${formatCalendarMilestoneReward(rewardMarker)}` : status.code}</span>
+      </button>`;
+    }).join("");
+  }
+  function buildLocalLeaderboard(progress, dateKey, difficultyKey, roundHoleCount = null) {
+    const holeCount = roundHoleCount || (DIFFICULTY_PRESETS[difficultyKey]?.holeCount || 9);
+    const signature = getDailyCourseSignature(dateKey, difficultyKey, holeCount, progress);
+    const totalPar = signature.estimatedPar;
+    const targets = getRoundMedalTargets(totalPar);
+    const seed = getDailySeedForKey(`${dateKey}:${difficultyKey}:${holeCount}:board`);
+    const rng = mulberry32(seed || 1);
+    const entries = [
+      { name: "Gold Line", shots: targets.gold, medal: "Gold", rankTier: "Gold III" },
+      { name: "Silver Line", shots: targets.silver, medal: "Silver", rankTier: "Silver III" },
+      { name: "Bronze Line", shots: targets.bronze, medal: "Bronze", rankTier: "Bronze III" }
+    ];
+    for (let i = 0; i < 3; i++) {
+      const name = LOCAL_LEADERBOARD_NAMES[(i + Math.floor(rng() * LOCAL_LEADERBOARD_NAMES.length)) % LOCAL_LEADERBOARD_NAMES.length];
+      const shots = targets.silver + randInt(rng, -2, 3) + i;
+      entries.push({ name, shots, medal: getRoundMedal(totalPar, shots), rankTier: getDailyRankTier(totalPar, shots) });
+    }
+    const userRecord = progress?.dailyBestRounds?.[getDailyRunKey(dateKey, difficultyKey)];
+    if (userRecord) {
+      entries.push({ name: "You", shots: userRecord.strokes, medal: getRoundMedal(userRecord.par, userRecord.strokes), rankTier: getDailyRankTier(userRecord.par, userRecord.strokes), isUser: true });
+    }
+    entries.sort((a, b) => a.shots - b.shots || (a.isUser ? 1 : 0) - (b.isUser ? 1 : 0));
+    return { entries: entries.slice(0, 5), targets, estimatedPar: totalPar, signature };
+  }
+  function describeFailReason(reason, context = {}) {
+    if (reason === "hole_limit") return `Hole ${context.hole || "?"} hit the stroke cap at ${context.limit || 0}.`;
+    if (reason === "round_limit") return `The daily card ran out of round strokes at ${context.limit || 0}.`;
+    if (reason === "attempt_locked") return "Daily attempt already spent. Practice mode stays open.";
+    return "The run ended before the card could be cleared.";
   }
   function getCollectionProgress(progress) {
     const cosmeticTotal = BALL_COSMETICS.filter(item => item.cost > 0).length;
@@ -1536,6 +2370,99 @@
       rewards.push(`${goal.label} complete. +${goal.rewardStars || 0} stars.`);
     }
     return rewards;
+  }
+  function getWeeklyGoalProgress(goal, progress, weekStartKey = getWeekStartKey()) {
+    if (!goal) return 0;
+    const stats = getWeeklyGoalStats(progress, weekStartKey);
+    if (goal.kind === "weekly_daily_clears") return stats.clears;
+    if (goal.kind === "weekly_medals_at_least") {
+      if (goal.minMedal === "Gold") return stats.golds;
+      if (goal.minMedal === "Silver") return stats.silverOrBetter;
+    }
+    return 0;
+  }
+  function formatWeeklyGoalProgress(goal, progress, weekStartKey = getWeekStartKey()) {
+    const value = getWeeklyGoalProgress(goal, progress, weekStartKey);
+    return `${Math.min(value, goal.target)}/${goal.target}`;
+  }
+  function claimCompletedWeeklyGoals(progress, weekStartKey = getWeekStartKey()) {
+    progress.weeklyGoalClaims = { ...(progress.weeklyGoalClaims || {}) };
+    progress.weeklyGoalClaims[weekStartKey] = { ...(progress.weeklyGoalClaims[weekStartKey] || {}) };
+    const rewards = [];
+    for (const goal of WEEKLY_GOALS) {
+      if (progress.weeklyGoalClaims[weekStartKey][goal.id]) continue;
+      const value = getWeeklyGoalProgress(goal, progress, weekStartKey);
+      if (value < goal.target) continue;
+      progress.weeklyGoalClaims[weekStartKey][goal.id] = true;
+      progress.dailyTokens = Math.max(0, Number(progress.dailyTokens) || 0) + (goal.rewardTokens || 0);
+      rewards.push(`${goal.label} complete. +${goal.rewardTokens || 0} Daily Tokens.`);
+    }
+    return rewards;
+  }
+  function claimWeeklyChest(progress, weekStartKey = getWeekStartKey()) {
+    progress.weeklyChestClaims = { ...(progress.weeklyChestClaims || {}) };
+    if (progress.weeklyChestClaims[weekStartKey]) return [];
+    const allGoalsClaimed = WEEKLY_GOALS.every(goal => Boolean(progress.weeklyGoalClaims?.[weekStartKey]?.[goal.id]));
+    if (!allGoalsClaimed) return [];
+    progress.weeklyChestClaims[weekStartKey] = true;
+    progress.stars = Math.max(0, Number(progress.stars) || 0) + WEEKLY_CHEST_REWARD.stars;
+    progress.dailyTokens = Math.max(0, Number(progress.dailyTokens) || 0) + WEEKLY_CHEST_REWARD.tokens;
+    if (WEEKLY_CHEST_REWARD.itemId) {
+      progress.ownedItems = { ...(progress.ownedItems || {}) };
+      progress.ownedItems[WEEKLY_CHEST_REWARD.itemId] = true;
+    }
+    return [`Weekly chest opened: +${WEEKLY_CHEST_REWARD.stars}★, +${WEEKLY_CHEST_REWARD.tokens}◈${WEEKLY_CHEST_REWARD.itemId ? `, ${ITEM_LOOKUP[WEEKLY_CHEST_REWARD.itemId]?.name || WEEKLY_CHEST_REWARD.itemId}` : ""}.`];
+  }
+  function getMasteryBucket(progress, bucketKey) {
+    progress.mastery = {
+      cosmetics: {},
+      trails: {},
+      abilities: {},
+      ...(progress.mastery || {})
+    };
+    progress.mastery[bucketKey] = { ...(progress.mastery[bucketKey] || {}) };
+    return progress.mastery[bucketKey];
+  }
+  function getMasteryRecord(progress, bucketKey, itemId) {
+    const bucket = getMasteryBucket(progress, bucketKey);
+    const record = {
+      clears: 0,
+      level: 0,
+      ...bucket[itemId]
+    };
+    bucket[itemId] = record;
+    return record;
+  }
+  function getMasteryInfo(progress, bucketKey, itemId) {
+    const record = getMasteryRecord(progress, bucketKey, itemId);
+    const next = MASTERY_MILESTONES.find(milestone => milestone.level > record.level) || null;
+    return {
+      clears: record.clears,
+      level: record.level,
+      next
+    };
+  }
+  function incrementMastery(progress, bucketKey, itemId, itemName) {
+    if (!itemId || itemId === "none" || itemId === "none_ability") return [];
+    const record = getMasteryRecord(progress, bucketKey, itemId);
+    record.clears += 1;
+    const rewards = [];
+    for (const milestone of MASTERY_MILESTONES) {
+      if (record.level >= milestone.level || record.clears < milestone.clears) continue;
+      record.level = milestone.level;
+      if (milestone.rewardStars) progress.stars = Math.max(0, Number(progress.stars) || 0) + milestone.rewardStars;
+      if (milestone.rewardTokens) progress.dailyTokens = Math.max(0, Number(progress.dailyTokens) || 0) + milestone.rewardTokens;
+      rewards.push(`${itemName} mastery L${milestone.level}: +${milestone.rewardStars ? `${milestone.rewardStars}★` : `${milestone.rewardTokens}◈`}.`);
+    }
+    return rewards;
+  }
+  function formatMasteryLabel(progress, bucketKey, itemId, fallback = "None") {
+    if (!itemId || itemId === "none" || itemId === "none_ability") return `${fallback} · L0`;
+    const info = getMasteryInfo(progress, bucketKey, itemId);
+    const item = ITEM_LOOKUP[itemId] || BALL_COSMETICS.find(ball => ball.id === itemId) || TRAIL_SHOP.find(trail => trail.id === itemId);
+    const name = item?.name || itemId;
+    const nextCopy = info.next ? `${info.clears}/${info.next.clears}` : `${info.clears} clears`;
+    return `${name} · L${info.level} · ${nextCopy}`;
   }
 
   function pickSetpieceTemplate(rng, holeIndex, difficultyKey, layoutType) {
@@ -1937,14 +2864,21 @@
       if (!raw) {
         return {
           stars: 0,
+          dailyTokens: 0,
           settings: { ...DEFAULT_SETTINGS },
           ownedItems: { classic: true, none: true, none_ability: true },
           abilityLevels: {},
           bestRounds: {},
           dailyBestRounds: {},
+          dailyRuns: {},
+          dailyLogin: { lastClaimDate: null, streakClaims: 0 },
           difficultyTracks: {},
           treeUnlocks: {},
           goalClaims: {},
+          weeklyGoalClaims: {},
+          weeklyChestClaims: {},
+          calendarMilestoneClaims: {},
+          mastery: { cosmetics: {}, trails: {}, abilities: {} },
           stats: {
             holesCompleted: 0,
             roundsCompleted: 0,
@@ -1962,6 +2896,7 @@
       }
       const parsed = JSON.parse(raw);
       const stars = Math.max(0, Number(parsed.stars) || 0);
+      const dailyTokens = Math.max(0, Number(parsed.dailyTokens) || 0);
       const settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
       if (Object.prototype.hasOwnProperty.call(parsed.settings || {}, "soundEnabled")) {
         settings.gameAudioEnabled = Boolean(parsed.settings.soundEnabled);
@@ -1971,9 +2906,19 @@
       const abilityLevels = { ...(parsed.abilityLevels || {}) };
       const bestRounds = { ...(parsed.bestRounds || {}) };
       const dailyBestRounds = { ...(parsed.dailyBestRounds || {}) };
+      const dailyRuns = { ...(parsed.dailyRuns || {}) };
+      const dailyLogin = { lastClaimDate: null, streakClaims: 0, ...(parsed.dailyLogin || {}) };
       const difficultyTracks = { ...(parsed.difficultyTracks || {}) };
       const treeUnlocks = { ...(parsed.treeUnlocks || {}) };
       const goalClaims = { ...(parsed.goalClaims || {}) };
+      const weeklyGoalClaims = { ...(parsed.weeklyGoalClaims || {}) };
+      const weeklyChestClaims = { ...(parsed.weeklyChestClaims || {}) };
+      const calendarMilestoneClaims = { ...(parsed.calendarMilestoneClaims || {}) };
+      const mastery = {
+        cosmetics: { ...(parsed.mastery?.cosmetics || {}) },
+        trails: { ...(parsed.mastery?.trails || {}) },
+        abilities: { ...(parsed.mastery?.abilities || {}) }
+      };
       const stats = {
         holesCompleted: 0,
         roundsCompleted: 0,
@@ -2007,14 +2952,21 @@
         : "none_ability";
       return {
         stars,
+        dailyTokens,
         settings,
         ownedItems,
         abilityLevels,
         bestRounds,
         dailyBestRounds,
+        dailyRuns,
+        dailyLogin,
         difficultyTracks,
         treeUnlocks,
         goalClaims,
+        weeklyGoalClaims,
+        weeklyChestClaims,
+        calendarMilestoneClaims,
+        mastery,
         stats,
         equippedCosmetic,
         equippedTrail,
@@ -2023,14 +2975,21 @@
     } catch {
         return {
           stars: 0,
+          dailyTokens: 0,
           settings: { ...DEFAULT_SETTINGS },
           ownedItems: { classic: true, none: true, none_ability: true },
           abilityLevels: {},
           bestRounds: {},
           dailyBestRounds: {},
+          dailyRuns: {},
+          dailyLogin: { lastClaimDate: null, streakClaims: 0 },
           difficultyTracks: {},
           treeUnlocks: {},
           goalClaims: {},
+          weeklyGoalClaims: {},
+          weeklyChestClaims: {},
+          calendarMilestoneClaims: {},
+          mastery: { cosmetics: {}, trails: {}, abilities: {} },
           stats: {
             holesCompleted: 0,
             roundsCompleted: 0,
@@ -2080,34 +3039,55 @@
     const medal = track.bestMedal || "Bronze";
     return `${track.clears} clear${track.clears === 1 ? "" : "s"} · best ${medal}`;
   }
-  function getDailyCourseSignature(dateKey, difficultyKey = "average", holeCount = null) {
+  function getDailyCourseSignature(dateKey, difficultyKey = "average", holeCount = null, progress = null) {
     const key = `${dateKey}:${difficultyKey}:${holeCount || 0}`;
     let hash = 0;
     for (const char of key) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
     const seed = Math.abs(hash) >>> 0;
     const rng = mulberry32(seed || 1);
-    const themeChoices = difficultyKey === "beginner"
-      ? ["classic", "ledger"]
-      : difficultyKey === "hardcore"
-        ? ["echo", "halftone", "ledger"]
-        : ["classic", "ledger", "halftone"];
-    const challengeChoices = difficultyKey === "beginner"
-      ? ["none", "none", "none"]
-      : difficultyKey === "hardcore"
-        ? ["one_shot_preview", "par_rush", "no_shop_loadout"]
-        : ["none", "one_shot_preview", "par_rush"];
+    const variant = getDailyVariant(dateKey, difficultyKey, progress);
+    const themeChoices = variant.themeIds && variant.themeIds.length
+      ? variant.themeIds
+      : difficultyKey === "beginner"
+        ? ["classic", "ledger"]
+        : difficultyKey === "hardcore"
+          ? ["echo", "halftone", "ledger"]
+          : ["classic", "ledger", "halftone"];
+    const challengeChoices = variant.challengeChoices && variant.challengeChoices.length
+      ? variant.challengeChoices
+      : difficultyKey === "beginner"
+        ? ["none", "none", "none"]
+        : difficultyKey === "hardcore"
+          ? ["one_shot_preview", "par_rush", "no_shop_loadout"]
+          : ["none", "one_shot_preview", "par_rush"];
     const layoutPool = getLayoutPool(difficultyKey).filter(layout => layout !== "straight");
-    const spotlightPool = Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
+    const spotlightPool = (variant.spotlightChoices || [])
+      .map(id => HAZARD_SPOTLIGHTS[id])
+      .filter(entry => entry && entry.difficulties.includes(difficultyKey));
+    const eligibleSpotlights = spotlightPool.length
+      ? spotlightPool
+      : Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
+    const estimatedPar = Array.from({ length: holeCount || (DIFFICULTY_PRESETS[difficultyKey]?.holeCount || 9) }, (_, index) => {
+      if (difficultyKey === "beginner") return index < 2 ? 2 : index < 4 ? 3 : 4 + Math.min(2, Math.floor(index / 3));
+      if (difficultyKey === "hardcore") return index < 2 ? 3 : index < 5 ? 4 + Math.floor(index / 2) : 6 + Math.floor((index - 4) / 2);
+      return index < 2 ? 2 : index < 5 ? 3 + Math.floor(index / 3) : 5 + Math.floor((index - 4) / 2);
+    }).reduce((sum, value) => sum + value, 0);
     return {
-      themeId: themeChoices[randInt(rng, 0, themeChoices.length - 1)],
-      challengeId: challengeChoices[randInt(rng, 0, challengeChoices.length - 1)],
+      variantId: variant.id,
+      variantName: variant.name,
+      variantDescription: variant.description,
+      themeId: pickFromList(rng, themeChoices, COURSE_THEMES.classic.id),
+      challengeId: pickFromList(rng, challengeChoices, CHALLENGE_RULES.none.id),
       featuredLayout: layoutPool[randInt(rng, 0, layoutPool.length - 1)] || getLayoutPool(difficultyKey)[0],
-      featuredSpotlight: spotlightPool.length ? spotlightPool[randInt(rng, 0, spotlightPool.length - 1)].id : null
+      featuredSpotlight: eligibleSpotlights.length ? eligibleSpotlights[randInt(rng, 0, eligibleSpotlights.length - 1)].id : null,
+      featuredModifier: pickFromList(rng, variant.modifierChoices, null),
+      featuredSetpiece: pickFromList(rng, variant.setpieceChoices, null),
+      estimatedPar
     };
   }
-  function pickCourseTheme(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null) {
+  function pickCourseTheme(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, progress = null) {
     if (modeKey === "daily") {
-      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount);
+      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount, progress);
       return COURSE_THEMES[signature.themeId] || COURSE_THEMES.classic;
     }
     const choices = difficultyKey === "beginner"
@@ -2117,9 +3097,9 @@
         : ["classic", "ledger", "halftone"];
     return COURSE_THEMES[choices[randInt(rng, 0, choices.length - 1)]] || COURSE_THEMES.classic;
   }
-  function pickChallengeRule(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null) {
+  function pickChallengeRule(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, progress = null) {
     if (modeKey === "daily") {
-      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount);
+      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount, progress);
       return CHALLENGE_RULES[signature.challengeId] || CHALLENGE_RULES.none;
     }
     const choices = difficultyKey === "beginner"
@@ -2299,9 +3279,9 @@
     if (pickIndex < 0) pickIndex = 0;
     return state.items.splice(pickIndex, 1)[0];
   }
-  function buildCoursePlan(seed, holeCount, difficultyKey = "average", modeKey = "standard") {
+  function buildCoursePlan(seed, holeCount, difficultyKey = "average", modeKey = "standard", progress = null) {
     const rng = mulberry32((seed ^ (holeCount * 6151) ^ (difficultyKey.length * 1217)) >>> 0);
-    const dailySignature = modeKey === "daily" ? getDailyCourseSignature(getTodayKey(), difficultyKey, holeCount) : null;
+    const dailySignature = modeKey === "daily" ? getDailyCourseSignature(getTodayKey(), difficultyKey, holeCount, progress) : null;
     const layoutPool = modeKey === "daily" ? getDailyLayoutPool(dailySignature, difficultyKey) : getLayoutPool(difficultyKey);
     const archetypePool = modeKey === "daily" ? getDailyArchetypePool(dailySignature, difficultyKey) : getArchetypePool(difficultyKey);
     const layoutState = { items: [] };
@@ -2322,7 +3302,7 @@
           : ["left_turn", "right_turn", "hook_left", "hook_right", "horseshoe"];
     const spotlightPool = Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
     const spotlightSlots = modeKey === "daily"
-      ? Math.min(3, Math.max(1, difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1))
+      ? Math.max(1, holeCount - 1)
       : difficultyKey === "hardcore" ? Math.min(3, Math.max(1, Math.floor(holeCount / 4))) : difficultyKey === "average" ? (holeCount >= 9 ? 1 : 0) : 0;
     const spotlightHoles = new Set();
     const spotlightMap = new Map();
@@ -2338,9 +3318,11 @@
       }
       if (chosen == null) continue;
       spotlightHoles.add(chosen);
-      const spotlight = i === 0 && dailySignature?.featuredSpotlight
-        ? HAZARD_SPOTLIGHTS[dailySignature.featuredSpotlight]
-        : (spotlightPool.length ? spotlightPool[i % spotlightPool.length] : null);
+      const spotlight = modeKey === "daily"
+        ? (dailySignature?.featuredSpotlight ? HAZARD_SPOTLIGHTS[dailySignature.featuredSpotlight] : null)
+        : i === 0 && dailySignature?.featuredSpotlight
+          ? HAZARD_SPOTLIGHTS[dailySignature.featuredSpotlight]
+          : (spotlightPool.length ? spotlightPool[i % spotlightPool.length] : null);
       if (spotlight) spotlightMap.set(chosen, spotlight.id);
     }
     const plan = [];
@@ -2372,10 +3354,17 @@
         ? (difficultyKey === "beginner" ? "fairway" : difficultyKey === "hardcore" ? "gauntlet" : "slalom")
         : selectFromCycleBag(rng, archetypePool, archetypeState, recentArchetypes.slice(-1));
       recentArchetypes.push(archetype);
+      const dailySpotlight = dailySignature?.featuredSpotlight || null;
       plan.push({
         layoutType,
         archetype,
-        hazardTheme: spotlightMap.get(holeIndex) || (dailySignature && holeIndex >= 1 && holeIndex % 3 === 0 ? dailySignature.featuredSpotlight : null)
+        hazardTheme: modeKey === "daily"
+          ? (holeIndex === 0 ? null : (spotlightMap.get(holeIndex) || dailySpotlight))
+          : (spotlightMap.get(holeIndex) || (dailySignature && holeIndex >= 1 && holeIndex % 3 === 0 ? dailySignature.featuredSpotlight : null)),
+        forcedModifier: dailySignature && holeIndex > 0 && holeIndex % 2 === 0 ? dailySignature.featuredModifier : null,
+        forcedSetpiece: dailySignature && (holeIndex === Math.max(2, Math.floor(holeCount / 2)) || holeIndex === holeCount - 2) ? dailySignature.featuredSetpiece : null,
+        dailyVariant: dailySignature ? dailySignature.variantId : null,
+        dailyVariantName: dailySignature ? dailySignature.variantName : null
       });
     }
     return plan;
@@ -3668,7 +4657,9 @@
     const ricochetRails = [];
     let setpiece = hazardTheme ? SETPIECE_TEMPLATES.none : pickProgressionSetpiece(rng, holeIndex, settings.key, layoutType, progress);
     const teleportPalette = ["#0ea5e9", "#f97316", "#10b981", "#ec4899"];
-    const modifier = pickHoleModifier(rng, holeIndex, settings.key);
+    const modifier = planEntry?.forcedModifier && HOLE_MODIFIERS[planEntry.forcedModifier]
+      ? HOLE_MODIFIERS[planEntry.forcedModifier]
+      : pickHoleModifier(rng, holeIndex, settings.key);
     const isEarlyTurnHole = holeIndex <= 1 && layoutType !== "straight";
     const startBufferCells = Math.max(
       1,
@@ -3684,14 +4675,27 @@
     const candidateIndices = [];
     for (let i = 1; i < cells.length - 1; i++) candidateIndices.push(i);
     shuffleInPlace(candidateIndices, rng);
+    const holeDifficultyRamp = holeIndex <= 1
+      ? 0.62
+      : holeIndex <= 4
+        ? 0.96 + (holeIndex - 2) * 0.08
+        : 1.28 + (holeIndex - 4) * 0.16;
     const lanePressure = clamp(
-      (holeIndex >= 7 ? 0.92 : holeIndex >= 5 ? 0.72 : holeIndex >= 3 ? 0.4 : 0.12) +
+      ((holeIndex >= 7 ? 0.94 : holeIndex >= 5 ? 0.76 : holeIndex >= 3 ? 0.42 : 0.1) * holeDifficultyRamp) +
       settings.lanePressureBias +
+      (planEntry?.hazardTheme ? 0.06 : 0) +
       (settings.key === "hardcore" ? 0.12 : settings.key === "average" ? 0.08 : 0),
       0.05,
       0.98
     );
     const isLargeHole = holeIndex >= 5;
+    const densityRamp = holeIndex <= 1
+      ? (settings.key === "beginner" ? 0.7 : settings.key === "average" ? 0.96 : 1.18)
+      : holeIndex <= 3
+        ? (settings.key === "beginner" ? 0.9 : settings.key === "average" ? 1.08 : 1.24)
+        : holeIndex <= 4
+          ? 1.02 + Math.max(0, holeIndex - 2) * 0.11
+          : 1.34 + Math.max(0, holeIndex - 5) * 0.18;
     const contestLateLane = settings.key !== "beginner" && (settings.key === "hardcore" ? holeIndex >= 2 : holeIndex >= 5);
     const hardContestLane = contestLateLane && (isLargeHole || settings.key === "hardcore");
     const pressureStartRatio = settings.key === "hardcore" ? 0.16 : settings.key === "average" ? 0.2 : 0.32;
@@ -3828,6 +4832,9 @@
     const clusterHeavyMode = settings.key !== "beginner" && isLargeHole;
     const clusterHeavyHardcore = settings.key === "hardcore" && holeIndex >= 5;
     const freeformDensityScale = clusterHeavyHardcore ? 0.52 : clusterHeavyMode ? 0.68 : 1;
+    if (planEntry?.forcedSetpiece && SETPIECE_TEMPLATES[planEntry.forcedSetpiece] && !hazardTheme) {
+      setpiece = SETPIECE_TEMPLATES[planEntry.forcedSetpiece];
+    }
     const pressureClusterCells = settings.key !== "beginner" && holeIndex >= 4
       ? getTemplateIndices(
           settings.key === "hardcore"
@@ -4100,15 +5107,73 @@
         });
       }
     }
-
     if (isEarlyTurnHole) {
       const endPadIndex = Math.max(1, cells.length - 2);
       placePadAtCell(endPadIndex, 0.84, cellSize * 0.08, cellSize * 0.08, false);
+      if (settings.key !== "beginner") {
+        const spinnerIndex = takePressureCell(index => index > 1 && index < cells.length - 2) ?? takeOpenCell(index => index > 1 && index < cells.length - 2);
+        if (spinnerIndex != null) {
+          const laneSign = getLaneSign(spinnerIndex);
+          const anchor = getObstacleCenter(
+            spinnerIndex,
+            getCentralContestAlong(spinnerIndex, 0),
+            getCentralContestSide(spinnerIndex, laneSign, 0.02),
+            false,
+            cellSize * 0.2
+          );
+          spinners.push({
+            x: Math.round(anchor.x),
+            y: Math.round(anchor.y),
+            radius: Math.round(cellSize * (settings.key === "hardcore" ? 0.22 : 0.19))
+          });
+        }
+      }
+      if (settings.key === "average" || settings.key === "hardcore") {
+        const sandIndex = takePressureCell(index => index > 1 && index < cells.length - 1) ?? takeOpenCell(index => index > 1 && index < cells.length - 1);
+        if (sandIndex != null) {
+          const laneSign = getLaneSign(sandIndex);
+          const anchor = getObstacleCenter(
+            sandIndex,
+            getCentralContestAlong(sandIndex, 0),
+            getCentralContestSide(sandIndex, laneSign, 0.018),
+            false,
+            cellSize * 0.24
+          );
+          const trapWidth = Math.round(cellSize * (settings.key === "hardcore" ? 0.5 : 0.42));
+          const trapHeight = Math.round(cellSize * 0.48);
+          const trapPos = clampRectToCell(sandIndex, anchor.x - trapWidth / 2, anchor.y - trapHeight / 2, trapWidth, trapHeight);
+          sandTraps.push({
+            x: trapPos.x,
+            y: trapPos.y,
+            width: trapWidth,
+            height: trapHeight
+          });
+        }
+      }
+      if (settings.key === "hardcore") {
+        const bumperIndex = takePressureCell(index => index > 2 && index < cells.length - 2) ?? takeOpenCell(index => index > 2 && index < cells.length - 2);
+        if (bumperIndex != null) {
+          const laneSign = getLaneSign(bumperIndex);
+          const anchor = getObstacleCenter(
+            bumperIndex,
+            getCentralContestAlong(bumperIndex, 0),
+            getCentralContestSide(bumperIndex, laneSign, 0.024),
+            false,
+            cellSize * 0.17
+          );
+          bumpers.push({
+            x: Math.round(anchor.x),
+            y: Math.round(anchor.y),
+            radius: Math.round(cellSize * 0.1)
+          });
+        }
+      }
     } else {
+      const averageEarlyHole = settings.key === "average" && holeIndex <= 2;
       const hardcoreEarlyHole = settings.key === "hardcore" && holeIndex <= 3;
       const padCount = clamp(Math.max(
-        hardcoreEarlyHole ? 2 : 1,
-        Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale * freeformDensityScale)
+        hardcoreEarlyHole ? 3 : averageEarlyHole ? 2 : 1,
+        Math.round((1 + Math.floor(holeIndex / 3)) * settings.obstacleScale * freeformDensityScale * densityRamp)
       ), 1, 4);
       for (let i = 0; i < padCount; i++) {
         const padIndex = (settings.key !== "beginner" && i < (clusterHeavyMode ? 2 : 1))
@@ -4131,9 +5196,9 @@
 
       const spinnerCount = clamp(
         Math.max(
-          settings.key === "hardcore" && holeIndex >= 1 ? 1 : 0,
+          settings.key === "hardcore" && holeIndex >= 1 ? 1 : settings.key === "average" && holeIndex >= 1 && holeIndex <= 2 ? 1 : 0,
           holeIndex > 1
-            ? Math.round((archetype === "gauntlet" ? 2 + Math.floor(holeIndex / 4) : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale * freeformDensityScale)
+            ? Math.round((archetype === "gauntlet" ? 2 + Math.floor(holeIndex / 4) : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale * freeformDensityScale * densityRamp)
             : 0
         ),
         0,
@@ -4160,9 +5225,9 @@
 
       const sandCount = clamp(
         Math.max(
-          settings.key === "hardcore" && holeIndex >= 1 ? 1 : 0,
+          settings.key === "hardcore" && holeIndex >= 1 ? 1 : settings.key === "average" && holeIndex >= 1 && holeIndex <= 2 ? 1 : 0,
           holeIndex > 0
-            ? Math.round((archetype === "islands" ? 2 : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale * (clusterHeavyHardcore ? 0.62 : clusterHeavyMode ? 0.78 : 1))
+            ? Math.round((archetype === "islands" ? 2 : 1 + Math.floor(holeIndex / 5)) * settings.obstacleScale * densityRamp * (clusterHeavyHardcore ? 0.62 : clusterHeavyMode ? 0.78 : 1))
             : 0
         ),
         0,
@@ -4195,8 +5260,8 @@
 
       const bumperCount = clamp(
         Math.max(
-          settings.key === "hardcore" && holeIndex >= 2 ? 1 : 0,
-          holeIndex > 1 ? Math.round((archetype === "gauntlet" ? 2 : 1) * settings.obstacleScale * freeformDensityScale) : 0
+          settings.key === "hardcore" && holeIndex >= 2 ? 1 : settings.key === "average" && holeIndex >= 2 && holeIndex <= 3 ? 1 : 0,
+          holeIndex > 1 ? Math.round((archetype === "gauntlet" ? 2 : 1) * settings.obstacleScale * freeformDensityScale * densityRamp) : 0
         ),
         0,
         3
@@ -4224,8 +5289,8 @@
         });
       }
 
-      if ((archetype === "splitter" || holeIndex >= 5) && rng() > (settings.key === "hardcore" ? 0.16 : 0.3)) {
-        const blockerCount = clamp(Math.round((archetype === "splitter" ? 2 : 1) * settings.obstacleScale * (clusterHeavyMode ? 0.7 : 1)), 1, 3);
+      if ((archetype === "splitter" || holeIndex >= (settings.key === "hardcore" ? 3 : settings.key === "average" ? 4 : 5)) && rng() > (settings.key === "hardcore" ? 0.16 : 0.3)) {
+        const blockerCount = clamp(Math.round((archetype === "splitter" ? 2 : 1) * settings.obstacleScale * densityRamp * (clusterHeavyMode ? 0.7 : 1)), 1, 3);
         for (let i = 0; i < blockerCount; i++) {
           const blockerIndex = (settings.key !== "beginner" && i === 0)
             ? takePressureCell(index => index > 1 && index < cells.length - 1)
@@ -4574,6 +5639,7 @@
       setpiece,
       difficultyKey: settings.key,
       modifier,
+      dailyVariant: planEntry?.dailyVariantName || null,
       par,
       width,
       height,
@@ -4598,7 +5664,7 @@
   }
 
   function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null, modeKey = "standard") {
-    const coursePlan = buildCoursePlan(seed, holeCount, difficultyKey, modeKey);
+    const coursePlan = buildCoursePlan(seed, holeCount, difficultyKey, modeKey, progress);
     return Array.from({ length: holeCount }, (_, index) => generateHole(index, seed, difficultyKey, progress, coursePlan[index]));
   }
 
@@ -4639,9 +5705,16 @@
       this.roundHoleCount = Math.max(1, Number(roundHoleCount) || this.difficulty.holeCount);
       this.progress = loadProgress();
       this.roundRng = mulberry32((this.seed ^ (this.difficultyKey.length * 4099)) >>> 0);
-      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
-      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
+      this.dailySignature = this.modeKey === "daily"
+        ? getDailyCourseSignature(getTodayKey(), this.difficultyKey, this.roundHoleCount, this.progress)
+        : null;
+      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
+      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
       this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey);
+      this.dailyRoundShotLimit = this.modeKey === "daily" ? getDailyRoundShotLimit(this.levels, this.difficultyKey) : null;
+      this.dailyAttemptCommitted = this.modeKey === "daily"
+        ? Math.max(0, Number(getDailyAttemptRecord(this.progress, getTodayKey(), this.difficultyKey)?.attemptsUsed) || 0) > 0
+        : true;
       this.currentLevelIndex = 0;
       this.canvas = document.getElementById('gameCanvas');
       this.ctx = this.canvas.getContext('2d');
@@ -4686,6 +5759,8 @@
       this.introTimer = null;
       this.lastReplayExport = null;
       this.lastReplayPreviewUrl = null;
+      this.roundFailed = false;
+      this.roundFailReason = null;
       this.resizeCanvas = this.resizeCanvas.bind(this);
       bindFxUnlockListener();
       updateViewportMetrics();
@@ -4738,8 +5813,11 @@
       document.getElementById('difficultyLabel').textContent = this.difficulty.label;
       document.getElementById('themeLabel').textContent = this.theme.name;
       document.getElementById('challengeLabel').textContent = this.challengeRule.name;
-      document.getElementById('starCount').textContent = this.progress.stars;
-      document.getElementById('previewStatus').textContent = this.hasOwnedItem('preview_path') ? 'Owned' : `${previewItem.cost} stars`;
+      document.getElementById('starCount').textContent = `${this.progress.stars}★ · ${this.progress.dailyTokens || 0}◈`;
+      const attempts = this.modeKey === "daily" ? getRemainingDailyAttempts(this.progress, getTodayKey(), this.difficultyKey) : null;
+      document.getElementById('previewStatus').textContent = this.modeKey === "daily"
+        ? `${attempts} daily try${attempts === 1 ? "" : "ies"} left`
+        : (this.hasOwnedItem('preview_path') ? 'Owned' : `${previewItem.cost} stars`);
       this.shopFab.classList.toggle('disabled', this.challengeRule.id === 'no_shop_loadout');
       this.shopStars.textContent = `Stars: ${this.progress.stars}`;
       this.renderShop();
@@ -4750,6 +5828,18 @@
         return this.progress.dailyBestRounds[`${getTodayKey()}:${this.difficultyKey}`] || null;
       }
       return this.progress.bestRounds[this.difficultyKey] || null;
+    }
+    commitDailyAttempt() {
+      if (this.modeKey !== "daily" || this.dailyAttemptCommitted) return true;
+      const result = beginDailyAttempt(this.progress, getTodayKey(), this.difficultyKey, {
+        seed: this.seed,
+        holeCount: this.roundHoleCount
+      });
+      if (!result.allowed) return false;
+      this.dailyAttemptCommitted = true;
+      saveProgress(this.progress);
+      this.refreshMetaUi();
+      return true;
     }
     updateBestRound(totalPar, totalShots) {
       const record = { strokes: totalShots, par: totalPar, seed: this.seed, dateKey: getTodayKey() };
@@ -4843,20 +5933,29 @@
     }
     getCurrentLoadout() {
       const previewUnlocked = DEBUG_FLAGS.forcePreview || this.hasOwnedItem('preview_path');
+      const unlockedDailyRewards = getUnlockedDailyRewards(this.progress);
+      const bonusCurve = this.modeKey === "daily" && unlockedDailyRewards.some(reward => reward.id === "spin_shots");
+      const ability = this.challengeRule.id === "no_shop_loadout"
+        ? ABILITY_SHOP[0]
+        : this.getEquippedAbility();
+      const abilityTier = this.challengeRule.id === "no_shop_loadout"
+        ? 0
+        : this.getAbilityTier(this.progress.equippedAbility);
+      const useDailyCurve = bonusCurve && ability.id === "none_ability";
       if (this.challengeRule.id === "no_shop_loadout") {
         return {
           cosmetic: BALL_COSMETICS[0],
           trail: TRAIL_SHOP[0],
-          ability: ABILITY_SHOP[0],
-          abilityTier: 0,
+          ability: useDailyCurve ? (ABILITY_SHOP.find(item => item.id === "curve_core") || ABILITY_SHOP[0]) : ABILITY_SHOP[0],
+          abilityTier: useDailyCurve ? 1 : 0,
           previewUnlocked
         };
       }
       return {
         cosmetic: this.getEquippedCosmetic(),
         trail: this.getEquippedTrail(),
-        ability: this.getEquippedAbility(),
-        abilityTier: this.getAbilityTier(this.progress.equippedAbility),
+        ability: useDailyCurve ? (ABILITY_SHOP.find(item => item.id === "curve_core") || ability) : ability,
+        abilityTier: useDailyCurve ? Math.max(1, abilityTier) : abilityTier,
         previewUnlocked
       };
     }
@@ -4878,12 +5977,26 @@
     }
     getItemCost(item) {
       const featured = this.getDailyFeaturedOffer();
+      if (item.type === "daily_reward") return item.tokenCost || 0;
       if (item.type === "ability") {
         const nextTier = Math.min(item.maxTier || 0, this.getAbilityTier(item.id) + 1);
         const baseCost = getAbilityTierCost(item, nextTier);
         return featured.itemId === item.id ? Math.max(1, Math.round(baseCost * 0.75)) : baseCost;
       }
       return featured.itemId === item.id ? featured.cost : item.cost;
+    }
+    isDailyRewardOwned(item) {
+      if (!item || item.type !== "daily_reward") return false;
+      if (item.reward?.type === "bundle") {
+        return item.reward.rewards.every(entry => this.isDailyRewardOwned({ type: "daily_reward", reward: entry }));
+      }
+      if (item.reward?.type === "ability_level") {
+        return this.getAbilityTier(item.reward.id) >= (item.reward.tier || 1);
+      }
+      if (item.reward?.type === "owned_item") {
+        return this.hasOwnedItem(item.reward.id);
+      }
+      return false;
     }
     applyCurrentLoadout() {
       if (!this.level) return;
@@ -4965,7 +6078,7 @@
           <span>${card.label}</span>
         </div>
       `).join("");
-      this.statsSubhead.textContent = `${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Standard'} • Theme ${this.theme.name}`;
+      this.statsSubhead.textContent = `${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Practice'} • Theme ${this.theme.name}`;
       this.statsNotes.innerHTML = `
         <strong>Loadout profile</strong><br />
         Favorite ball: <strong>${this.getFavoriteFromUsage(stats.usage.cosmetics, 'Classic')}</strong><br />
@@ -4975,7 +6088,10 @@
         Beginner ${formatBestLabel(this.progress.bestRounds.beginner)} · Average ${formatBestLabel(this.progress.bestRounds.average)} · Hardcore ${formatBestLabel(this.progress.bestRounds.hardcore)}.<br /><br />
         <strong>Progression</strong><br />
         Beginner ${this.getBranchClears('beginner')} clears · Average ${this.getBranchClears('average')} clears · Hardcore ${this.getBranchClears('hardcore')} clears.<br />
-        Ready nodes: <strong>${this.getTreeReadyCount()}</strong> · Collection: <strong>${collection.owned}/${collection.total}</strong>.<br /><br />
+        Ready nodes: <strong>${this.getTreeReadyCount()}</strong> · Collection: <strong>${collection.owned}/${collection.total}</strong>.<br />
+        Ball mastery: <strong>${formatMasteryLabel(this.progress, 'cosmetics', this.progress.equippedCosmetic, 'Classic')}</strong><br />
+        Trail mastery: <strong>${formatMasteryLabel(this.progress, 'trails', this.progress.equippedTrail, 'No Trail')}</strong><br />
+        Core mastery: <strong>${formatMasteryLabel(this.progress, 'abilities', this.progress.equippedAbility, 'Standard Core')}</strong>.<br /><br />
         <strong>Long-term goal</strong><br />
         ${nextGoal ? `${nextGoal.label} · <strong>${formatGoalProgress(nextGoal, this.progress)}</strong> · +${nextGoal.rewardStars}★` : 'All current goals complete.'}
       `;
@@ -5043,7 +6159,7 @@
     }
     async openReplayViewer() {
       this.replayPreview.innerHTML = `<div class="empty">Building replay preview…</div>`;
-      this.replayMeta.textContent = `Hole ${this.currentLevelIndex + 1} • ${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Standard'}`;
+      this.replayMeta.textContent = `Hole ${this.currentLevelIndex + 1} • ${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Practice'}`;
       this.replayModal.style.display = 'flex';
       const exportResult = await this.level.exportReplayClip(this.theme, this.challengeRule, this.difficulty);
       if (!exportResult) {
@@ -5125,10 +6241,15 @@
       if (this.modeKey !== 'daily') return '';
       const diff = totalShots - totalPar;
       const relation = diff === 0 ? 'even par' : diff > 0 ? `+${diff}` : `${diff}`;
-      const medal = getRoundMedal(totalPar, totalShots);
+      const medal = getDailyRankTier(totalPar, totalShots);
       const streak = getDailyStreak(this.progress);
       const streakCopy = streak > 1 ? ` • ${streak}-day streak` : '';
-      return `${getTodayKey()} • Seed ${this.seed} • ${medal} pace at ${relation}${streakCopy}. Beat my score.`;
+      return `Today's Score: ${relation} (${medal}) • ${getTodayKey()} • Seed ${this.seed}${streakCopy}. Beat my score.`;
+    }
+    getRankGapCopy(totalPar, totalShots) {
+      const gap = this.modeKey === 'daily' ? getShotsToNextTier(totalPar, totalShots) : getShotsToNextRank(totalPar, totalShots);
+      if (!gap.next) return 'Top rank secured.';
+      return `${gap.shots} shot${gap.shots === 1 ? '' : 's'} from ${gap.next}.`;
     }
     buildScorecardImageCanvas() {
       const width = 860;
@@ -5159,7 +6280,7 @@
       ctx.font = '500 20px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#4b5563';
       const dailyStreakCopy = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
-      const modeLabel = this.modeKey === 'daily' ? `Daily • ${dateLabel}${dailyStreakCopy}` : `Standard • Seed ${this.seed}`;
+      const modeLabel = this.modeKey === 'daily' ? `Daily • ${dateLabel}${dailyStreakCopy}` : `Practice • Seed ${this.seed}`;
       ctx.fillText(`${this.difficulty.label} • ${modeLabel}`, 42, 92);
       if (this.modeKey === 'daily') {
         ctx.font = '600 15px system-ui, -apple-system, sans-serif';
@@ -5249,8 +6370,11 @@
       }
       const file = new File([blob], `putt-scorecard-${this.difficultyKey}.png`, { type: 'image/png' });
       const streakText = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
+      const totals = this.getRoundTotals();
+      const dailyRelation = totals.shots - totals.par === 0 ? 'E' : totals.shots - totals.par > 0 ? `+${totals.shots - totals.par}` : `${totals.shots - totals.par}`;
+      const dailyMedal = getRoundMedal(totals.par, totals.shots);
       const scorecardText = this.modeKey === 'daily'
-        ? `Putt Putt daily challenge • ${getTodayKey()} • Seed ${this.seed}${streakText}`
+        ? `Today's Score: ${dailyRelation} (${dailyMedal}) • ${getTodayKey()} • Seed ${this.seed}${streakText}`
         : `Putt Putt round • Seed ${this.seed}`;
       if (await this.tryNativeShareFile(file, 'Putt Putt Scorecard', scorecardText)) {
         this.progress.stats.totalShares++;
@@ -5290,8 +6414,11 @@
       const { blob, filename } = exportResult;
       const file = new File([blob], filename, { type: blob.type || 'image/gif' });
       const streakText = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
+      const totals = this.getRoundTotals();
+      const dailyRelation = totals.shots - totals.par === 0 ? 'E' : totals.shots - totals.par > 0 ? `+${totals.shots - totals.par}` : `${totals.shots - totals.par}`;
+      const dailyMedal = getRoundMedal(totals.par, totals.shots);
       const replayText = this.modeKey === 'daily'
-        ? `Putt Putt daily replay • ${getTodayKey()} • Seed ${this.seed}${streakText} • Beat this.`
+        ? `Today's Score: ${dailyRelation} (${dailyMedal}) • ${getTodayKey()} • Seed ${this.seed}${streakText} • Beat this.`
         : `Putt Putt replay • Seed ${this.seed}`;
       if (await this.tryNativeShareFile(file, 'Putt Putt Replay', replayText)) {
         this.progress.stats.totalShares++;
@@ -5316,6 +6443,7 @@
     buyItem(id) {
       const item = ITEM_LOOKUP[id];
       if (!item) return;
+      if (item.type === 'daily_reward') return this.buyDailyReward(id);
       if (item.type !== 'ability' && this.hasOwnedItem(id)) return;
       if (item.type === 'ability') {
         const currentTier = this.getAbilityTier(id);
@@ -5336,6 +6464,27 @@
       emitGameFx('buy');
       this.refreshMetaUi();
       this.applyCurrentLoadout();
+    }
+    buyDailyReward(id) {
+      const item = ITEM_LOOKUP[id];
+      if (!item || item.type !== "daily_reward" || this.isDailyRewardOwned(item)) return;
+      const cost = this.getItemCost(item);
+      if ((this.progress.dailyTokens || 0) < cost) return;
+      this.progress.dailyTokens -= cost;
+      this.applyTreeReward(item.reward);
+      if (item.reward?.type === "bundle") {
+        const abilityReward = item.reward.rewards.find(entry => entry.type === "ability_level");
+        if (abilityReward?.id) this.progress.equippedAbility = abilityReward.id;
+      } else if (item.reward?.type === "owned_item") {
+        const rewardItem = ITEM_LOOKUP[item.reward.id];
+        if (rewardItem?.type === "cosmetic") this.progress.equippedCosmetic = rewardItem.id;
+        if (rewardItem?.type === "trail") this.progress.equippedTrail = rewardItem.id;
+      }
+      saveProgress(this.progress);
+      emitGameFx('buy');
+      this.refreshMetaUi();
+      this.applyCurrentLoadout();
+      this.unlockNote.textContent = `${item.name} claimed for ${cost}◈.`;
     }
     equipItem(id) {
       const item = ITEM_LOOKUP[id];
@@ -5367,13 +6516,20 @@
       };
       const tabSections = this.currentShopTab === 'tree'
         ? treeMarkup
+        : this.currentShopTab === 'daily'
+          ? `
+            <section class="shop-section">
+              <h3>Daily Token Relics</h3>
+              ${DAILY_TOKEN_SHOP.map(item => this.renderShopItem(item, featured)).join("")}
+            </section>
+          `
         : SHOP_SECTIONS
           .filter(section => sectionGroups[this.currentShopTab]?.includes(section.id))
           .map(section => `
             <section class="shop-section">
               <h3>${section.title}</h3>
               ${section.items
-                .filter(item => !item.trackReward || this.hasOwnedItem(item.id))
+                .filter(item => (!item.trackReward || this.hasOwnedItem(item.id)) && (!item.tokenReward || this.hasOwnedItem(item.id) || this.getAbilityTier(item.id) > 0) && (!item.weeklyReward || this.hasOwnedItem(item.id)))
                 .map(item => this.renderShopItem(item, featured)).join("")}
             </section>
           `).join("");
@@ -5441,6 +6597,29 @@
       `;
     }
     renderShopItem(item, featured) {
+      if (item.type === 'daily_reward') {
+        const owned = this.isDailyRewardOwned(item);
+        const cost = this.getItemCost(item);
+        const canAfford = (this.progress.dailyTokens || 0) >= cost;
+        const rewardTarget = item.reward?.type === 'bundle'
+          ? item.reward.rewards.map(entry => ITEM_LOOKUP[entry.id]?.name || entry.id).join(' + ')
+          : (ITEM_LOOKUP[item.reward?.id]?.name || item.reward?.id || 'Reward');
+        const button = owned
+          ? `<button class="secondary" disabled>Claimed</button>`
+          : `<button class="${canAfford ? "primary" : "secondary"}" ${canAfford ? "" : "disabled"} data-action="buy" data-id="${item.id}">${cost}◈</button>`;
+        return `
+          <div class="shop-item">
+            <div class="shop-preview">${this.renderShopPreview(item)}</div>
+            <div>
+              <h3>${item.name}</h3>
+              <p>${item.description}</p>
+              <span class="shop-tag">${owned ? "Claimed" : `Costs ${cost} Daily Tokens`}</span>
+              <div class="shop-badge">Reward: ${rewardTarget}</div>
+            </div>
+            <div class="shop-action">${button}</div>
+          </div>
+        `;
+      }
       const owned = item.type === 'ability' ? this.getAbilityTier(item.id) > 0 : this.hasOwnedItem(item.id);
       const equipped = (
         (item.type === 'cosmetic' && this.progress.equippedCosmetic === item.id) ||
@@ -5505,6 +6684,15 @@
       `;
     }
     renderShopPreview(item) {
+      if (item.type === "daily_reward") {
+        return `
+          <svg width="36" height="36" viewBox="0 0 52 52" aria-hidden="true">
+            <circle cx="26" cy="26" r="12" fill="#ffffff" stroke="#111111" stroke-width="2.5" />
+            <path d="M18 30 L26 16 L34 30" fill="none" stroke="#111111" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M19 34 H33" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" />
+          </svg>
+        `;
+      }
       if (item.type === "trail") {
         const accent = item.accent ? `<circle cx="33" cy="26" r="4" fill="${item.accent}" />` : "";
         return `
@@ -5597,6 +6785,13 @@
     loadLevel() {
       if (this.level) this.level.destroy();
       const data = this.levels[this.currentLevelIndex];
+      const priorShots = this.scores.reduce((sum, score) => sum + score.shots, 0);
+      const holeShotLimit = this.modeKey === "daily"
+        ? Math.min(
+            getDailyHoleShotLimit(data.par, this.difficultyKey, this.currentLevelIndex, this.levels.length),
+            Math.max(1, (this.dailyRoundShotLimit || Infinity) - priorShots)
+          )
+        : null;
       this.progress.stats.layoutsSeen[data.layoutType] = (this.progress.stats.layoutsSeen[data.layoutType] || 0) + 1;
       saveProgress(this.progress);
       document.getElementById('holeNum').textContent = data.id;
@@ -5605,10 +6800,19 @@
       this.level = new Level(
         data,
         this.ctx,
-        shots => this.finishLevel(shots),
+        result => this.finishLevel(result),
         this.zoomBtn,
         this.getCurrentLoadout(),
-        { theme: this.theme, challengeRule: this.challengeRule, difficulty: this.difficulty }
+        {
+          theme: this.theme,
+          challengeRule: this.challengeRule,
+          difficulty: this.difficulty,
+          onFirstShot: () => this.commitDailyAttempt(),
+          shotLimit: holeShotLimit,
+          roundShotLimit: this.dailyRoundShotLimit,
+          priorRoundShots: priorShots,
+          dailyVariant: this.dailySignature?.variantName || null
+        }
       );
       this.resizeCanvas();
       this.showHoleIntro(data);
@@ -5616,11 +6820,11 @@
     showHoleIntro(data) {
       if (this.introTimer) clearTimeout(this.introTimer);
       const introCopy = this.modeKey === 'daily'
-        ? `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}<br />Daily ${getTodayKey()} • Beat my score.`
+        ? `${this.dailySignature?.variantName || data.dailyVariant || "Daily Challenge"}${this.dailySignature?.variantDescription ? `<br />${this.dailySignature.variantDescription}` : ""}<br />${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br /><strong>Warning:</strong> ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}${this.level?.shotLimit ? `<br />Stroke cap: ${this.level.shotLimit} on this hole` : ''}<br />Daily ${getTodayKey()} • One official run.`
         : `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}`;
       this.introEl.innerHTML = `
         <div class="overlay-card">
-          <div class="intro-title">${this.theme.name} Theme • ${this.challengeRule.name}</div>
+          <div class="intro-title">${this.theme.name} Theme • ${this.challengeRule.name}${this.modeKey === 'daily' && (data.setpiece?.id !== 'none' || data.hazardTheme) ? ' • Signature Hole' : ''}</div>
           <div class="intro-hole">Hole ${data.id} · Par ${data.par}</div>
           <div class="intro-meta">${introCopy}</div>
         </div>
@@ -5631,7 +6835,12 @@
         this.introTimer = null;
       }, this.progress.settings?.reduceMotion ? 650 : 1100);
     }
-    finishLevel(shots) {
+    finishLevel(result) {
+      if (result && result.status === "failed") {
+        this.handleRoundFailure(result.reason, result);
+        return;
+      }
+      const shots = typeof result === "number" ? result : result?.shots;
       const data = this.levels[this.currentLevelIndex];
       const resultLabel = getHoleResultLabel(data.par, shots);
       const cleanHole = shots <= data.par;
@@ -5645,6 +6854,10 @@
       this.progress.stats.totalStarsEarned += starsEarned;
       this.progress.stats.bestCleanStreak = Math.max(this.progress.stats.bestCleanStreak, this.cleanStreak);
       const goalRewards = claimCompletedGoals(this.progress);
+      let weeklyGoalRewards = [];
+      let weeklyChestRewards = [];
+      let masteryRewards = [];
+      let calendarRewards = [];
       saveProgress(this.progress);
       this.refreshMetaUi();
       this.scores.push({ hole: data.id, par: data.par, shots, stars: starsEarned, resultLabel, streakBonus, parRushBonus });
@@ -5672,27 +6885,62 @@
       }
       const isLast = this.currentLevelIndex === this.levels.length - 1;
       const roundMedal = getRoundMedal(totalPar, totalShots);
+      const roundRankTier = getDailyRankTier(totalPar, totalShots);
+      const tokenReward = isLast && this.modeKey === "daily" ? getDailyTokenReward(roundMedal, false) : 0;
       const bestImproved = isLast ? this.updateBestRound(totalPar, totalShots) : false;
       const trackUpdate = isLast ? this.updateDifficultyTrack(totalPar, totalShots) : null;
       if (isLast) this.progress.stats.roundsCompleted++;
+      if (isLast && this.modeKey === "daily") {
+        this.progress.dailyTokens = Math.max(0, Number(this.progress.dailyTokens) || 0) + tokenReward;
+        completeDailyAttempt(this.progress, getTodayKey(), this.difficultyKey, {
+          failed: false,
+          totalShots,
+          totalPar,
+          medal: roundMedal,
+          tokensEarned: tokenReward
+        });
+        weeklyGoalRewards = claimCompletedWeeklyGoals(this.progress, getWeekStartKey(getTodayKey()));
+        weeklyChestRewards = claimWeeklyChest(this.progress, getWeekStartKey(getTodayKey()));
+        calendarRewards = claimCalendarMilestoneRewards(this.progress);
+        const loadout = this.getCurrentLoadout();
+        masteryRewards = [
+          ...incrementMastery(this.progress, "cosmetics", loadout.cosmetic?.id, loadout.cosmetic?.name || "Ball"),
+          ...incrementMastery(this.progress, "trails", loadout.trail?.id, loadout.trail?.name || "Trail"),
+          ...incrementMastery(this.progress, "abilities", loadout.ability?.id, loadout.ability?.name || "Core")
+        ];
+      }
       saveProgress(this.progress);
       this.nextBtn.textContent = isLast ? 'Menu' : 'Next Hole ➡️';
-      this.restartBtn.style.display = isLast ? 'inline-block' : 'none';
+      this.restartBtn.style.display = isLast && this.modeKey !== 'daily' ? 'inline-block' : 'none';
       this.showRewardBurst({ starsEarned, resultLabel, streakBonus, cleanStreak: this.cleanStreak }, () => {
         this.scorecardEl.style.display = 'flex';
         if (isLast) {
           const bestLabel = formatBestLabel(this.getBestRoundRecord());
           const socialLine = this.modeKey === 'daily'
-            ? `${this.getDailyChallengeSummary(totalPar, totalShots)}<br />`
+            ? `${this.getDailyChallengeSummary(totalPar, totalShots)}<br />${this.level?.shotLimit ? `Stroke caps held all card long.<br />` : ""}`
             : `Seed ${this.seed} • ${this.difficulty.label} card finished ${totalShots - totalPar === 0 ? 'even par' : totalShots > totalPar ? `+${totalShots - totalPar}` : `${totalShots - totalPar}`}.<br />`;
           this.roundSummaryEl.style.display = 'block';
           this.roundSummaryEl.innerHTML = `
-            <strong>${roundMedal} medal</strong><br />
+            <strong>${this.modeKey === 'daily' ? roundRankTier : roundMedal}</strong><br />
             ${bestImproved ? "New best round." : "Best remains"} ${bestLabel}.<br />
             ${socialLine}
+            ${this.modeKey === 'daily' ? `${this.getRankGapCopy(totalPar, totalShots)}${tokenReward ? `<br />+${tokenReward} Daily Token${tokenReward === 1 ? '' : 's'}.` : ''}` : ""}
+            ${this.modeKey === 'daily' && weeklyChestRewards.length ? `<br />${weeklyChestRewards.join(" ")}` : ""}
+            ${this.modeKey === 'daily' && masteryRewards.length ? `<br />${masteryRewards.join(" ")}` : ""}
+            ${this.modeKey === 'daily' && calendarRewards.length ? `<br />${calendarRewards.join(" ")}` : ""}
             ${trackUpdate ? `Track: ${formatTrackStatus(trackUpdate.track)}.` : ""}
           `;
-          this.unlockNote.textContent = `${trackUpdate?.rewardMessage || `${roundMedal} medal banked for ${this.difficulty.label}.`}`;
+          this.unlockNote.textContent = this.modeKey === 'daily'
+            ? weeklyChestRewards.length
+              ? weeklyChestRewards.join(" ")
+              : masteryRewards.length
+                ? masteryRewards.join(" ")
+                : weeklyGoalRewards.length
+                  ? weeklyGoalRewards.join(" ")
+                  : calendarRewards.length
+                    ? calendarRewards.join(" ")
+                    : `${roundRankTier} banked • +${tokenReward}◈ Daily Tokens.`
+            : `${trackUpdate?.rewardMessage || `${roundMedal} medal banked for ${this.difficulty.label}.`}`;
         } else {
           this.roundSummaryEl.style.display = 'none';
           this.roundSummaryEl.innerHTML = '';
@@ -5718,6 +6966,58 @@
           this.restartRound();
         };
       });
+    }
+    handleRoundFailure(reason, context = {}) {
+      this.roundFailed = true;
+      this.roundFailReason = reason;
+      const body = document.getElementById('scoreRows');
+      body.innerHTML = '';
+      let totalPar = 0, totalShots = 0, totalStars = 0;
+      for (const s of this.scores) {
+        totalPar += s.par;
+        totalShots += s.shots;
+        totalStars += s.stars;
+        body.innerHTML += `<tr><td>${s.hole}</td><td>${s.par}</td><td>${s.shots}</td><td>${"★".repeat(s.stars) || "-"}</td></tr>`;
+      }
+      document.getElementById('totalPar').textContent = totalPar;
+      document.getElementById('totalShots').textContent = totalShots;
+      document.getElementById('totalRoundStars').textContent = totalStars;
+      if (this.modeKey === "daily") {
+        const tokenReward = getDailyTokenReward(context?.medal, true);
+        completeDailyAttempt(this.progress, getTodayKey(), this.difficultyKey, {
+          failed: true,
+          reason,
+          totalShots,
+          totalPar,
+          medal: getRoundMedal(totalPar || (context.par || 0), totalShots || (context.shots || 0)),
+          tokensEarned: tokenReward
+        });
+      }
+      saveProgress(this.progress);
+      const failGap = this.modeKey === "daily" ? this.getRankGapCopy(totalPar || (context.par || 0), totalShots || (context.shots || 0)) : '';
+      this.roundSummaryEl.style.display = 'block';
+      this.roundSummaryEl.innerHTML = `
+        <strong>Daily Run Failed</strong><br />
+        ${describeFailReason(reason, context)}<br />
+        ${failGap ? `${failGap}<br />` : ""}
+        Practice stays open while tomorrow's official card resets in ${getTimeUntilNextResetLabel()}.
+      `;
+      this.unlockNote.textContent = this.modeKey === "daily"
+        ? "Official attempt spent. Come back tomorrow or switch to Practice."
+        : "Round failed.";
+      this.scorecardEl.style.display = 'flex';
+      this.nextBtn.textContent = 'Menu';
+      this.restartBtn.style.display = 'none';
+      this.nextBtn.onclick = () => {
+        unlockGameFx();
+        emitGameFx('ui');
+        this.scorecardEl.style.display = 'none';
+        if (this.level) this.level.destroy();
+        document.getElementById('startMenu').style.display = 'flex';
+        renderMenuMeta(startModeKey, startRoundLengthKey);
+        window.__game = null;
+        game = null;
+      };
     }
     showRewardBurst({ starsEarned, resultLabel, streakBonus, cleanStreak }, onDone) {
       if (this.rewardTimer) clearTimeout(this.rewardTimer);
@@ -5780,12 +7080,21 @@
       this.progress = loadProgress();
       this.seed = this.modeKey === "daily" ? getDailySeedForKey(getTodayKey()) : (this.seed + 1) >>> 0;
       this.roundRng = mulberry32((this.seed ^ (this.difficultyKey.length * 4099)) >>> 0);
-      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
-      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
+      this.dailySignature = this.modeKey === "daily"
+        ? getDailyCourseSignature(getTodayKey(), this.difficultyKey, this.roundHoleCount, this.progress)
+        : null;
+      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
+      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
       this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey);
+      this.dailyRoundShotLimit = this.modeKey === "daily" ? getDailyRoundShotLimit(this.levels, this.difficultyKey) : null;
+      this.dailyAttemptCommitted = this.modeKey === "daily"
+        ? Math.max(0, Number(getDailyAttemptRecord(this.progress, getTodayKey(), this.difficultyKey)?.attemptsUsed) || 0) > 0
+        : true;
       this.currentLevelIndex = 0;
       this.scores = [];
       this.cleanStreak = 0;
+      this.roundFailed = false;
+      this.roundFailReason = null;
       this.registerLoadoutUsage();
       this.refreshMetaUi();
       this.loadLevel();
@@ -5800,6 +7109,10 @@
         challengeRule: this.challengeRule.id,
         seed: this.seed,
         stars: this.progress.stars,
+        dailyVariant: this.dailySignature?.variantId || null,
+        dailyAttemptRemaining: this.modeKey === "daily" ? getRemainingDailyAttempts(this.progress, getTodayKey(), this.difficultyKey) : null,
+        roundShotLimit: this.dailyRoundShotLimit,
+        roundFailed: this.roundFailed,
         previewUnlocked: this.hasOwnedItem('preview_path'),
         equippedCosmetic: this.progress.equippedCosmetic,
         equippedTrail: this.progress.equippedTrail,
@@ -5814,6 +7127,7 @@
         par: level ? level.data.par : null,
         modifier: level ? level.data.modifier?.id : null,
         shots: level ? level.shots : null,
+        holeShotLimit: level ? level.shotLimit : null,
         ball: level ? {
           x: Math.round(level.ball.x),
           y: Math.round(level.ball.y),
@@ -5889,6 +7203,13 @@
     this.sinkCelebrationFrames = 0;
     this.falseHoleCapture = null;
     this.reduceMotion = !!getLiveSettings().reduceMotion;
+    this.shotLimit = Number.isFinite(roundConfig.shotLimit) ? Math.max(1, roundConfig.shotLimit) : null;
+    this.roundShotLimit = Number.isFinite(roundConfig.roundShotLimit) ? Math.max(1, roundConfig.roundShotLimit) : null;
+    this.priorRoundShots = Math.max(0, Number(roundConfig.priorRoundShots) || 0);
+    this.dailyVariant = roundConfig.dailyVariant || data.dailyVariant || null;
+    this.failTriggered = false;
+    this.onFirstShot = typeof roundConfig.onFirstShot === "function" ? roundConfig.onFirstShot : null;
+    this.firstShotHandled = false;
 
     document.getElementById('shotCount').textContent = this.shots;
 
@@ -6040,6 +7361,14 @@
           this.beginReplayCapture();
           this.holeReplayStarted = true;
         }
+        if (!this.firstShotHandled) {
+          this.firstShotHandled = true;
+          if (this.onFirstShot && this.onFirstShot() === false) {
+            this.isAiming = false;
+            this.aimVector = null;
+            return;
+          }
+        }
         const curveDirection = this.ball.getCurveDirectionFromAim(dx, dy);
         const previewActive = this.previewUnlocked && this.modifier.id !== "no_preview"
           && !(this.challengeRule.id === "one_shot_preview" && this.shots > 0);
@@ -6068,6 +7397,21 @@
     this.update();
     this.render();
     this.frameRequestId = requestAnimationFrame(() => this.loop());
+  }
+
+  failLevel(reason = "hole_limit") {
+    if (this.levelComplete || this.failTriggered) return;
+    this.levelComplete = true;
+    this.failTriggered = true;
+    this.finishReplayCapture();
+    this.onComplete({
+      status: "failed",
+      reason,
+      shots: this.shots,
+      limit: reason === "hole_limit" ? this.shotLimit : this.roundShotLimit,
+      hole: this.data.id,
+      priorRoundShots: this.priorRoundShots
+    });
   }
 
   step(steps = 1) {
@@ -6233,8 +7577,16 @@
         setTimeout(() => {
           clearInterval(sinkInterval);
           this.finishReplayCapture();
-          this.onComplete(this.shots);
+          this.onComplete({ status: "completed", shots: this.shots });
         }, 600);
+      }
+    }
+    const roundShots = this.priorRoundShots + this.shots;
+    if (!this.levelComplete && !this.failTriggered && this.ball.speed() <= 0.12) {
+      if (this.shotLimit && this.shots >= this.shotLimit) {
+        this.failLevel("hole_limit");
+      } else if (this.roundShotLimit && roundShots >= this.roundShotLimit) {
+        this.failLevel("round_limit");
       }
     }
     if (this.sinkCelebrationFrames > 0) {
@@ -6433,7 +7785,7 @@
     const canvases = [];
     let previousCamX = null;
     let previousCamY = null;
-    const modeStamp = this.modeKey === 'daily' ? `Daily • ${getTodayKey()} • Seed ${this.seed}` : `Standard • Seed ${this.seed}`;
+    const modeStamp = this.modeKey === 'daily' ? `Daily • ${getTodayKey()} • Seed ${this.seed}` : `Practice • Seed ${this.seed}`;
     for (const frame of expandedFrames) {
       const exportCanvas = document.createElement('canvas');
       exportCanvas.width = width;
@@ -6696,12 +8048,18 @@
   renderHudOverlay(ctx) {
     const width = this.camera.canvasWidth;
     const isCompact = width <= 430;
-    const panelWidth = Math.min(width - 20, isCompact ? 250 : 332);
-    const panelHeight = isCompact ? 38 : 42;
+    const panelWidth = Math.min(width - 20, isCompact ? 272 : 348);
+    const panelHeight = isCompact ? 48 : 54;
     const x = 10;
     const y = 10;
     const modifierText = this.modifier?.id && this.modifier.id !== "none" ? this.modifier.name : null;
     const ruleText = this.challengeRule?.id && this.challengeRule.id !== "none" ? this.challengeRule.name : null;
+    const shotCapText = this.shotLimit ? `${this.shots}/${this.shotLimit} strokes` : `${this.shots} Shot${this.shots === 1 ? "" : "s"}`;
+    const signatureText = this.data.setpiece?.id !== "none"
+      ? `Setpiece: ${this.data.setpiece.name}`
+      : this.data.hazardTheme?.name
+        ? `Spotlight: ${this.data.hazardTheme.name}`
+        : this.dailyVariant;
 
     ctx.save();
     fillRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, "rgba(255,255,255,0.88)");
@@ -6713,9 +8071,9 @@
     ctx.font = isCompact ? "700 13px system-ui, -apple-system, sans-serif" : "700 14px system-ui, -apple-system, sans-serif";
     ctx.fillText(`Hole ${this.data.id} · Par ${this.data.par}`, x + 12, y + 14);
     ctx.textAlign = "right";
-    ctx.fillText(`${this.shots} Shot${this.shots === 1 ? "" : "s"}`, x + panelWidth - 12, y + 14);
+    ctx.fillText(shotCapText, x + panelWidth - 12, y + 14);
 
-    const detailParts = [this.difficulty?.label || null, ruleText, modifierText].filter(Boolean);
+    const detailParts = [this.difficulty?.label || null, ruleText, modifierText, signatureText].filter(Boolean);
     if (detailParts.length) {
       ctx.font = isCompact ? "600 10px system-ui, -apple-system, sans-serif" : "600 11px system-ui, -apple-system, sans-serif";
       ctx.fillStyle = VISUAL_STYLE.muted;
@@ -6958,6 +8316,7 @@
       return 0.02 + this.abilityTier * 0.007;
     }
     getFieldResistance() {
+      if (this.ability.id === "pressure_core") return 0.48;
       if (this.ability.id !== "anchor_core") return 1;
       return Math.max(0.38, 0.72 - this.abilityTier * 0.1);
     }
@@ -7813,9 +9172,24 @@ class FanZone {
       ball.x > this.x && ball.x < this.x + this.width &&
       ball.y > this.y && ball.y < this.y + this.height
     ) {
+      const centerX = this.x + this.width / 2;
+      const centerY = this.y + this.height / 2;
+      const normX = Math.abs(ball.x - centerX) / Math.max(1, this.width / 2);
+      const normY = Math.abs(ball.y - centerY) / Math.max(1, this.height / 2);
+      const depth = 1 - clamp(Math.max(normX, normY), 0, 1);
       const resist = ball.getFieldResistance ? ball.getFieldResistance() : 1;
-      ball.vx += this.forceX * this.power * resist;
-      ball.vy += this.forceY * this.power * resist;
+      const push = this.power * (1.4 + depth * 1.5) * resist;
+      ball.vx += this.forceX * push;
+      ball.vy += this.forceY * push;
+      const speed = ball.speed ? ball.speed() : Math.hypot(ball.vx, ball.vy);
+      if (speed > 0.12) {
+        const alignment = ((ball.vx * this.forceX) + (ball.vy * this.forceY)) / Math.max(0.001, speed);
+        const steer = clamp((0.55 - alignment) / 0.55, 0, 1) * (0.1 + depth * 0.12) * resist;
+        ball.vx = lerp(ball.vx, this.forceX * Math.max(speed, 1.8), steer);
+        ball.vy = lerp(ball.vy, this.forceY * Math.max(speed, 1.8), steer);
+      }
+      ball.vx *= 0.992 - depth * 0.01;
+      ball.vy *= 0.992 - depth * 0.01;
     }
   }
 }
@@ -8189,7 +9563,7 @@ function renderObstacleGalleryPage() {
   }
 
   let game = null;
-  let startModeKey = "standard";
+  let startModeKey = "daily";
 
   function countReadyTreeNodes(progress, branchKey = null) {
     const branches = branchKey ? { [branchKey]: PROGRESSION_TREE[branchKey] } : PROGRESSION_TREE;
@@ -8221,36 +9595,194 @@ function renderObstacleGalleryPage() {
     return null;
   }
 
-  function renderMenuMeta(modeKey = "standard", roundLengthKey = "default") {
+  function renderMenuMeta(modeKey = "daily", roundLengthKey = "default") {
     const progress = loadProgress();
-    const newlyClaimedGoals = claimCompletedGoals(progress);
-    if (newlyClaimedGoals.length) saveProgress(progress);
     const todayKey = getTodayKey();
+    const weekStartKey = getWeekStartKey(todayKey);
+    const tomorrowKey = getTomorrowKey(todayKey);
+    const loginReward = claimDailyLoginReward(progress, todayKey);
+    const newlyClaimedGoals = claimCompletedGoals(progress);
+    const newlyClaimedWeeklyGoals = claimCompletedWeeklyGoals(progress, weekStartKey);
+    const newlyClaimedWeeklyChest = claimWeeklyChest(progress, weekStartKey);
+    const newlyClaimedCalendarRewards = claimCalendarMilestoneRewards(progress);
+    if (loginReward || newlyClaimedGoals.length || newlyClaimedWeeklyGoals.length || newlyClaimedWeeklyChest.length || newlyClaimedCalendarRewards.length) saveProgress(progress);
     const dailySeed = getDailySeedForKey(todayKey);
     const note = document.getElementById('menuNote');
+    const hero = document.getElementById('menuHero');
     const progressGrid = document.getElementById('menuProgressGrid');
     const goalsGrid = document.getElementById('menuGoalsGrid');
+    const tomorrowGrid = document.getElementById('menuTomorrowGrid');
+    const leaderboardGrid = document.getElementById('menuLeaderboardGrid');
+    const rewardsGrid = document.getElementById('menuRewardsGrid');
+    const calendar7 = document.getElementById('menuCalendar7');
+    const calendar30 = document.getElementById('menuCalendar30');
+    const calendarDetail = document.getElementById('menuCalendarDetail');
     const useFullCard = roundLengthKey === "18";
     const roundLengthLabel = useFullCard ? "18-hole card" : "default card";
     const streak = getDailyStreak(progress);
-    const dailySignature = getDailyCourseSignature(todayKey, "average", useFullCard ? 18 : 9);
+    const nextReward = getNextDailyReward(progress);
+    const collection = getCollectionProgress(progress);
+    const averageSignature = getDailyCourseSignature(todayKey, "average", useFullCard ? 18 : 9, progress);
+    const averageAttempts = getRemainingDailyAttempts(progress, todayKey, "average");
+    const averageBoard = buildLocalLeaderboard(progress, todayKey, "average", useFullCard ? 18 : 9);
+    const unlockedRewards = getUnlockedDailyRewards(progress);
+    const tokenCount = Math.max(0, Number(progress.dailyTokens) || 0);
+    const weeklyStats = getWeeklyGoalStats(progress, weekStartKey);
+    const tomorrowSignature = getDailyCourseSignature(tomorrowKey, "average", useFullCard ? 18 : 9, progress);
+    const tomorrowBoard = buildLocalLeaderboard(progress, tomorrowKey, "average", useFullCard ? 18 : 9);
+    const nextWeeklyGoal = WEEKLY_GOALS.find(goal => !progress.weeklyGoalClaims?.[weekStartKey]?.[goal.id] && getWeeklyGoalProgress(goal, progress, weekStartKey) < goal.target) || null;
+    const weeklyChestReady = WEEKLY_GOALS.every(goal => Boolean(progress.weeklyGoalClaims?.[weekStartKey]?.[goal.id]));
+    const weeklyChestOpened = Boolean(progress.weeklyChestClaims?.[weekStartKey]);
+    const cosmeticMastery = formatMasteryLabel(progress, "cosmetics", progress.equippedCosmetic, "Classic");
+    const trailMastery = formatMasteryLabel(progress, "trails", progress.equippedTrail, "No Trail");
+    const abilityMastery = formatMasteryLabel(progress, "abilities", progress.equippedAbility, "Standard Core");
+
+    if (hero) {
+      hero.innerHTML = modeKey === "daily"
+        ? `
+          <div class="menu-hero-top">
+            <div>
+              <div class="menu-hero-kicker">Today&apos;s Main Card</div>
+              <div class="menu-hero-title">${averageSignature.variantName}</div>
+              <div class="menu-hero-copy">${averageSignature.variantDescription} Featured layout: ${formatLayoutLabel(averageSignature.featuredLayout)}. Spotlight: ${HAZARD_SPOTLIGHTS[averageSignature.featuredSpotlight]?.name || 'Mixed Flow'}.</div>
+            </div>
+            <div class="menu-streak-badge">
+              <strong>${streak}</strong>
+              <span>Day Streak</span>
+            </div>
+          </div>
+          <div class="menu-hero-grid">
+            <div class="menu-hero-chip">
+              <strong>Attempts</strong>
+              <span>${averageAttempts}/${DAILY_ATTEMPT_LIMIT} official average runs left today</span>
+            </div>
+            <div class="menu-hero-chip">
+              <strong>Medal Line</strong>
+              <span>Gold III ${averageBoard.targets.gold} · Silver III ${averageBoard.targets.silver} · Bronze III ${averageBoard.targets.bronze}</span>
+            </div>
+            <div class="menu-hero-chip">
+              <strong>Next Unlock</strong>
+              <span>${nextReward ? `${nextReward.name} in ${Math.max(0, nextReward.days - streak)} day${nextReward.days - streak === 1 ? '' : 's'}` : 'All daily mechanic unlocks live'}</span>
+            </div>
+            <div class="menu-hero-chip">
+              <strong>Daily Tokens</strong>
+              <span>${tokenCount}◈ banked • Gold pays ${DAILY_TOKEN_REWARDS.Gold}◈</span>
+            </div>
+          </div>
+        `
+        : `
+          <div class="menu-hero-top">
+            <div>
+              <div class="menu-hero-kicker">Practice Mode</div>
+              <div class="menu-hero-title">Open Practice</div>
+              <div class="menu-hero-copy">Fresh random seeds, unlimited retries, and no official attempt pressure. Great for learning lines before tomorrow&apos;s card.</div>
+            </div>
+            <div class="menu-streak-badge">
+              <strong>${collection.owned}</strong>
+              <span>Unlocked</span>
+            </div>
+          </div>
+          <div class="menu-hero-grid">
+            <div class="menu-hero-chip">
+              <strong>Streak</strong>
+              <span>${streak} day${streak === 1 ? '' : 's'} carried into the next Daily</span>
+            </div>
+            <div class="menu-hero-chip">
+              <strong>Use Practice For</strong>
+              <span>Shot routing, setpiece reads, and shop loadout testing</span>
+            </div>
+          </div>
+        `;
+    }
+
     note.textContent = modeKey === "daily"
-      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. Featured: ${formatLayoutLabel(dailySignature.featuredLayout)} • ${HAZARD_SPOTLIGHTS[dailySignature.featuredSpotlight]?.name || 'Mixed Flow'}. Round length: ${roundLengthLabel}. Current streak: ${streak} day${streak === 1 ? '' : 's'}.`
-      : `Standard runs use a fresh random seed each time. Round length: ${roundLengthLabel}. Daily streak: ${streak} day${streak === 1 ? '' : 's'}.`;
+      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. One official run per difficulty. Miss the stroke caps and the card is gone until tomorrow.`
+      : `Practice uses a fresh random seed each time. No daily lockout here. Next official Daily reset in ${getTimeUntilNextResetLabel()}.`;
+
     for (const [key, preset] of Object.entries(DIFFICULTY_PRESETS)) {
       const record = modeKey === "daily"
-        ? progress.dailyBestRounds[`${todayKey}:${key}`]
+        ? progress.dailyBestRounds[getDailyRunKey(todayKey, key)]
         : progress.bestRounds[key];
       const target = document.getElementById(`menu${preset.label}Meta`);
       if (!target) continue;
       const base = key === "beginner"
-        ? "Cleanest lanes and the easiest reads."
+        ? "Easy opener, forgiving lanes, smaller official caps."
         : key === "average"
-          ? "Balanced hazards and route choices."
-          : "Tighter lanes and harder hazard pressure.";
+          ? "Main competitive card with medal pressure and lane reads."
+          : "Sharpest caps, hardest late holes, fastest collapse if you miss.";
       const holeCount = useFullCard ? 18 : preset.holeCount;
-      target.textContent = `${holeCount} holes. ${base} Best: ${formatBestLabel(record)}. Track: ${formatTrackStatus(progress.difficultyTracks[key])}.`;
+      if (modeKey === "daily") {
+        const signature = getDailyCourseSignature(todayKey, key, holeCount, progress);
+        const board = buildLocalLeaderboard(progress, todayKey, key, holeCount);
+        const attemptsLeft = getRemainingDailyAttempts(progress, todayKey, key);
+        target.textContent = `${holeCount} holes. ${base} Attempts left: ${attemptsLeft}. Best: ${formatBestLabel(record)}. Gold ${board.targets.gold} · Silver ${board.targets.silver}. ${signature.variantName}.`;
+      } else {
+        target.textContent = `${holeCount} holes. ${base} Best: ${formatBestLabel(record)}. Track: ${formatTrackStatus(progress.difficultyTracks[key])}.`;
+      }
     }
+
+    if (leaderboardGrid) {
+      leaderboardGrid.innerHTML = averageBoard.entries.map((entry, index) => `
+        <div class="menu-progress-row"><span>#${index + 1} ${entry.name}</span><span>${entry.shots} shots · ${entry.rankTier || entry.medal}</span></div>
+      `).join("");
+    }
+
+    if (tomorrowGrid) {
+      const spotlightName = HAZARD_SPOTLIGHTS[tomorrowSignature.featuredSpotlight]?.name || "Mixed Flow";
+      const weeklyPushCopy = nextWeeklyGoal
+        ? `${formatWeeklyGoalProgress(nextWeeklyGoal, progress, weekStartKey)} now • ${nextWeeklyGoal.rewardTokens}◈ when complete`
+        : "All weekly token goals claimed for this week";
+      tomorrowGrid.innerHTML = [
+        `<div class="menu-progress-row"><span>Variant</span><span>${tomorrowSignature.variantName} • ${formatDateLabel(tomorrowKey)}</span></div>`,
+        `<div class="menu-progress-row"><span>Spotlight</span><span>${spotlightName} • ${formatLayoutLabel(tomorrowSignature.featuredLayout)} focus</span></div>`,
+        `<div class="menu-progress-row"><span>Medal Line</span><span>Gold ${tomorrowBoard.targets.gold} · Silver ${tomorrowBoard.targets.silver} · Bronze ${tomorrowBoard.targets.bronze}</span></div>`,
+        `<div class="menu-progress-row"><span>Tier Chase</span><span>Gold I ${tomorrowBoard.targets.gold - 2} · Gold II ${tomorrowBoard.targets.gold - 1} · Gold III ${tomorrowBoard.targets.gold}</span></div>`,
+        `<div class="menu-progress-row"><span>Reward Tease</span><span>Gold pays ${DAILY_TOKEN_REWARDS.Gold}◈ tomorrow • ${weeklyPushCopy}</span></div>`,
+        `<div class="menu-progress-row"><span>Read</span><span>${tomorrowSignature.variantDescription}</span></div>`
+      ].join("");
+    }
+
+    if (rewardsGrid) {
+      const rewardRows = [];
+      if (loginReward) rewardRows.push(`<div class="menu-progress-row"><span>Login Bonus</span><span>+${loginReward.stars}★ claimed. Next in ${loginReward.nextRewardIn}</span></div>`);
+      rewardRows.push(`<div class="menu-progress-row"><span>Next Bonus</span><span>${DAILY_LOGIN_REWARD_STARS}★ in ${getTimeUntilNextResetLabel()}</span></div>`);
+      rewardRows.push(`<div class="menu-progress-row"><span>Daily Tokens</span><span>${tokenCount}◈ total • Bronze ${DAILY_TOKEN_REWARDS.Bronze}◈ • Silver ${DAILY_TOKEN_REWARDS.Silver}◈ • Gold ${DAILY_TOKEN_REWARDS.Gold}◈</span></div>`);
+      rewardRows.push(`<div class="menu-progress-row"><span>Weekly Reset</span><span>${formatWeekRangeLabel(weekStartKey)} • resets in ${getTimeUntilWeeklyResetLabel()}</span></div>`);
+      rewardRows.push(`<div class="menu-progress-row"><span>Weekly Push</span><span>${weeklyStats.clears} clears • ${weeklyStats.silverOrBetter} Silver+ • ${weeklyStats.golds} Gold</span></div>`);
+      rewardRows.push(`<div class="menu-progress-row"><span>Weekly Chest</span><span>${weeklyChestOpened ? 'Opened this week' : weeklyChestReady ? `Ready • +${WEEKLY_CHEST_REWARD.stars}★ +${WEEKLY_CHEST_REWARD.tokens}◈` : `${Object.values(progress.weeklyGoalClaims?.[weekStartKey] || {}).filter(Boolean).length}/${WEEKLY_GOALS.length} goals claimed`}</span></div>`);
+      rewardRows.push(`<div class="menu-progress-row"><span>Daily Mechanics</span><span>${unlockedRewards.length ? unlockedRewards.map(reward => reward.name).join(", ") : "None yet"}</span></div>`);
+      const nextCalendarMilestone = CALENDAR_MILESTONE_REWARDS.find(item => !progress.calendarMilestoneClaims?.[item.days]);
+      rewardRows.push(`<div class="menu-progress-row"><span>Calendar Track</span><span>${getTotalDailyCompletions(progress)} clears total • ${nextCalendarMilestone ? `next ${nextCalendarMilestone.label} pays ${formatCalendarMilestoneReward(nextCalendarMilestone)}` : 'all milestone rewards claimed'}</span></div>`);
+      if (nextReward) {
+        rewardRows.push(`<div class="menu-progress-row"><span>Next Unlock</span><span>${nextReward.name} in ${Math.max(0, nextReward.days - streak)} day${nextReward.days - streak === 1 ? '' : 's'}</span></div>`);
+      }
+      if (newlyClaimedWeeklyGoals.length) {
+        rewardRows.push(...newlyClaimedWeeklyGoals.map(message => `<div class="menu-progress-row"><span>Weekly Reward</span><span>${message}</span></div>`));
+      }
+      if (newlyClaimedWeeklyChest.length) {
+        rewardRows.push(...newlyClaimedWeeklyChest.map(message => `<div class="menu-progress-row"><span>Weekly Chest</span><span>${message}</span></div>`));
+      }
+      if (newlyClaimedCalendarRewards.length) {
+        rewardRows.push(...newlyClaimedCalendarRewards.map(message => `<div class="menu-progress-row"><span>Calendar Reward</span><span>${message}</span></div>`));
+      }
+      rewardsGrid.innerHTML = rewardRows.join("");
+    }
+    if (calendar7) {
+      calendar7.innerHTML = renderCalendarStrip(getCalendarDays(7, todayKey), progress, [3, 5, 7]);
+    }
+    if (calendar30) {
+      calendar30.innerHTML = renderCalendarStrip(getCalendarDays(30, todayKey), progress, [3, 5, 7, 14, 30]);
+    }
+    if (calendarDetail) {
+      calendarDetail.innerHTML = getCalendarDetailCopy(progress, todayKey);
+    }
+    document.querySelectorAll('[data-calendar-day]').forEach(button => {
+      button.onclick = () => {
+        document.querySelectorAll('[data-calendar-day]').forEach(other => other.classList.toggle('active', other === button));
+        if (calendarDetail) calendarDetail.innerHTML = getCalendarDetailCopy(progress, button.dataset.calendarDay);
+      };
+    });
+
     if (progressGrid) {
       progressGrid.innerHTML = Object.entries(PROGRESSION_TREE).map(([key, branch]) => {
         const clears = Math.max(0, Number(progress.difficultyTracks?.[key]?.clears) || 0);
@@ -8264,18 +9796,131 @@ function renderObstacleGalleryPage() {
               : `Next: ${next.node.name}`
           : "Branch complete";
         return `<div class="menu-progress-row"><span>${branch.label}</span><span>${clears} clears · ${ready} ready · ${suffix}</span></div>`;
-      }).join("") + `<div class="menu-progress-row"><span>Overall</span><span>${countReadyTreeNodes(progress)} node${countReadyTreeNodes(progress) === 1 ? '' : 's'} ready</span></div>`;
+      }).join("") + `
+        <div class="menu-progress-row"><span>Ball Mastery</span><span>${cosmeticMastery}</span></div>
+        <div class="menu-progress-row"><span>Trail Mastery</span><span>${trailMastery}</span></div>
+        <div class="menu-progress-row"><span>Core Mastery</span><span>${abilityMastery}</span></div>
+        <div class="menu-progress-row"><span>Overall</span><span>${countReadyTreeNodes(progress)} node${countReadyTreeNodes(progress) === 1 ? '' : 's'} ready · Collection ${collection.owned}/${collection.total}</span></div>`;
     }
     if (goalsGrid) {
-      goalsGrid.innerHTML = LONG_TERM_GOALS.map(goal => {
+      const weeklyRows = [
+        `<div class="menu-progress-row"><span>This Week</span><span>${formatWeekRangeLabel(weekStartKey)} • ${getTimeUntilWeeklyResetLabel()} left</span></div>`,
+        `<div class="menu-progress-row"><span>Weekly Chest</span><span>${weeklyChestOpened ? 'Opened' : weeklyChestReady ? `Ready • ${WEEKLY_CHEST_REWARD.stars}★ + ${WEEKLY_CHEST_REWARD.tokens}◈` : 'Claim all weekly goals to open'}</span></div>`,
+        ...WEEKLY_GOALS.map(goal => {
+          const claimed = Boolean(progress.weeklyGoalClaims?.[weekStartKey]?.[goal.id]);
+          const state = claimed ? 'Claimed' : `${formatWeeklyGoalProgress(goal, progress, weekStartKey)} • +${goal.rewardTokens}◈`;
+          return `<div class="menu-progress-row"><span>${goal.label}</span><span>${state}</span></div>`;
+        })
+      ];
+      const longTermRows = LONG_TERM_GOALS.map(goal => {
         const claimed = Boolean(progress.goalClaims?.[goal.id]);
         const state = claimed ? 'Complete' : `${formatGoalProgress(goal, progress)} • +${goal.rewardStars}★`;
         return `<div class="menu-progress-row"><span>${goal.label}</span><span>${state}</span></div>`;
-      }).join("");
+      });
+      goalsGrid.innerHTML = weeklyRows.concat(longTermRows).join("");
       if (newlyClaimedGoals.length) {
         goalsGrid.innerHTML += newlyClaimedGoals.map(message => `<div class="menu-progress-row"><span>Reward</span><span>${message}</span></div>`).join("");
       }
+      if (newlyClaimedWeeklyGoals.length) {
+        goalsGrid.innerHTML += newlyClaimedWeeklyGoals.map(message => `<div class="menu-progress-row"><span>Weekly Reward</span><span>${message}</span></div>`).join("");
+      }
+      if (newlyClaimedWeeklyChest.length) {
+        goalsGrid.innerHTML += newlyClaimedWeeklyChest.map(message => `<div class="menu-progress-row"><span>Weekly Chest</span><span>${message}</span></div>`).join("");
+      }
+      if (newlyClaimedCalendarRewards.length) {
+        goalsGrid.innerHTML += newlyClaimedCalendarRewards.map(message => `<div class="menu-progress-row"><span>Calendar Reward</span><span>${message}</span></div>`).join("");
+      }
     }
+    syncMenuCarousel();
+  }
+
+  let menuCarouselAutoTimer = null;
+  let menuCarouselScrollTimer = null;
+  let menuCarouselIndex = 0;
+
+  function getMenuCarouselState() {
+    const carousel = document.getElementById('menuCarousel');
+    const dots = document.getElementById('menuCarouselDots');
+    if (!carousel || !dots) return null;
+    const slides = Array.from(carousel.querySelectorAll('.menu-carousel-slide'));
+    return { carousel, dots, slides };
+  }
+
+  function renderMenuCarouselDots(activeIndex = menuCarouselIndex) {
+    const state = getMenuCarouselState();
+    if (!state) return;
+    const { dots, slides } = state;
+    dots.innerHTML = slides.map((_, index) => `
+      <button class="menu-carousel-dot ${index === activeIndex ? 'active' : ''}" data-carousel-dot="${index}" aria-label="Show card ${index + 1}"></button>
+    `).join("");
+    dots.querySelectorAll('[data-carousel-dot]').forEach(button => {
+      button.onclick = () => {
+        const nextIndex = Number(button.dataset.carouselDot) || 0;
+        scrollMenuCarouselTo(nextIndex);
+        restartMenuCarouselAuto();
+      };
+    });
+  }
+
+  function getMenuCarouselIndex() {
+    const state = getMenuCarouselState();
+    if (!state || !state.slides.length) return 0;
+    const { carousel, slides } = state;
+    const width = slides[0].offsetWidth + 10;
+    if (width <= 0) return 0;
+    return clamp(Math.round(carousel.scrollLeft / width), 0, slides.length - 1);
+  }
+
+  function scrollMenuCarouselTo(index, behavior = 'smooth') {
+    const state = getMenuCarouselState();
+    if (!state || !state.slides.length) return;
+    const nextIndex = clamp(index, 0, state.slides.length - 1);
+    menuCarouselIndex = nextIndex;
+    state.carousel.scrollTo({ left: state.slides[nextIndex].offsetLeft, behavior });
+    renderMenuCarouselDots(menuCarouselIndex);
+  }
+
+  function stopMenuCarouselAuto() {
+    if (menuCarouselAutoTimer) clearInterval(menuCarouselAutoTimer);
+    menuCarouselAutoTimer = null;
+  }
+
+  function startMenuCarouselAuto() {
+    stopMenuCarouselAuto();
+    const progress = loadProgress();
+    if (progress.settings?.reduceMotion) return;
+    const state = getMenuCarouselState();
+    if (!state || state.slides.length <= 1) return;
+    menuCarouselAutoTimer = setInterval(() => {
+      const nextIndex = (menuCarouselIndex + 1) % state.slides.length;
+      scrollMenuCarouselTo(nextIndex);
+    }, 4200);
+  }
+
+  function restartMenuCarouselAuto() {
+    stopMenuCarouselAuto();
+    startMenuCarouselAuto();
+  }
+
+  function syncMenuCarousel() {
+    const state = getMenuCarouselState();
+    if (!state || !state.slides.length) return;
+    menuCarouselIndex = clamp(menuCarouselIndex, 0, state.slides.length - 1);
+    renderMenuCarouselDots(menuCarouselIndex);
+    scrollMenuCarouselTo(menuCarouselIndex, 'auto');
+    if (!state.carousel.dataset.carouselBound) {
+      state.carousel.dataset.carouselBound = '1';
+      state.carousel.addEventListener('scroll', () => {
+        if (menuCarouselScrollTimer) clearTimeout(menuCarouselScrollTimer);
+        menuCarouselScrollTimer = setTimeout(() => {
+          menuCarouselIndex = getMenuCarouselIndex();
+          renderMenuCarouselDots(menuCarouselIndex);
+        }, 60);
+      }, { passive: true });
+      state.carousel.addEventListener('pointerdown', restartMenuCarouselAuto, { passive: true });
+      state.carousel.addEventListener('touchstart', restartMenuCarouselAuto, { passive: true });
+    }
+    restartMenuCarouselAuto();
   }
 
   function renderStandaloneStatsModal() {
@@ -8315,6 +9960,9 @@ function renderObstacleGalleryPage() {
       Favorite core: <strong>${favoriteName(stats.usage.abilities, 'Standard Core')}</strong><br />
       Favorite trail: <strong>${favoriteName(stats.usage.trails, 'No Trail')}</strong><br />
       Collection: <strong>${collection.owned}/${collection.total}</strong><br />
+      Ball mastery: <strong>${formatMasteryLabel(progress, 'cosmetics', progress.equippedCosmetic, 'Classic')}</strong><br />
+      Trail mastery: <strong>${formatMasteryLabel(progress, 'trails', progress.equippedTrail, 'No Trail')}</strong><br />
+      Core mastery: <strong>${formatMasteryLabel(progress, 'abilities', progress.equippedAbility, 'Standard Core')}</strong><br />
       Best by difficulty: Beginner ${formatBestLabel(progress.bestRounds.beginner)}, Average ${formatBestLabel(progress.bestRounds.average)}, Hardcore ${formatBestLabel(progress.bestRounds.hardcore)}.<br />
       Next goal: <strong>${nextGoal ? `${nextGoal.label} (${formatGoalProgress(nextGoal, progress)})` : 'All current goals complete'}</strong>.
     `;
@@ -8381,6 +10029,16 @@ function renderObstacleGalleryPage() {
 
   function startGame(difficultyKey) {
     const selected = DIFFICULTY_PRESETS[difficultyKey] ? difficultyKey : "average";
+    const progress = loadProgress();
+    if (startModeKey === "daily") {
+      const attemptsLeft = getRemainingDailyAttempts(progress, getTodayKey(), selected);
+      if (attemptsLeft <= 0) {
+        renderMenuMeta(startModeKey, startRoundLengthKey);
+        const note = document.getElementById('menuNote');
+        if (note) note.textContent = `Daily ${selected} attempt already spent. Practice mode is still open until the next reset in ${getTimeUntilNextResetLabel()}.`;
+        return;
+      }
+    }
     document.getElementById('startMenu').style.display = 'none';
     const seed = startModeKey === "daily" ? getDailySeedForKey(getTodayKey()) : resolveInitialSeed();
     const roundHoleCount = startRoundLengthKey === "18" ? 18 : null;
