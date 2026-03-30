@@ -997,6 +997,10 @@
         <strong>Progression</strong>
         <div id="menuProgressGrid" class="menu-progress-grid"></div>
       </div>
+      <div class="menu-progress">
+        <strong>Goals</strong>
+        <div id="menuGoalsGrid" class="menu-progress-grid"></div>
+      </div>
     </div>
   </div>
 
@@ -1389,6 +1393,12 @@
     par_rush: { id: "par_rush", name: "Par Rush", description: "Par or better earns a bonus star." },
     no_shop_loadout: { id: "no_shop_loadout", name: "No Shop Loadout", description: "Round locks to the standard shell, trail, and core." }
   };
+  const HAZARD_SPOTLIGHTS = {
+    magnet_field: { id: "magnet_field", name: "Magnet Field", label: "All magnets", minHole: 3, difficulties: ["average", "hardcore"] },
+    sandstorm: { id: "sandstorm", name: "Sandstorm", label: "All sand", minHole: 3, difficulties: ["average", "hardcore"] },
+    boost_grid: { id: "boost_grid", name: "Boost Grid", label: "All boost pads", minHole: 4, difficulties: ["average", "hardcore"] },
+    fan_drift: { id: "fan_drift", name: "Fan Drift", label: "All fans", minHole: 4, difficulties: ["average", "hardcore"] }
+  };
   const SETPIECE_TEMPLATES = {
     none: { id: "none", name: "Standard Flow" },
     shutter_run: { id: "shutter_run", name: "Shutter Run" },
@@ -1401,6 +1411,13 @@
     shutter_stack: { id: "shutter_stack", name: "Shutter Stack" },
     rail_crossfire: { id: "rail_crossfire", name: "Rail Crossfire" }
   };
+  const LONG_TERM_GOALS = [
+    { id: "daily_streak_3", label: "3-Day Streak", description: "Finish the daily challenge 3 days in a row.", kind: "daily_streak", target: 3, rewardStars: 20 },
+    { id: "daily_streak_7", label: "7-Day Streak", description: "Keep the daily card alive for a full week.", kind: "daily_streak", target: 7, rewardStars: 45 },
+    { id: "layout_tour", label: "Layout Tour", description: "See 8 unique layout types across your runs.", kind: "unique_layouts", target: 8, rewardStars: 28 },
+    { id: "hardcore_grinder", label: "Hardcore Grinder", description: "Complete 4 Hardcore rounds.", kind: "difficulty_clears", difficulty: "hardcore", target: 4, rewardStars: 38 },
+    { id: "collection_half", label: "Half Collection", description: "Own 12 shop unlocks.", kind: "collection_owned", target: 12, rewardStars: 32 }
+  ];
   const VISUAL_STYLE = {
     ink: "#111111",
     paper: "#ffffff",
@@ -1421,10 +1438,12 @@
     "full_circle",
     "switchback",
     "hook_left",
-    "hook_right"
+    "hook_right",
+    "dogleg_arc"
   ]);
   const DEBUG_FLAGS = {
     forceFalseHole: DEBUG_PARAMS.get('forceFalseHole') === '1',
+    forcePreview: DEBUG_PARAMS.get('forcePreview') === '1',
     autostartDifficulty: DEBUG_PARAMS.get('autostart'),
     debugHole: Math.max(1, Number(DEBUG_PARAMS.get('hole')) || 1),
     forceLayout: DEBUG_LAYOUTS.has(DEBUG_PARAMS.get('forceLayout')) ? DEBUG_PARAMS.get('forceLayout') : null
@@ -1485,6 +1504,38 @@
       abilitiesOwned,
       abilityTotal
     };
+  }
+  function getGoalProgress(goal, progress) {
+    if (!goal) return 0;
+    if (goal.kind === "daily_streak") return getDailyStreak(progress);
+    if (goal.kind === "difficulty_clears") return Math.max(0, Number(progress?.difficultyTracks?.[goal.difficulty]?.clears) || 0);
+    if (goal.kind === "collection_owned") return getCollectionProgress(progress).owned;
+    if (goal.kind === "unique_layouts") return Object.keys(progress?.stats?.layoutsSeen || {}).length;
+    return 0;
+  }
+  function formatGoalProgress(goal, progress) {
+    const value = getGoalProgress(goal, progress);
+    return `${Math.min(value, goal.target)}/${goal.target}`;
+  }
+  function getNextLongTermGoal(progress) {
+    for (const goal of LONG_TERM_GOALS) {
+      if (progress?.goalClaims?.[goal.id]) continue;
+      return goal;
+    }
+    return null;
+  }
+  function claimCompletedGoals(progress) {
+    progress.goalClaims = { ...(progress.goalClaims || {}) };
+    const rewards = [];
+    for (const goal of LONG_TERM_GOALS) {
+      if (progress.goalClaims[goal.id]) continue;
+      const value = getGoalProgress(goal, progress);
+      if (value < goal.target) continue;
+      progress.goalClaims[goal.id] = true;
+      progress.stars = Math.max(0, Number(progress.stars) || 0) + (goal.rewardStars || 0);
+      rewards.push(`${goal.label} complete. +${goal.rewardStars || 0} stars.`);
+    }
+    return rewards;
   }
 
   function pickSetpieceTemplate(rng, holeIndex, difficultyKey, layoutType) {
@@ -1893,6 +1944,7 @@
           dailyBestRounds: {},
           difficultyTracks: {},
           treeUnlocks: {},
+          goalClaims: {},
           stats: {
             holesCompleted: 0,
             roundsCompleted: 0,
@@ -1900,6 +1952,7 @@
             totalStarsEarned: 0,
             bestCleanStreak: 0,
             totalShares: 0,
+            layoutsSeen: {},
             usage: { cosmetics: {}, abilities: {}, trails: {} }
           },
           equippedCosmetic: "classic",
@@ -1920,6 +1973,7 @@
       const dailyBestRounds = { ...(parsed.dailyBestRounds || {}) };
       const difficultyTracks = { ...(parsed.difficultyTracks || {}) };
       const treeUnlocks = { ...(parsed.treeUnlocks || {}) };
+      const goalClaims = { ...(parsed.goalClaims || {}) };
       const stats = {
         holesCompleted: 0,
         roundsCompleted: 0,
@@ -1927,6 +1981,7 @@
         totalStarsEarned: 0,
         bestCleanStreak: 0,
         totalShares: 0,
+        layoutsSeen: {},
         usage: { cosmetics: {}, abilities: {}, trails: {} },
         ...(parsed.stats || {})
       };
@@ -1935,6 +1990,7 @@
         abilities: { ...(parsed.stats?.usage?.abilities || {}) },
         trails: { ...(parsed.stats?.usage?.trails || {}) }
       };
+      stats.layoutsSeen = { ...(parsed.stats?.layoutsSeen || {}) };
       for (const [key, value] of Object.entries(parsed.unlockedCosmetics || {})) {
         ownedItems[key] = Boolean(value);
       }
@@ -1958,6 +2014,7 @@
         dailyBestRounds,
         difficultyTracks,
         treeUnlocks,
+        goalClaims,
         stats,
         equippedCosmetic,
         equippedTrail,
@@ -1973,6 +2030,7 @@
           dailyBestRounds: {},
           difficultyTracks: {},
           treeUnlocks: {},
+          goalClaims: {},
           stats: {
             holesCompleted: 0,
             roundsCompleted: 0,
@@ -1980,6 +2038,7 @@
             totalStarsEarned: 0,
             bestCleanStreak: 0,
             totalShares: 0,
+            layoutsSeen: {},
             usage: { cosmetics: {}, abilities: {}, trails: {} }
           },
           equippedCosmetic: "classic",
@@ -2021,7 +2080,36 @@
     const medal = track.bestMedal || "Bronze";
     return `${track.clears} clear${track.clears === 1 ? "" : "s"} · best ${medal}`;
   }
-  function pickCourseTheme(rng, difficultyKey = "average") {
+  function getDailyCourseSignature(dateKey, difficultyKey = "average", holeCount = null) {
+    const key = `${dateKey}:${difficultyKey}:${holeCount || 0}`;
+    let hash = 0;
+    for (const char of key) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+    const seed = Math.abs(hash) >>> 0;
+    const rng = mulberry32(seed || 1);
+    const themeChoices = difficultyKey === "beginner"
+      ? ["classic", "ledger"]
+      : difficultyKey === "hardcore"
+        ? ["echo", "halftone", "ledger"]
+        : ["classic", "ledger", "halftone"];
+    const challengeChoices = difficultyKey === "beginner"
+      ? ["none", "none", "none"]
+      : difficultyKey === "hardcore"
+        ? ["one_shot_preview", "par_rush", "no_shop_loadout"]
+        : ["none", "one_shot_preview", "par_rush"];
+    const layoutPool = getLayoutPool(difficultyKey).filter(layout => layout !== "straight");
+    const spotlightPool = Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
+    return {
+      themeId: themeChoices[randInt(rng, 0, themeChoices.length - 1)],
+      challengeId: challengeChoices[randInt(rng, 0, challengeChoices.length - 1)],
+      featuredLayout: layoutPool[randInt(rng, 0, layoutPool.length - 1)] || getLayoutPool(difficultyKey)[0],
+      featuredSpotlight: spotlightPool.length ? spotlightPool[randInt(rng, 0, spotlightPool.length - 1)].id : null
+    };
+  }
+  function pickCourseTheme(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null) {
+    if (modeKey === "daily") {
+      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount);
+      return COURSE_THEMES[signature.themeId] || COURSE_THEMES.classic;
+    }
     const choices = difficultyKey === "beginner"
       ? ["classic", "ledger"]
       : difficultyKey === "hardcore"
@@ -2029,7 +2117,11 @@
         : ["classic", "ledger", "halftone"];
     return COURSE_THEMES[choices[randInt(rng, 0, choices.length - 1)]] || COURSE_THEMES.classic;
   }
-  function pickChallengeRule(rng, difficultyKey = "average") {
+  function pickChallengeRule(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null) {
+    if (modeKey === "daily") {
+      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount);
+      return CHALLENGE_RULES[signature.challengeId] || CHALLENGE_RULES.none;
+    }
     const choices = difficultyKey === "beginner"
       ? ["none", "none", "none"]
       : difficultyKey === "hardcore"
@@ -2169,6 +2261,124 @@
         ? ["left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle", "full_circle"]
         : ["straight", "left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle"];
     return choices[randInt(rng, 0, choices.length - 1)];
+  }
+  function getLayoutPool(difficultyKey = "average") {
+    if (difficultyKey === "beginner") return ["straight", "left_turn", "right_turn", "z_shape", "hook_left", "hook_right"];
+    if (difficultyKey === "hardcore") return ["left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle", "dogleg_arc"];
+    return ["straight", "left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle"];
+  }
+  function getArchetypePool(difficultyKey = "average") {
+    if (difficultyKey === "beginner") return ["fairway", "slalom", "islands", "fairway", "slalom"];
+    if (difficultyKey === "hardcore") return ["gauntlet", "splitter", "islands", "gauntlet", "slalom"];
+    return ["slalom", "gauntlet", "islands", "splitter", "fairway"];
+  }
+  function getDailyLayoutPool(signature, difficultyKey = "average") {
+    const featured = signature?.featuredLayout;
+    if (difficultyKey === "beginner") {
+      return [featured, "z_shape", "hook_left", "hook_right", "left_turn", "right_turn"].filter((item, index, arr) => item && arr.indexOf(item) === index);
+    }
+    if (difficultyKey === "hardcore") {
+      return [featured, "switchback", "horseshoe", "full_circle", "dogleg_arc", "hook_left", "hook_right"].filter((item, index, arr) => item && arr.indexOf(item) === index);
+    }
+    return [featured, "switchback", "horseshoe", "full_circle", "hook_left", "hook_right", "z_shape"].filter((item, index, arr) => item && arr.indexOf(item) === index);
+  }
+  function getDailyArchetypePool(signature, difficultyKey = "average") {
+    const spotlight = signature?.featuredSpotlight;
+    if (spotlight === "sandstorm") return difficultyKey === "hardcore" ? ["islands", "gauntlet", "splitter", "islands"] : ["islands", "slalom", "gauntlet", "islands"];
+    if (spotlight === "magnet_field") return difficultyKey === "hardcore" ? ["gauntlet", "splitter", "gauntlet", "slalom"] : ["gauntlet", "slalom", "splitter", "gauntlet"];
+    if (spotlight === "boost_grid") return ["splitter", "gauntlet", "slalom", "splitter"];
+    if (spotlight === "fan_drift") return ["gauntlet", "slalom", "islands", "gauntlet"];
+    return getArchetypePool(difficultyKey);
+  }
+  function selectFromCycleBag(rng, source, state, recent = []) {
+    if (!state.items.length) {
+      state.items = [...source];
+      shuffleInPlace(state.items, rng);
+    }
+    let pickIndex = state.items.findIndex(item => !recent.includes(item));
+    if (pickIndex < 0) pickIndex = 0;
+    return state.items.splice(pickIndex, 1)[0];
+  }
+  function buildCoursePlan(seed, holeCount, difficultyKey = "average", modeKey = "standard") {
+    const rng = mulberry32((seed ^ (holeCount * 6151) ^ (difficultyKey.length * 1217)) >>> 0);
+    const dailySignature = modeKey === "daily" ? getDailyCourseSignature(getTodayKey(), difficultyKey, holeCount) : null;
+    const layoutPool = modeKey === "daily" ? getDailyLayoutPool(dailySignature, difficultyKey) : getLayoutPool(difficultyKey);
+    const archetypePool = modeKey === "daily" ? getDailyArchetypePool(dailySignature, difficultyKey) : getArchetypePool(difficultyKey);
+    const layoutState = { items: [] };
+    const archetypeState = { items: [] };
+    const openerLayouts = modeKey === "daily"
+      ? layoutPool.slice(0, Math.min(layoutPool.length, difficultyKey === "hardcore" ? 4 : 3))
+      : difficultyKey === "beginner"
+        ? ["straight", "hook_left", "hook_right"]
+        : difficultyKey === "hardcore"
+          ? ["z_shape", "horseshoe", "switchback", "dogleg_arc"]
+          : ["straight", "left_turn", "right_turn", "switchback"];
+    const secondLayouts = modeKey === "daily"
+      ? layoutPool.slice(1, Math.min(layoutPool.length, difficultyKey === "hardcore" ? 5 : 4))
+      : difficultyKey === "beginner"
+        ? ["left_turn", "right_turn", "z_shape"]
+        : difficultyKey === "hardcore"
+          ? ["horseshoe", "hook_left", "hook_right", "full_circle"]
+          : ["left_turn", "right_turn", "hook_left", "hook_right", "horseshoe"];
+    const spotlightPool = Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
+    const spotlightSlots = modeKey === "daily"
+      ? Math.min(3, Math.max(1, difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1))
+      : difficultyKey === "hardcore" ? Math.min(3, Math.max(1, Math.floor(holeCount / 4))) : difficultyKey === "average" ? (holeCount >= 9 ? 1 : 0) : 0;
+    const spotlightHoles = new Set();
+    const spotlightMap = new Map();
+    for (let i = 0; i < spotlightSlots; i++) {
+      const minHole = modeKey === "daily" ? 1 : (difficultyKey === "hardcore" ? 1 : 3);
+      const maxHole = Math.max(minHole, holeCount - 2);
+      let chosen = null;
+      for (let attempt = 0; attempt < 24; attempt++) {
+        const candidate = randInt(rng, minHole, maxHole);
+        if (spotlightHoles.has(candidate)) continue;
+        chosen = candidate;
+        break;
+      }
+      if (chosen == null) continue;
+      spotlightHoles.add(chosen);
+      const spotlight = i === 0 && dailySignature?.featuredSpotlight
+        ? HAZARD_SPOTLIGHTS[dailySignature.featuredSpotlight]
+        : (spotlightPool.length ? spotlightPool[i % spotlightPool.length] : null);
+      if (spotlight) spotlightMap.set(chosen, spotlight.id);
+    }
+    const plan = [];
+    const recentLayouts = [];
+    const recentArchetypes = [];
+    for (let holeIndex = 0; holeIndex < holeCount; holeIndex++) {
+      let layoutType;
+      if (DEBUG_FLAGS.forceLayout) {
+        layoutType = DEBUG_FLAGS.forceLayout;
+      } else if (holeIndex === 0) {
+        layoutType = selectFromCycleBag(rng, openerLayouts, { items: [...openerLayouts] }, recentLayouts);
+      } else if (holeIndex === 1) {
+        layoutType = selectFromCycleBag(rng, secondLayouts, { items: [...secondLayouts] }, recentLayouts);
+      } else {
+        layoutType = selectFromCycleBag(rng, layoutPool, layoutState, recentLayouts.slice(-2));
+      }
+      if (dailySignature && (holeIndex === Math.max(1, Math.floor(holeCount / 2)) || holeIndex === Math.max(2, holeCount - 3))) {
+        layoutType = dailySignature.featuredLayout;
+      }
+      if (dailySignature && holeIndex === holeCount - 1 && !recentLayouts.includes(dailySignature.featuredLayout)) {
+        layoutType = dailySignature.featuredLayout;
+      }
+      recentLayouts.push(layoutType);
+      if (holeIndex === 1 && !layoutState.items.length) {
+        layoutState.items = getLayoutPool(difficultyKey).filter(item => !recentLayouts.includes(item));
+        shuffleInPlace(layoutState.items, rng);
+      }
+      const archetype = holeIndex === 0
+        ? (difficultyKey === "beginner" ? "fairway" : difficultyKey === "hardcore" ? "gauntlet" : "slalom")
+        : selectFromCycleBag(rng, archetypePool, archetypeState, recentArchetypes.slice(-1));
+      recentArchetypes.push(archetype);
+      plan.push({
+        layoutType,
+        archetype,
+        hazardTheme: spotlightMap.get(holeIndex) || (dailySignature && holeIndex >= 1 && holeIndex % 3 === 0 ? dailySignature.featuredSpotlight : null)
+      });
+    }
+    return plan;
   }
 
   function getLayoutDimensions(layoutType, holeIndex, rng) {
@@ -2728,6 +2938,154 @@
     };
   }
 
+  function normalizeAngle(angle) {
+    const full = Math.PI * 2;
+    let value = angle % full;
+    if (value < 0) value += full;
+    return value;
+  }
+
+  function isAngleWithinArc(angle, startAngle, endAngle) {
+    const angleN = normalizeAngle(angle);
+    const startN = normalizeAngle(startAngle);
+    const endN = normalizeAngle(endAngle);
+    if (startN <= endN) {
+      return angleN >= startN && angleN <= endN;
+    }
+    return angleN >= startN || angleN <= endN;
+  }
+
+  function sampleArcPoints(centerX, centerY, radius, startAngle, endAngle, steps = 18) {
+    const points = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const angle = lerp(startAngle, endAngle, t);
+      points.push({
+        x: centerX + Math.cos(angle) * radius,
+        y: centerY + Math.sin(angle) * radius
+      });
+    }
+    return points;
+  }
+
+  function buildDoglegArcWorld(holeIndex, rng) {
+    const width = 1260;
+    const height = 1500;
+    const wallThickness = 14;
+    const corridorHalf = 108 + Math.min(16, holeIndex * 2);
+    const centerRadius = 400 + (holeIndex >= 6 ? 24 : 0);
+    const centerX = 760;
+    const centerY = 980;
+    const startAngle = Math.PI;
+    const endAngle = Math.PI * 1.5;
+    const joinOverlap = wallThickness * 2;
+    const arcStartAngle = startAngle - 0.035;
+    const arcEndAngle = endAngle + 0.035;
+    const startCenter = { x: centerX - centerRadius, y: centerY };
+    const endCenter = { x: centerX, y: centerY - centerRadius };
+    const entryBottomY = height - 130;
+    const entryTopY = centerY;
+    const exitRightX = width - 180;
+
+    const walls = [];
+    walls.push({
+      x: startCenter.x - corridorHalf - wallThickness / 2,
+      y: entryTopY - joinOverlap,
+      width: wallThickness,
+      height: entryBottomY - entryTopY + joinOverlap
+    });
+    walls.push({
+      x: startCenter.x + corridorHalf - wallThickness / 2,
+      y: entryTopY - joinOverlap,
+      width: wallThickness,
+      height: entryBottomY - entryTopY + joinOverlap
+    });
+    walls.push({ type: "arc", cx: centerX, cy: centerY, radius: centerRadius - corridorHalf, thickness: wallThickness, startAngle: arcStartAngle, endAngle: arcEndAngle });
+    walls.push({ type: "arc", cx: centerX, cy: centerY, radius: centerRadius + corridorHalf, thickness: wallThickness, startAngle: arcStartAngle, endAngle: arcEndAngle });
+    walls.push({
+      x: endCenter.x - joinOverlap,
+      y: endCenter.y - corridorHalf - wallThickness / 2,
+      width: exitRightX - endCenter.x + joinOverlap,
+      height: wallThickness
+    });
+    walls.push({
+      x: endCenter.x - joinOverlap,
+      y: endCenter.y + corridorHalf - wallThickness / 2,
+      width: exitRightX - endCenter.x + joinOverlap,
+      height: wallThickness
+    });
+    const startCap = makeRotatedWallSegment(
+      { x: startCenter.x - corridorHalf, y: entryBottomY },
+      { x: startCenter.x + corridorHalf, y: entryBottomY },
+      wallThickness,
+      wallThickness
+    );
+    const endCap = {
+      x: Math.round(exitRightX - wallThickness / 2),
+      y: Math.round(endCenter.y - corridorHalf - wallThickness * 0.15),
+      width: wallThickness,
+      height: Math.round(corridorHalf * 2 + wallThickness * 0.3)
+    };
+    if (startCap) walls.push(startCap);
+    if (endCap) walls.push(endCap);
+
+    const entryPoints = [
+      { x: startCenter.x, y: entryBottomY },
+      { x: startCenter.x, y: centerY }
+    ];
+    const arcPoints = sampleArcPoints(centerX, centerY, centerRadius, startAngle, endAngle, 18);
+    const exitPoints = [
+      { x: endCenter.x, y: endCenter.y },
+      { x: exitRightX, y: endCenter.y }
+    ];
+    const centerline = entryPoints.concat(arcPoints.slice(1), exitPoints.slice(1));
+
+    const cellSize = holeIndex <= 1 ? 196 : 212 + (holeIndex >= 6 ? 10 : 0);
+    const margins = { start: 190, middle: 150, end: 190 };
+    const anchorCount = holeIndex >= 6 ? 10 : 9;
+    const cells = [];
+    for (let i = 0; i < anchorCount; i++) {
+      const t = anchorCount === 1 ? 0.5 : i / (anchorCount - 1);
+      const sample = samplePolylineWithMargins(centerline, t, margins.start, margins.middle, margins.end);
+      const rect = {
+        x: Math.round(sample.x - cellSize / 2),
+        y: Math.round(sample.y - cellSize / 2),
+        width: cellSize,
+        height: cellSize
+      };
+      cells.push({
+        index: i,
+        col: i,
+        row: 0,
+        cx: Math.round(sample.x),
+        cy: Math.round(sample.y),
+        rect
+      });
+    }
+    const ballStart = {
+      x: Math.round(startCenter.x),
+      y: Math.round(entryBottomY - Math.min(170, (entryBottomY - entryTopY) * 0.35))
+    };
+    const hole = {
+      x: Math.round(exitRightX - 188),
+      y: Math.round(endCenter.y),
+      radius: 10
+    };
+    return {
+      width,
+      height,
+      cellSize,
+      wallThickness,
+      cells,
+      walls,
+      ballStart,
+      hole,
+      holeApproach: { x: 1, y: 0 },
+      falseHoles: [],
+      pathPoints: centerline
+    };
+  }
+
   function buildCurvedSweepWorld(holeIndex, rng) {
     const width = 1260;
     const height = 1500;
@@ -3002,6 +3360,9 @@
   }
 
   function getCellWorld(layoutType, holeIndex, rng, difficultyKey = "average") {
+    if (layoutType === "dogleg_arc") {
+      return buildDoglegArcWorld(holeIndex, rng);
+    }
     if (layoutType === "curved_sweep") {
       return buildCurvedSweepWorld(holeIndex, rng);
     }
@@ -3129,44 +3490,43 @@
     const perp = getPerp(dir);
     const walls = [];
     if (style === "pocket") {
-      const sideLength = 48;
-      const sideOffset = 20;
-      const mouthDistance = 24;
-      const backDistance = 42;
+      const sideLength = 60;
+      const sideOffset = 40;
+      const frontDistance = 58;
       if (Math.abs(dir.y) > 0.5) {
         walls.push({
           x: Math.round(hole.x - sideOffset - wallThickness / 2),
-          y: Math.round(hole.y - backDistance),
+          y: Math.round(hole.y - dir.y * frontDistance),
           width: wallThickness,
           height: sideLength
         });
         walls.push({
           x: Math.round(hole.x + sideOffset - wallThickness / 2),
-          y: Math.round(hole.y - backDistance),
+          y: Math.round(hole.y - dir.y * frontDistance),
           width: wallThickness,
           height: sideLength
         });
         walls.push({
           x: Math.round(hole.x - sideOffset),
-          y: Math.round(hole.y - backDistance),
+          y: Math.round(hole.y - dir.y * frontDistance),
           width: sideOffset * 2,
           height: wallThickness
         });
       } else {
         walls.push({
-          x: Math.round(hole.x - backDistance),
+          x: Math.round(hole.x - dir.x * frontDistance),
           y: Math.round(hole.y - sideOffset - wallThickness / 2),
           width: sideLength,
           height: wallThickness
         });
         walls.push({
-          x: Math.round(hole.x - backDistance),
+          x: Math.round(hole.x - dir.x * frontDistance),
           y: Math.round(hole.y + sideOffset - wallThickness / 2),
           width: sideLength,
           height: wallThickness
         });
         walls.push({
-          x: Math.round(hole.x - backDistance),
+          x: Math.round(hole.x - dir.x * frontDistance),
           y: Math.round(hole.y - sideOffset),
           width: wallThickness,
           height: sideOffset * 2
@@ -3175,10 +3535,10 @@
       return walls;
     }
 
-    const frontX = hole.x + dir.x * 30;
-    const frontY = hole.y + dir.y * 30;
+    const frontX = hole.x - dir.x * 52;
+    const frontY = hole.y - dir.y * 52;
     const armLength = 38;
-    const spread = 18;
+    const spread = 24;
     const angle = Math.abs(dir.y) > 0.5 ? 35 : -35;
     walls.push({
       x: Math.round(frontX + perp.x * spread - armLength / 2),
@@ -3274,13 +3634,14 @@
     return holeData;
   }
 
-  function generateHole(holeIndex, courseSeed, difficultyKey = "average", progress = null) {
+  function generateHole(holeIndex, courseSeed, difficultyKey = "average", progress = null, planEntry = null) {
     const difficulty = holeIndex;
     const holeSeed = (courseSeed + holeIndex * 9973) >>> 0;
     const rng = mulberry32(holeSeed);
     const settings = DIFFICULTY_PRESETS[difficultyKey] || DIFFICULTY_PRESETS.average;
-    const archetype = pickArchetype(rng, holeIndex, settings.key);
-    const layoutType = pickLayoutType(rng, holeIndex, settings.key);
+    const archetype = planEntry?.archetype || pickArchetype(rng, holeIndex, settings.key);
+    const layoutType = planEntry?.layoutType || pickLayoutType(rng, holeIndex, settings.key);
+    const hazardTheme = planEntry?.hazardTheme ? HAZARD_SPOTLIGHTS[planEntry.hazardTheme] || null : null;
     const {
       width,
       height,
@@ -3294,6 +3655,7 @@
       walls,
       falseHoles
     } = getCellWorld(layoutType, holeIndex, rng, settings.key);
+    const baseWallCount = walls.length;
     const spinners = [];
     const pads = [];
     const sandTraps = [];
@@ -3304,7 +3666,7 @@
     const staticShutters = [];
     const magneticZones = [];
     const ricochetRails = [];
-    const setpiece = pickProgressionSetpiece(rng, holeIndex, settings.key, layoutType, progress);
+    let setpiece = hazardTheme ? SETPIECE_TEMPLATES.none : pickProgressionSetpiece(rng, holeIndex, settings.key, layoutType, progress);
     const teleportPalette = ["#0ea5e9", "#f97316", "#10b981", "#ec4899"];
     const modifier = pickHoleModifier(rng, holeIndex, settings.key);
     const isEarlyTurnHole = holeIndex <= 1 && layoutType !== "straight";
@@ -3475,6 +3837,91 @@
           0.84
         )
       : [];
+    const resetReservedCells = () => {
+      safeMajor.clear();
+      for (let i = 0; i < cells.length; i++) {
+        if (i < startBufferCells || i >= cells.length - endBufferCells) safeMajor.add(i);
+      }
+    };
+    const applyHazardSpotlightTheme = spotlight => {
+      walls.length = baseWallCount;
+      spinners.length = 0;
+      pads.length = 0;
+      sandTraps.length = 0;
+      bumpers.length = 0;
+      teleports.length = 0;
+      fanZones.length = 0;
+      shutterDoors.length = 0;
+      staticShutters.length = 0;
+      magneticZones.length = 0;
+      ricochetRails.length = 0;
+      comboTemplateCount = 0;
+      chokeBlockerCount = 0;
+      circularSandCount = 0;
+      holeGuardCount = 0;
+      mirroredFalseCupSand = false;
+      realCupHasSand = false;
+      falseCupHasSand = false;
+      setpiece = SETPIECE_TEMPLATES.none;
+      resetReservedCells();
+      const spotlightCount = Math.min(
+        cells.length - startBufferCells - endBufferCells - 1,
+        settings.key === "hardcore" ? Math.max(4, Math.floor(cells.length * 0.42)) : Math.max(3, Math.floor(cells.length * 0.32))
+      );
+      const indices = getTemplateIndices(spotlightCount, 0.2, 0.88);
+      if (spotlight.id === "magnet_field") {
+        indices.forEach((index, i) => {
+          const anchor = getObstacleCenter(index, getCentralContestAlong(index, 0), getCentralContestSide(index, getLaneSign(index), 0.02), false, cellSize * 0.16);
+          magneticZones.push({
+            x: Math.round(anchor.x),
+            y: Math.round(anchor.y),
+            radius: Math.round(cellSize * (i % 3 === 0 ? 0.23 : 0.19)),
+            strength: settings.key === "hardcore" ? 0.34 : 0.26,
+            mode: i % 3 === 1 ? "push" : "pull"
+          });
+          if (i < Math.max(2, Math.floor(indices.length / 3))) {
+            walls.push(makeLaneChokeBlocker(cells[index].rect, getCellDirection(cells, index), rng, settings.key));
+            chokeBlockerCount++;
+          }
+        });
+      } else if (spotlight.id === "sandstorm") {
+        indices.forEach((index, i) => {
+          const anchor = getObstacleCenter(index, getCentralContestAlong(index, 0), getCentralContestSide(index, getLaneSign(index), 0.01), false, cellSize * 0.2);
+          const trapWidth = Math.round(cellSize * (settings.key === "hardcore" ? 0.72 : 0.62));
+          const trapHeight = Math.round(cellSize * (i % 2 === 0 ? 0.58 : 0.48));
+          const trapPos = clampRectToCell(index, anchor.x - trapWidth / 2, anchor.y - trapHeight / 2, trapWidth, trapHeight, wallThickness * 0.5 + 16);
+          sandTraps.push({ x: trapPos.x, y: trapPos.y, width: trapWidth, height: trapHeight });
+        });
+      } else if (spotlight.id === "boost_grid") {
+        indices.forEach((index, i) => {
+          const direction = getCellDirection(cells, index);
+          const preferVertical = Math.abs(direction.y) > 0.5;
+          const axis = preferVertical ? (i % 2 === 0 ? "vertical" : "horizontal") : (i % 2 === 0 ? "horizontal" : "vertical");
+          const sign = i % 3 === 0 ? -1 : 1;
+          const padInsetX = axis === "horizontal" ? cellSize * 0.38 : 28;
+          const padInsetY = axis === "horizontal" ? 28 : cellSize * 0.38;
+          const anchor = getObstacleCenter(index, getCentralContestAlong(index, 0), getCentralContestSide(index, getLaneSign(index), 0.01), false, Math.max(padInsetX, padInsetY));
+          pads.push(makeCellPad({ x: anchor.x, y: anchor.y }, direction, cellSize, 1.16 + (i % 2 === 0 ? 0.06 : 0), axis, sign));
+          if (i % 3 === 1) {
+            walls.push(makeLaneChokeBlocker(cells[index].rect, getCellDirection(cells, index), rng, settings.key));
+            chokeBlockerCount++;
+          }
+        });
+      } else if (spotlight.id === "fan_drift") {
+        indices.forEach((index, i) => {
+          const anchor = getObstacleCenter(index, 0, getCentralContestSide(index, getLaneSign(index), 0.018), false, cellSize * 0.22);
+          fanZones.push({
+            x: Math.round(anchor.x - (Math.abs(anchor.direction.y) > 0.5 ? 22 : cellSize * 0.32)),
+            y: Math.round(anchor.y - (Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.22 : 22)),
+            width: Math.round(Math.abs(anchor.direction.y) > 0.5 ? 44 : cellSize * 0.64),
+            height: Math.round(Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.44 : 44),
+            forceX: Math.round((i % 2 === 0 ? anchor.perp.x : anchor.direction.x) * 100) / 100,
+            forceY: Math.round((i % 2 === 0 ? anchor.perp.y : anchor.direction.y) * 100) / 100,
+            power: settings.key === "hardcore" ? 0.18 : 0.14
+          });
+        });
+      }
+    };
 
     if (!isEarlyTurnHole && setpiece.id !== "none") {
       if (setpiece.id === "shutter_run") {
@@ -4047,6 +4494,10 @@
         });
       }
 
+      if (hazardTheme) {
+        applyHazardSpotlightTheme(hazardTheme);
+      }
+
       if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < (settings.key === "hardcore" ? 0.58 : 0.26)) {
         const cupTrapRadius = Math.round(cellSize * (settings.key === "hardcore" ? 0.34 : 0.3));
         sandTraps.push({
@@ -4074,7 +4525,9 @@
     }
 
     if (settings.key !== "beginner" && (holeIndex >= 3 || settings.key === "hardcore")) {
-      const guardStyle = rng() < 0.48 ? "pocket" : "v";
+      const guardStyle = layoutType === "dogleg_arc"
+        ? "pocket"
+        : (rng() < 0.48 ? "pocket" : "v");
       if (!realCupHasSand) {
         makeHoleGuardWalls(hole, holeApproach, guardStyle, wallThickness).forEach(wall => walls.push(wall));
         holeGuardCount++;
@@ -4117,6 +4570,7 @@
       seed: holeSeed,
       archetype,
       layoutType,
+      hazardTheme,
       setpiece,
       difficultyKey: settings.key,
       modifier,
@@ -4143,8 +4597,9 @@
     });
   }
 
-  function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null) {
-    return Array.from({ length: holeCount }, (_, index) => generateHole(index, seed, difficultyKey, progress));
+  function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null, modeKey = "standard") {
+    const coursePlan = buildCoursePlan(seed, holeCount, difficultyKey, modeKey);
+    return Array.from({ length: holeCount }, (_, index) => generateHole(index, seed, difficultyKey, progress, coursePlan[index]));
   }
 
   let startRoundLengthKey = "default";
@@ -4184,9 +4639,9 @@
       this.roundHoleCount = Math.max(1, Number(roundHoleCount) || this.difficulty.holeCount);
       this.progress = loadProgress();
       this.roundRng = mulberry32((this.seed ^ (this.difficultyKey.length * 4099)) >>> 0);
-      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey);
-      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey);
-      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress);
+      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
+      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
+      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey);
       this.currentLevelIndex = 0;
       this.canvas = document.getElementById('gameCanvas');
       this.ctx = this.canvas.getContext('2d');
@@ -4387,13 +4842,14 @@
       this.showTreeUnlockBurst(branch, node);
     }
     getCurrentLoadout() {
+      const previewUnlocked = DEBUG_FLAGS.forcePreview || this.hasOwnedItem('preview_path');
       if (this.challengeRule.id === "no_shop_loadout") {
         return {
           cosmetic: BALL_COSMETICS[0],
           trail: TRAIL_SHOP[0],
           ability: ABILITY_SHOP[0],
           abilityTier: 0,
-          previewUnlocked: this.hasOwnedItem('preview_path')
+          previewUnlocked
         };
       }
       return {
@@ -4401,7 +4857,7 @@
         trail: this.getEquippedTrail(),
         ability: this.getEquippedAbility(),
         abilityTier: this.getAbilityTier(this.progress.equippedAbility),
-        previewUnlocked: this.hasOwnedItem('preview_path')
+        previewUnlocked
       };
     }
     hasOwnedItem(id) {
@@ -4492,6 +4948,7 @@
       const stats = this.progress.stats;
       const streak = getDailyStreak(this.progress);
       const collection = getCollectionProgress(this.progress);
+      const nextGoal = getNextLongTermGoal(this.progress);
       const cards = [
         { label: 'Rounds', value: stats.roundsCompleted },
         { label: 'Holes', value: stats.holesCompleted },
@@ -4518,7 +4975,9 @@
         Beginner ${formatBestLabel(this.progress.bestRounds.beginner)} · Average ${formatBestLabel(this.progress.bestRounds.average)} · Hardcore ${formatBestLabel(this.progress.bestRounds.hardcore)}.<br /><br />
         <strong>Progression</strong><br />
         Beginner ${this.getBranchClears('beginner')} clears · Average ${this.getBranchClears('average')} clears · Hardcore ${this.getBranchClears('hardcore')} clears.<br />
-        Ready nodes: <strong>${this.getTreeReadyCount()}</strong> · Collection: <strong>${collection.owned}/${collection.total}</strong>.
+        Ready nodes: <strong>${this.getTreeReadyCount()}</strong> · Collection: <strong>${collection.owned}/${collection.total}</strong>.<br /><br />
+        <strong>Long-term goal</strong><br />
+        ${nextGoal ? `${nextGoal.label} · <strong>${formatGoalProgress(nextGoal, this.progress)}</strong> · +${nextGoal.rewardStars}★` : 'All current goals complete.'}
       `;
     }
     renderSettings() {
@@ -4667,7 +5126,9 @@
       const diff = totalShots - totalPar;
       const relation = diff === 0 ? 'even par' : diff > 0 ? `+${diff}` : `${diff}`;
       const medal = getRoundMedal(totalPar, totalShots);
-      return `${getTodayKey()} • Seed ${this.seed} • ${medal} pace at ${relation}. Beat my score.`;
+      const streak = getDailyStreak(this.progress);
+      const streakCopy = streak > 1 ? ` • ${streak}-day streak` : '';
+      return `${getTodayKey()} • Seed ${this.seed} • ${medal} pace at ${relation}${streakCopy}. Beat my score.`;
     }
     buildScorecardImageCanvas() {
       const width = 860;
@@ -4697,7 +5158,8 @@
       ctx.fillText('Putt Putt Scorecard', 42, 62);
       ctx.font = '500 20px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#4b5563';
-      const modeLabel = this.modeKey === 'daily' ? `Daily • ${dateLabel}` : `Standard • Seed ${this.seed}`;
+      const dailyStreakCopy = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
+      const modeLabel = this.modeKey === 'daily' ? `Daily • ${dateLabel}${dailyStreakCopy}` : `Standard • Seed ${this.seed}`;
       ctx.fillText(`${this.difficulty.label} • ${modeLabel}`, 42, 92);
       if (this.modeKey === 'daily') {
         ctx.font = '600 15px system-ui, -apple-system, sans-serif';
@@ -4786,8 +5248,9 @@
         return;
       }
       const file = new File([blob], `putt-scorecard-${this.difficultyKey}.png`, { type: 'image/png' });
+      const streakText = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
       const scorecardText = this.modeKey === 'daily'
-        ? `Putt Putt daily challenge • ${getTodayKey()} • Seed ${this.seed}`
+        ? `Putt Putt daily challenge • ${getTodayKey()} • Seed ${this.seed}${streakText}`
         : `Putt Putt round • Seed ${this.seed}`;
       if (await this.tryNativeShareFile(file, 'Putt Putt Scorecard', scorecardText)) {
         this.progress.stats.totalShares++;
@@ -4826,8 +5289,9 @@
       }
       const { blob, filename } = exportResult;
       const file = new File([blob], filename, { type: blob.type || 'image/gif' });
+      const streakText = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
       const replayText = this.modeKey === 'daily'
-        ? `Putt Putt daily replay • ${getTodayKey()} • Seed ${this.seed} • Beat this.`
+        ? `Putt Putt daily replay • ${getTodayKey()} • Seed ${this.seed}${streakText} • Beat this.`
         : `Putt Putt replay • Seed ${this.seed}`;
       if (await this.tryNativeShareFile(file, 'Putt Putt Replay', replayText)) {
         this.progress.stats.totalShares++;
@@ -5133,6 +5597,8 @@
     loadLevel() {
       if (this.level) this.level.destroy();
       const data = this.levels[this.currentLevelIndex];
+      this.progress.stats.layoutsSeen[data.layoutType] = (this.progress.stats.layoutsSeen[data.layoutType] || 0) + 1;
+      saveProgress(this.progress);
       document.getElementById('holeNum').textContent = data.id;
       document.getElementById('parNum').textContent = data.par;
       document.getElementById('modifierLabel').textContent = data.modifier?.name || 'None';
@@ -5150,8 +5616,8 @@
     showHoleIntro(data) {
       if (this.introTimer) clearTimeout(this.introTimer);
       const introCopy = this.modeKey === 'daily'
-        ? `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}<br />Daily ${getTodayKey()} • Beat my score.`
-        : `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}`;
+        ? `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}<br />Daily ${getTodayKey()} • Beat my score.`
+        : `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}`;
       this.introEl.innerHTML = `
         <div class="overlay-card">
           <div class="intro-title">${this.theme.name} Theme • ${this.challengeRule.name}</div>
@@ -5178,6 +5644,7 @@
       this.progress.stats.totalShots += shots;
       this.progress.stats.totalStarsEarned += starsEarned;
       this.progress.stats.bestCleanStreak = Math.max(this.progress.stats.bestCleanStreak, this.cleanStreak);
+      const goalRewards = claimCompletedGoals(this.progress);
       saveProgress(this.progress);
       this.refreshMetaUi();
       this.scores.push({ hole: data.id, par: data.par, shots, stars: starsEarned, resultLabel, streakBonus, parRushBonus });
@@ -5196,6 +5663,8 @@
       const previewCost = ITEM_LOOKUP.preview_path?.cost || 100;
       if (!this.hasOwnedItem('preview_path') && this.progress.stars >= previewCost) {
         this.unlockNote.textContent = `You have ${this.progress.stars} stars. Preview Path is available in the shop for ${previewCost} stars.`;
+      } else if (goalRewards.length) {
+        this.unlockNote.textContent = goalRewards.join(" ");
       } else {
         const daily = this.getDailyFeaturedOffer();
         const featuredItem = ITEM_LOOKUP[daily.itemId];
@@ -5311,9 +5780,9 @@
       this.progress = loadProgress();
       this.seed = this.modeKey === "daily" ? getDailySeedForKey(getTodayKey()) : (this.seed + 1) >>> 0;
       this.roundRng = mulberry32((this.seed ^ (this.difficultyKey.length * 4099)) >>> 0);
-      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey);
-      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey);
-      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress);
+      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
+      this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount);
+      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey);
       this.currentLevelIndex = 0;
       this.scores = [];
       this.cleanStreak = 0;
@@ -5340,6 +5809,7 @@
         holeCount: this.levels.length,
         archetype: level ? level.data.archetype : null,
         layoutType: level ? level.data.layoutType : null,
+        hazardTheme: level ? level.data.hazardTheme?.id || null : null,
         setpiece: level ? level.data.setpiece?.id : null,
         par: level ? level.data.par : null,
         modifier: level ? level.data.modifier?.id : null,
@@ -5425,7 +5895,7 @@
     this.ball = new Ball(data.ballStart.x, data.ballStart.y, loadout);
     this.ball.setCourseBounds({ minX: 14, minY: 14, maxX: data.width - 14, maxY: data.height - 14 });
     this.hole = data.hole;
-    this.walls = data.walls.map(w => new Wall(w));
+    this.walls = data.walls.map(w => createWallInstance(w));
     this.spinners = (data.spinners || []).map(s => new Spinner(s));
     this.pads = (data.pads || []).map(p => new SpeedPad(p));
     this.sandTraps = (data.sandTraps || []).map(s => new SandTrap(s));
@@ -5727,7 +6197,10 @@
       : this.data.difficultyKey === "average"
         ? { captureRadius: 14, captureWindow: 16, maxCaptureSpeed: 2.55, settleBase: 0.017, settleScale: 0.034, dampingBase: 0.99, dampingScale: 0.01, sinkSpeed: 1.8 }
         : { captureRadius: 16, captureWindow: 18, maxCaptureSpeed: 2.85, settleBase: 0.02, settleScale: 0.04, dampingBase: 0.988, dampingScale: 0.012, sinkSpeed: 1.9 };
-    if (!this.levelComplete && distToHole < this.hole.radius + cupTuning.captureRadius && speed < cupTuning.maxCaptureSpeed && distToHole > 0.001) {
+    const holeApproach = this.data.holeApproach || { x: 0, y: -1 };
+    const alongApproach = ((this.ball.x - this.hole.x) * holeApproach.x + (this.ball.y - this.hole.y) * holeApproach.y);
+    const behindCup = alongApproach > 8;
+    if (!this.levelComplete && !behindCup && distToHole < this.hole.radius + cupTuning.captureRadius && speed < cupTuning.maxCaptureSpeed && distToHole > 0.001) {
       const capture = 1 - clamp((distToHole - this.hole.radius) / cupTuning.captureWindow, 0, 1);
       const settle = cupTuning.settleBase + capture * cupTuning.settleScale;
       this.ball.vx += (dxHole / distToHole) * settle;
@@ -5740,7 +6213,7 @@
       emitGameFx('rim', Math.min(1, speed / 4));
     }
 
-    if (!this.levelComplete && this.ball.inHole(this.hole)) {
+    if (!this.levelComplete && !behindCup && this.ball.inHole(this.hole)) {
       if (this.ball.speed() < cupTuning.sinkSpeed) {
         this.levelComplete = true;
         this.sinkPulse = 1;
@@ -6967,6 +7440,70 @@
     }
   }
 
+  class ArcWall {
+    constructor({ cx, cy, radius, thickness, startAngle, endAngle }) {
+      this.cx = cx;
+      this.cy = cy;
+      this.radius = radius;
+      this.thickness = thickness;
+      this.startAngle = startAngle;
+      this.endAngle = endAngle;
+    }
+    render(ctx) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(this.cx, this.cy, this.radius, this.startAngle, this.endAngle);
+      ctx.strokeStyle = VISUAL_STYLE.ink;
+      ctx.lineCap = "butt";
+      ctx.lineWidth = this.thickness;
+      ctx.stroke();
+      const theme = ctx.__courseTheme;
+      if (theme && theme.wallStroke) {
+        ctx.beginPath();
+        ctx.arc(this.cx, this.cy, this.radius, this.startAngle, this.endAngle);
+        ctx.strokeStyle = theme.wallStroke;
+        ctx.lineWidth = 2;
+        ctx.setLineDash(theme.wallDash || []);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      ctx.restore();
+    }
+    collide(ball) {
+      const dx = ball.x - this.cx;
+      const dy = ball.y - this.cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 0.0001) return;
+      const angle = Math.atan2(dy, dx);
+      if (!isAngleWithinArc(angle, this.startAngle, this.endAngle)) return;
+      const halfThickness = this.thickness / 2;
+      const radialDelta = dist - this.radius;
+      const overlap = halfThickness + ball.radius - Math.abs(radialDelta);
+      if (overlap <= 0) return;
+      const radialX = dx / dist;
+      const radialY = dy / dist;
+      const sign = radialDelta >= 0 ? 1 : -1;
+      const normalX = radialX * sign;
+      const normalY = radialY * sign;
+      ball.x += normalX * overlap;
+      ball.y += normalY * overlap;
+      const speedAlongNormal = ball.vx * normalX + ball.vy * normalY;
+      if (speedAlongNormal < 0) {
+        const bounce = ball.getBounceFactor(0.8);
+        ball.vx -= (1 + bounce) * speedAlongNormal * normalX;
+        ball.vy -= (1 + bounce) * speedAlongNormal * normalY;
+      } else {
+        ball.vx += normalX * 0.06;
+        ball.vy += normalY * 0.06;
+      }
+      if (ball.isLiveBall) emitGameFx('wall', Math.min(1.2, ball.speed() / 8));
+    }
+  }
+
+  function createWallInstance(config) {
+    return config.type === "arc" ? new ArcWall(config) : new Wall(config);
+  }
+
   class Spinner {
     constructor({x, y, radius}) { this.x = x; this.y = y; this.radius = radius; this.angle = 0; this.speed = 0.05; }
     update() { this.angle += this.speed; }
@@ -7686,15 +8223,20 @@ function renderObstacleGalleryPage() {
 
   function renderMenuMeta(modeKey = "standard", roundLengthKey = "default") {
     const progress = loadProgress();
+    const newlyClaimedGoals = claimCompletedGoals(progress);
+    if (newlyClaimedGoals.length) saveProgress(progress);
     const todayKey = getTodayKey();
     const dailySeed = getDailySeedForKey(todayKey);
     const note = document.getElementById('menuNote');
     const progressGrid = document.getElementById('menuProgressGrid');
+    const goalsGrid = document.getElementById('menuGoalsGrid');
     const useFullCard = roundLengthKey === "18";
     const roundLengthLabel = useFullCard ? "18-hole card" : "default card";
+    const streak = getDailyStreak(progress);
+    const dailySignature = getDailyCourseSignature(todayKey, "average", useFullCard ? 18 : 9);
     note.textContent = modeKey === "daily"
-      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. Round length: ${roundLengthLabel}.`
-      : `Standard runs use a fresh random seed each time. Round length: ${roundLengthLabel}.`;
+      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. Featured: ${formatLayoutLabel(dailySignature.featuredLayout)} • ${HAZARD_SPOTLIGHTS[dailySignature.featuredSpotlight]?.name || 'Mixed Flow'}. Round length: ${roundLengthLabel}. Current streak: ${streak} day${streak === 1 ? '' : 's'}.`
+      : `Standard runs use a fresh random seed each time. Round length: ${roundLengthLabel}. Daily streak: ${streak} day${streak === 1 ? '' : 's'}.`;
     for (const [key, preset] of Object.entries(DIFFICULTY_PRESETS)) {
       const record = modeKey === "daily"
         ? progress.dailyBestRounds[`${todayKey}:${key}`]
@@ -7723,6 +8265,16 @@ function renderObstacleGalleryPage() {
           : "Branch complete";
         return `<div class="menu-progress-row"><span>${branch.label}</span><span>${clears} clears · ${ready} ready · ${suffix}</span></div>`;
       }).join("") + `<div class="menu-progress-row"><span>Overall</span><span>${countReadyTreeNodes(progress)} node${countReadyTreeNodes(progress) === 1 ? '' : 's'} ready</span></div>`;
+    }
+    if (goalsGrid) {
+      goalsGrid.innerHTML = LONG_TERM_GOALS.map(goal => {
+        const claimed = Boolean(progress.goalClaims?.[goal.id]);
+        const state = claimed ? 'Complete' : `${formatGoalProgress(goal, progress)} • +${goal.rewardStars}★`;
+        return `<div class="menu-progress-row"><span>${goal.label}</span><span>${state}</span></div>`;
+      }).join("");
+      if (newlyClaimedGoals.length) {
+        goalsGrid.innerHTML += newlyClaimedGoals.map(message => `<div class="menu-progress-row"><span>Reward</span><span>${message}</span></div>`).join("");
+      }
     }
   }
 
@@ -7757,12 +8309,14 @@ function renderObstacleGalleryPage() {
       return item ? item.name : entries[0][0];
     };
     const collection = getCollectionProgress(progress);
+    const nextGoal = getNextLongTermGoal(progress);
     statsNotes.innerHTML = `
       Favorite ball: <strong>${favoriteName(stats.usage.cosmetics, 'Classic')}</strong><br />
       Favorite core: <strong>${favoriteName(stats.usage.abilities, 'Standard Core')}</strong><br />
       Favorite trail: <strong>${favoriteName(stats.usage.trails, 'No Trail')}</strong><br />
       Collection: <strong>${collection.owned}/${collection.total}</strong><br />
-      Best by difficulty: Beginner ${formatBestLabel(progress.bestRounds.beginner)}, Average ${formatBestLabel(progress.bestRounds.average)}, Hardcore ${formatBestLabel(progress.bestRounds.hardcore)}.
+      Best by difficulty: Beginner ${formatBestLabel(progress.bestRounds.beginner)}, Average ${formatBestLabel(progress.bestRounds.average)}, Hardcore ${formatBestLabel(progress.bestRounds.hardcore)}.<br />
+      Next goal: <strong>${nextGoal ? `${nextGoal.label} (${formatGoalProgress(nextGoal, progress)})` : 'All current goals complete'}</strong>.
     `;
     statsModal.style.display = 'flex';
   }
