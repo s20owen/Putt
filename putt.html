@@ -183,7 +183,8 @@
       color: rgba(255,255,255,0.84);
     }
     .menu-streak-badge {
-      min-width: 78px;
+      min-width: 0;
+      max-width: 100%;
       border-radius: 18px;
       padding: 10px 10px 8px;
       background: rgba(255,255,255,0.12);
@@ -1080,6 +1081,7 @@
       }
       .menu-streak-badge {
         width: 100%;
+        box-sizing: border-box;
       }
       .menu-hero-grid {
         grid-template-columns: 1fr;
@@ -1298,7 +1300,10 @@
 
 <script>
 
-  const STORAGE_KEY = "putt-mobile-progress-v1";
+  const APP_VERSION = "2026.04.02";
+  const SAVE_SCHEMA_VERSION = 2;
+  const STORAGE_KEY = "putt-mobile-progress";
+  const LEGACY_STORAGE_KEYS = ["putt-mobile-progress-v1"];
   const DEFAULT_SETTINGS = {
     gameAudioEnabled: true,
     uiAudioEnabled: true,
@@ -1321,7 +1326,7 @@
       id: "graphite",
       type: "cosmetic",
       name: "Graphite",
-      cost: 12,
+      cost: 75,
       description: "Dark matte finish with bright edge.",
       fill: "#111111",
       stroke: "#f3f4f6",
@@ -1331,7 +1336,7 @@
       id: "bullseye",
       type: "cosmetic",
       name: "Bullseye",
-      cost: 18,
+      cost: 75,
       description: "Target ring for a precise look.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1341,7 +1346,7 @@
       id: "eclipse",
       type: "cosmetic",
       name: "Eclipse",
-      cost: 26,
+      cost: 75,
       description: "Half-black split shell with contrast edge.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1373,7 +1378,7 @@
       id: "blueprint",
       type: "cosmetic",
       name: "Blueprint",
-      cost: 28,
+      cost: 75,
       description: "Draft-line shell with precise construction marks.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1384,7 +1389,7 @@
       id: "obsidian_ring",
       type: "cosmetic",
       name: "Obsidian Ring",
-      cost: 34,
+      cost: 75,
       description: "Dark shell with a crisp inner tournament ring.",
       fill: "#111111",
       stroke: "#f9fafb",
@@ -1395,7 +1400,7 @@
       id: "monogram",
       type: "cosmetic",
       name: "Monogram",
-      cost: 32,
+      cost: 75,
       description: "Minimal luxury shell with centered stamp details.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1405,7 +1410,7 @@
       id: "halftone_ghost",
       type: "cosmetic",
       name: "Halftone Ghost",
-      cost: 38,
+      cost: 75,
       description: "Rare dotted shell that shifts with the light.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1415,7 +1420,7 @@
       id: "signal",
       type: "cosmetic",
       name: "Signal",
-      cost: 44,
+      cost: 75,
       description: "Rare target-ring shell with bold centered contrast.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1426,7 +1431,7 @@
       id: "glitch_ink",
       type: "cosmetic",
       name: "Glitch Ink",
-      cost: 40,
+      cost: 75,
       description: "Offset linework shell with a rare misprint feel.",
       fill: "#ffffff",
       stroke: "#111111",
@@ -1757,10 +1762,10 @@
     no_shop_loadout: { id: "no_shop_loadout", name: "No Shop Loadout", description: "Round locks to the standard shell, trail, and core." }
   };
   const HAZARD_SPOTLIGHTS = {
-    magnet_field: { id: "magnet_field", name: "Magnet Field", label: "All magnets", minHole: 3, difficulties: ["average", "hardcore"] },
-    sandstorm: { id: "sandstorm", name: "Sandstorm", label: "All sand", minHole: 3, difficulties: ["average", "hardcore"] },
-    boost_grid: { id: "boost_grid", name: "Boost Grid", label: "All boost pads", minHole: 4, difficulties: ["average", "hardcore"] },
-    fan_drift: { id: "fan_drift", name: "Fan Drift", label: "All fans", minHole: 4, difficulties: ["average", "hardcore"] }
+    magnet_field: { id: "magnet_field", name: "Magnet Field", label: "All magnets", minHole: 1, difficulties: ["beginner", "average", "hardcore"] },
+    sandstorm: { id: "sandstorm", name: "Sandstorm", label: "All sand", minHole: 1, difficulties: ["beginner", "average", "hardcore"] },
+    boost_grid: { id: "boost_grid", name: "Boost Grid", label: "All boost pads", minHole: 1, difficulties: ["beginner", "average", "hardcore"] },
+    fan_drift: { id: "fan_drift", name: "Fan Drift", label: "All fans", minHole: 1, difficulties: ["beginner", "average", "hardcore"] }
   };
   const SETPIECE_TEMPLATES = {
     none: { id: "none", name: "Standard Flow" },
@@ -1873,7 +1878,7 @@
     }
   };
   const DAILY_VARIANT_ORDER = ["wind_day", "magnet_madness", "portal_party", "rail_day", "no_preview_day"];
-  const LOCAL_LEADERBOARD_NAMES = ["Avery", "Jules", "Mina", "Theo", "Nora", "Beck", "Iris", "Milo", "Sage", "Remy"];
+  const LOCAL_LEADERBOARD_NAMES = ["Pois", "Jules", "Mina", "Theo", "Nora", "Beck", "Iris", "Milo", "Sage", "Remy"];
   const VISUAL_STYLE = {
     ink: "#111111",
     paper: "#ffffff",
@@ -2858,68 +2863,27 @@
     ].filter(wall => wall.width > 18);
   }
 
-  function loadProgress() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return {
-          stars: 0,
-          dailyTokens: 0,
-          settings: { ...DEFAULT_SETTINGS },
-          ownedItems: { classic: true, none: true, none_ability: true },
-          abilityLevels: {},
-          bestRounds: {},
-          dailyBestRounds: {},
-          dailyRuns: {},
-          dailyLogin: { lastClaimDate: null, streakClaims: 0 },
-          difficultyTracks: {},
-          treeUnlocks: {},
-          goalClaims: {},
-          weeklyGoalClaims: {},
-          weeklyChestClaims: {},
-          calendarMilestoneClaims: {},
-          mastery: { cosmetics: {}, trails: {}, abilities: {} },
-          stats: {
-            holesCompleted: 0,
-            roundsCompleted: 0,
-            totalShots: 0,
-            totalStarsEarned: 0,
-            bestCleanStreak: 0,
-            totalShares: 0,
-            layoutsSeen: {},
-            usage: { cosmetics: {}, abilities: {}, trails: {} }
-          },
-          equippedCosmetic: "classic",
-          equippedTrail: "none",
-          equippedAbility: "none_ability"
-        };
-      }
-      const parsed = JSON.parse(raw);
-      const stars = Math.max(0, Number(parsed.stars) || 0);
-      const dailyTokens = Math.max(0, Number(parsed.dailyTokens) || 0);
-      const settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
-      if (Object.prototype.hasOwnProperty.call(parsed.settings || {}, "soundEnabled")) {
-        settings.gameAudioEnabled = Boolean(parsed.settings.soundEnabled);
-        settings.uiAudioEnabled = Boolean(parsed.settings.soundEnabled);
-      }
-      const ownedItems = { classic: true, none: true, none_ability: true, ...(parsed.ownedItems || {}) };
-      const abilityLevels = { ...(parsed.abilityLevels || {}) };
-      const bestRounds = { ...(parsed.bestRounds || {}) };
-      const dailyBestRounds = { ...(parsed.dailyBestRounds || {}) };
-      const dailyRuns = { ...(parsed.dailyRuns || {}) };
-      const dailyLogin = { lastClaimDate: null, streakClaims: 0, ...(parsed.dailyLogin || {}) };
-      const difficultyTracks = { ...(parsed.difficultyTracks || {}) };
-      const treeUnlocks = { ...(parsed.treeUnlocks || {}) };
-      const goalClaims = { ...(parsed.goalClaims || {}) };
-      const weeklyGoalClaims = { ...(parsed.weeklyGoalClaims || {}) };
-      const weeklyChestClaims = { ...(parsed.weeklyChestClaims || {}) };
-      const calendarMilestoneClaims = { ...(parsed.calendarMilestoneClaims || {}) };
-      const mastery = {
-        cosmetics: { ...(parsed.mastery?.cosmetics || {}) },
-        trails: { ...(parsed.mastery?.trails || {}) },
-        abilities: { ...(parsed.mastery?.abilities || {}) }
-      };
-      const stats = {
+  function createDefaultProgress() {
+    return {
+      version: SAVE_SCHEMA_VERSION,
+      appVersion: APP_VERSION,
+      stars: 0,
+      dailyTokens: 0,
+      settings: { ...DEFAULT_SETTINGS },
+      ownedItems: { classic: true, none: true, none_ability: true },
+      abilityLevels: {},
+      bestRounds: {},
+      dailyBestRounds: {},
+      dailyRuns: {},
+      dailyLogin: { lastClaimDate: null, streakClaims: 0 },
+      difficultyTracks: {},
+      treeUnlocks: {},
+      goalClaims: {},
+      weeklyGoalClaims: {},
+      weeklyChestClaims: {},
+      calendarMilestoneClaims: {},
+      mastery: { cosmetics: {}, trails: {}, abilities: {} },
+      stats: {
         holesCompleted: 0,
         roundsCompleted: 0,
         totalShots: 0,
@@ -2927,88 +2891,129 @@
         bestCleanStreak: 0,
         totalShares: 0,
         layoutsSeen: {},
-        usage: { cosmetics: {}, abilities: {}, trails: {} },
-        ...(parsed.stats || {})
-      };
-      stats.usage = {
-        cosmetics: { ...(parsed.stats?.usage?.cosmetics || {}) },
-        abilities: { ...(parsed.stats?.usage?.abilities || {}) },
-        trails: { ...(parsed.stats?.usage?.trails || {}) }
-      };
-      stats.layoutsSeen = { ...(parsed.stats?.layoutsSeen || {}) };
-      for (const [key, value] of Object.entries(parsed.unlockedCosmetics || {})) {
-        ownedItems[key] = Boolean(value);
+        usage: { cosmetics: {}, abilities: {}, trails: {} }
+      },
+      equippedCosmetic: "classic",
+      equippedTrail: "none",
+      equippedAbility: "none_ability"
+    };
+  }
+
+  function getStoredProgressRecord() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return { key: STORAGE_KEY, raw };
+    for (const legacyKey of LEGACY_STORAGE_KEYS) {
+      const legacyRaw = localStorage.getItem(legacyKey);
+      if (legacyRaw) return { key: legacyKey, raw: legacyRaw };
+    }
+    return null;
+  }
+
+  function normalizeProgressRecord(parsed) {
+    const defaults = createDefaultProgress();
+    const stars = Math.max(0, Number(parsed.stars) || 0);
+    const dailyTokens = Math.max(0, Number(parsed.dailyTokens) || 0);
+    const settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
+    if (Object.prototype.hasOwnProperty.call(parsed.settings || {}, "soundEnabled")) {
+      settings.gameAudioEnabled = Boolean(parsed.settings.soundEnabled);
+      settings.uiAudioEnabled = Boolean(parsed.settings.soundEnabled);
+    }
+    const ownedItems = { classic: true, none: true, none_ability: true, ...(parsed.ownedItems || {}) };
+    const abilityLevels = { ...(parsed.abilityLevels || {}) };
+    const bestRounds = { ...(parsed.bestRounds || {}) };
+    const dailyBestRounds = { ...(parsed.dailyBestRounds || {}) };
+    const dailyRuns = { ...(parsed.dailyRuns || {}) };
+    const dailyLogin = { lastClaimDate: null, streakClaims: 0, ...(parsed.dailyLogin || {}) };
+    const difficultyTracks = { ...(parsed.difficultyTracks || {}) };
+    const treeUnlocks = { ...(parsed.treeUnlocks || {}) };
+    const goalClaims = { ...(parsed.goalClaims || {}) };
+    const weeklyGoalClaims = { ...(parsed.weeklyGoalClaims || {}) };
+    const weeklyChestClaims = { ...(parsed.weeklyChestClaims || {}) };
+    const calendarMilestoneClaims = { ...(parsed.calendarMilestoneClaims || {}) };
+    const mastery = {
+      cosmetics: { ...(parsed.mastery?.cosmetics || {}) },
+      trails: { ...(parsed.mastery?.trails || {}) },
+      abilities: { ...(parsed.mastery?.abilities || {}) }
+    };
+    const stats = {
+      ...defaults.stats,
+      ...(parsed.stats || {})
+    };
+    stats.usage = {
+      cosmetics: { ...(parsed.stats?.usage?.cosmetics || {}) },
+      abilities: { ...(parsed.stats?.usage?.abilities || {}) },
+      trails: { ...(parsed.stats?.usage?.trails || {}) }
+    };
+    stats.layoutsSeen = { ...(parsed.stats?.layoutsSeen || {}) };
+    for (const [key, value] of Object.entries(parsed.unlockedCosmetics || {})) {
+      ownedItems[key] = Boolean(value);
+    }
+    if (parsed.previewUnlocked) ownedItems.preview_path = true;
+    for (const ability of ABILITY_SHOP) {
+      if (ability.id !== "none_ability" && ownedItems[ability.id] && !abilityLevels[ability.id]) {
+        abilityLevels[ability.id] = 1;
       }
-      if (parsed.previewUnlocked) ownedItems.preview_path = true;
-      for (const ability of ABILITY_SHOP) {
-        if (ability.id !== "none_ability" && ownedItems[ability.id] && !abilityLevels[ability.id]) {
-          abilityLevels[ability.id] = 1;
+    }
+    const equippedCosmetic = ownedItems[parsed.equippedCosmetic] ? parsed.equippedCosmetic : "classic";
+    const equippedTrail = ownedItems[parsed.equippedTrail] ? parsed.equippedTrail : "none";
+    const equippedAbility = (parsed.equippedAbility && (abilityLevels[parsed.equippedAbility] > 0 || parsed.equippedAbility === "none_ability"))
+      ? parsed.equippedAbility
+      : "none_ability";
+    return {
+      version: SAVE_SCHEMA_VERSION,
+      appVersion: APP_VERSION,
+      stars,
+      dailyTokens,
+      settings,
+      ownedItems,
+      abilityLevels,
+      bestRounds,
+      dailyBestRounds,
+      dailyRuns,
+      dailyLogin,
+      difficultyTracks,
+      treeUnlocks,
+      goalClaims,
+      weeklyGoalClaims,
+      weeklyChestClaims,
+      calendarMilestoneClaims,
+      mastery,
+      stats,
+      equippedCosmetic,
+      equippedTrail,
+      equippedAbility
+    };
+  }
+
+  function loadProgress() {
+    try {
+      const stored = getStoredProgressRecord();
+      if (!stored) {
+        return createDefaultProgress();
+      }
+      const parsed = JSON.parse(stored.raw);
+      const normalized = normalizeProgressRecord(parsed);
+      const requiresRewrite = stored.key !== STORAGE_KEY
+        || Number(parsed.version || 0) !== SAVE_SCHEMA_VERSION
+        || parsed.appVersion !== APP_VERSION;
+      if (requiresRewrite) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+        if (stored.key !== STORAGE_KEY) {
+          localStorage.removeItem(stored.key);
         }
       }
-      const equippedCosmetic = ownedItems[parsed.equippedCosmetic] ? parsed.equippedCosmetic : "classic";
-      const equippedTrail = ownedItems[parsed.equippedTrail] ? parsed.equippedTrail : "none";
-      const equippedAbility = (parsed.equippedAbility && (abilityLevels[parsed.equippedAbility] > 0 || parsed.equippedAbility === "none_ability"))
-        ? parsed.equippedAbility
-        : "none_ability";
-      return {
-        stars,
-        dailyTokens,
-        settings,
-        ownedItems,
-        abilityLevels,
-        bestRounds,
-        dailyBestRounds,
-        dailyRuns,
-        dailyLogin,
-        difficultyTracks,
-        treeUnlocks,
-        goalClaims,
-        weeklyGoalClaims,
-        weeklyChestClaims,
-        calendarMilestoneClaims,
-        mastery,
-        stats,
-        equippedCosmetic,
-        equippedTrail,
-        equippedAbility
-      };
+      return normalized;
     } catch {
-        return {
-          stars: 0,
-          dailyTokens: 0,
-          settings: { ...DEFAULT_SETTINGS },
-          ownedItems: { classic: true, none: true, none_ability: true },
-          abilityLevels: {},
-          bestRounds: {},
-          dailyBestRounds: {},
-          dailyRuns: {},
-          dailyLogin: { lastClaimDate: null, streakClaims: 0 },
-          difficultyTracks: {},
-          treeUnlocks: {},
-          goalClaims: {},
-          weeklyGoalClaims: {},
-          weeklyChestClaims: {},
-          calendarMilestoneClaims: {},
-          mastery: { cosmetics: {}, trails: {}, abilities: {} },
-          stats: {
-            holesCompleted: 0,
-            roundsCompleted: 0,
-            totalShots: 0,
-            totalStarsEarned: 0,
-            bestCleanStreak: 0,
-            totalShares: 0,
-            layoutsSeen: {},
-            usage: { cosmetics: {}, abilities: {}, trails: {} }
-          },
-          equippedCosmetic: "classic",
-          equippedTrail: "none",
-          equippedAbility: "none_ability"
-        };
+        return createDefaultProgress();
     }
   }
 
   function saveProgress(progress) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      ...progress,
+      version: SAVE_SCHEMA_VERSION,
+      appVersion: APP_VERSION
+    }));
   }
 
   function starsForHole(par, shots) {
@@ -3359,7 +3364,7 @@
         layoutType,
         archetype,
         hazardTheme: modeKey === "daily"
-          ? (holeIndex === 0 ? null : (spotlightMap.get(holeIndex) || dailySpotlight))
+          ? (spotlightMap.get(holeIndex) || dailySpotlight)
           : (spotlightMap.get(holeIndex) || (dailySignature && holeIndex >= 1 && holeIndex % 3 === 0 ? dailySignature.featuredSpotlight : null)),
         forcedModifier: dailySignature && holeIndex > 0 && holeIndex % 2 === 0 ? dailySignature.featuredModifier : null,
         forcedSetpiece: dailySignature && (holeIndex === Math.max(2, Math.floor(holeCount / 2)) || holeIndex === holeCount - 2) ? dailySignature.featuredSetpiece : null,
@@ -4223,13 +4228,18 @@
     return { x: -direction.y, y: direction.x };
   }
 
-  function makeCellPad(center, direction, cellSize, boost, axis = "horizontal", sign = 1) {
+  function makeCellPad(center, direction, cellSize, boost, axis = "horizontal", sign = 1, rotationOverride = null) {
     const horizontal = axis !== "vertical";
     const width = horizontal ? Math.round(cellSize * 0.68) : 30;
     const height = horizontal ? 30 : Math.round(cellSize * 0.68);
-    const rotation = horizontal
+    let rotation = horizontal
       ? (sign >= 0 ? 0 : 180)
       : (sign >= 0 ? 90 : 270);
+    if (rotationOverride != null && Number.isFinite(rotationOverride)) {
+      rotation = rotationOverride;
+    } else if (direction && (Math.abs(direction.x) > 0.001 || Math.abs(direction.y) > 0.001)) {
+      rotation = Math.atan2(direction.y, direction.x) * (180 / Math.PI);
+    }
     return {
       x: center.x - Math.round(width / 2),
       y: center.y - Math.round(height / 2),
@@ -4555,13 +4565,28 @@
     );
   }
 
+  function getFanInfluenceBounds(item) {
+    const streamLength = item.streamLength || Math.max(item.width || 0, item.height || 0) * 3.2;
+    if (Math.abs(item.forceX || 0) > Math.abs(item.forceY || 0)) {
+      if ((item.forceX || 0) > 0) {
+        return { x: item.x, y: item.y, width: item.width + streamLength, height: item.height };
+      }
+      return { x: item.x - streamLength, y: item.y, width: item.width + streamLength, height: item.height };
+    }
+    if ((item.forceY || 0) > 0) {
+      return { x: item.x, y: item.y, width: item.width, height: item.height + streamLength };
+    }
+    return { x: item.x, y: item.y - streamLength, width: item.width, height: item.height + streamLength };
+  }
+
   function getHazardBounds(kind, item) {
     if (kind === "spinner" || kind === "bumper" || kind === "magnet") {
+      const radius = kind === "magnet" ? Math.round((item.pulseRadius || item.radius) || 0) : item.radius;
       return {
-        x: item.x - item.radius,
-        y: item.y - item.radius,
-        width: item.radius * 2,
-        height: item.radius * 2
+        x: item.x - radius,
+        y: item.y - radius,
+        width: radius * 2,
+        height: radius * 2
       };
     }
     if (kind === "sand") {
@@ -4574,6 +4599,11 @@
         };
       }
       return { x: item.x, y: item.y, width: item.width, height: item.height };
+    }
+    if (kind === "fan") {
+      return typeof item.getInfluenceBounds === "function"
+        ? item.getInfluenceBounds()
+        : getFanInfluenceBounds(item);
     }
     if (kind === "pad" || kind === "fan" || kind === "shutter" || kind === "staticShutter" || kind === "rail") {
       return { x: item.x, y: item.y, width: item.width, height: item.height };
@@ -4596,12 +4626,37 @@
     }
     return null;
   }
+  function getWallBounds(wall) {
+    if (!wall) return null;
+    if (wall.type === "arc") {
+      const thickness = wall.thickness || 0;
+      const radius = wall.radius || 0;
+      const outer = radius + thickness * 0.5;
+      return {
+        x: wall.cx - outer,
+        y: wall.cy - outer,
+        width: outer * 2,
+        height: outer * 2
+      };
+    }
+    if (Number.isFinite(wall.x) && Number.isFinite(wall.y) && Number.isFinite(wall.width) && Number.isFinite(wall.height)) {
+      return { x: wall.x, y: wall.y, width: wall.width, height: wall.height };
+    }
+    return null;
+  }
 
   function pruneHazardOverlaps(holeData) {
     const placed = [];
+    const wallBounds = (holeData.walls || [])
+      .map(getWallBounds)
+      .filter(Boolean);
     const keepIfClear = (kind, item, padding = 14) => {
       const bounds = getHazardBounds(kind, item);
       const boundsList = Array.isArray(bounds) ? bounds : bounds ? [bounds] : [];
+      const overlapsWall = wallBounds.some(existing =>
+        boundsList.some(bound => rectsOverlap(bound, existing, 4))
+      );
+      if (overlapsWall) return false;
       const overlaps = placed.some(existing =>
         boundsList.some(bound => rectsOverlap(bound, existing, padding))
       );
@@ -4621,6 +4676,39 @@
     holeData.ricochetRails = holeData.ricochetRails.filter(item => keepIfClear("rail", item, 16));
     holeData.teleports = holeData.teleports.filter(item => keepIfClear("teleport", item, 18));
     return holeData;
+  }
+  function canPlaceHazardWithoutOverlap(holeData, kind, item, padding = 14) {
+    const bounds = getHazardBounds(kind, item);
+    const boundsList = Array.isArray(bounds) ? bounds : bounds ? [bounds] : [];
+    if (!boundsList.length) return true;
+    const wallBounds = (holeData.walls || [])
+      .map(getWallBounds)
+      .filter(Boolean);
+    const overlapsWall = wallBounds.some(existing =>
+      boundsList.some(bound => rectsOverlap(bound, existing, 4))
+    );
+    if (overlapsWall) return false;
+    const groups = [
+      ["spinner", holeData.spinners || [], 18],
+      ["bumper", holeData.bumpers || [], 16],
+      ["sand", holeData.sandTraps || [], 18],
+      ["pad", holeData.pads || [], 12],
+      ["fan", holeData.fanZones || [], 14],
+      ["shutter", holeData.shutterDoors || [], 16],
+      ["staticShutter", holeData.staticShutters || [], 16],
+      ["magnet", holeData.magneticZones || [], 20],
+      ["rail", holeData.ricochetRails || [], 16],
+      ["teleport", holeData.teleports || [], 18]
+    ];
+    return groups.every(([existingKind, items, existingPadding]) => {
+      return items.every(existingItem => {
+        const existingBounds = getHazardBounds(existingKind, existingItem);
+        const existingList = Array.isArray(existingBounds) ? existingBounds : existingBounds ? [existingBounds] : [];
+        return boundsList.every(bound =>
+          existingList.every(existing => !rectsOverlap(bound, existing, Math.max(padding, existingPadding)))
+        );
+      });
+    });
   }
 
   function generateHole(holeIndex, courseSeed, difficultyKey = "average", progress = null, planEntry = null) {
@@ -4768,6 +4856,33 @@
       const range = cellSize * (settings.key === "hardcore" ? 0.12 : 0.08);
       return base + randRange(rng, -range, range);
     };
+    const normalizeDirection = (x, y, fallback = { x: 1, y: 0 }) => {
+      const length = Math.hypot(x, y);
+      if (length <= 0.001) return { x: fallback.x, y: fallback.y };
+      return {
+        x: x / length,
+        y: y / length
+      };
+    };
+    const getLaneTargetPoint = (index, sideOffset = 0, forwardBias = cellSize * 0.22) => {
+      const direction = getCellOutgoingDirection(cells, index);
+      const perp = getPerp(direction);
+      const laneSide = sideOffset * 0.35;
+      return clampPointToCell(
+        index,
+        cells[index].cx + direction.x * forwardBias + perp.x * laneSide,
+        cells[index].cy + direction.y * forwardBias + perp.y * laneSide,
+        cellSize * 0.16,
+        cellSize * 0.16
+      );
+    };
+    const getLaneGuidedDirection = (anchor, index, sideOffset = 0, forwardBias = cellSize * 0.28, reverse = false) => {
+      const target = getLaneTargetPoint(index, sideOffset, forwardBias);
+      const guided = normalizeDirection(target.x - anchor.x, target.y - anchor.y, anchor.direction);
+      return reverse
+        ? { x: Math.round(-guided.x * 100) / 100, y: Math.round(-guided.y * 100) / 100 }
+        : { x: Math.round(guided.x * 100) / 100, y: Math.round(guided.y * 100) / 100 };
+    };
     const placePadAtCell = (index, boost, alongOffset = 0, sideOffset = 0, useIncoming = false) => {
       const isSlowPad = boost < 1;
       const incoming = getCellIncomingDirection(cells, index);
@@ -4786,10 +4901,48 @@
       const padInsetX = axis === "horizontal" ? cellSize * 0.38 : 28;
       const padInsetY = axis === "horizontal" ? 28 : cellSize * 0.38;
       const anchor = getObstacleCenter(index, alongOffset, sideOffset, useIncoming, Math.max(padInsetX, padInsetY));
+      const guidedDirection = getLaneGuidedDirection(anchor, index, sideOffset, turning ? cellSize * 0.18 : cellSize * 0.3, isSlowPad && !turning);
+      const padRotation = Math.atan2(guidedDirection.y, guidedDirection.x) * (180 / Math.PI);
       pads.push(makeCellPad({
         x: anchor.x,
         y: anchor.y
-      }, anchor.direction, cellSize, boost, axis, sign));
+      }, guidedDirection, cellSize, boost, axis, sign, padRotation));
+    };
+    const createFanZoneAtCell = (index, sideOffset = 0, preferLaneFlow = false, reverseLaneFlow = false, power = 0.14) => {
+      const laneDirection = getCellOutgoingDirection(cells, index);
+      const lanePerp = getPerp(laneDirection);
+      const target = getLaneTargetPoint(index, preferLaneFlow ? 0 : sideOffset, preferLaneFlow ? cellSize * 0.08 : cellSize * 0.16);
+      const forceDirection = preferLaneFlow
+        ? normalizeDirection(
+            reverseLaneFlow ? -laneDirection.x : laneDirection.x,
+            reverseLaneFlow ? -laneDirection.y : laneDirection.y,
+            laneDirection
+          )
+        : getLaneGuidedDirection({
+            x: target.x - lanePerp.x * sideOffset * 0.9,
+            y: target.y - lanePerp.y * sideOffset * 0.9,
+            direction: laneDirection
+          }, index, sideOffset, cellSize * 0.28, reverseLaneFlow);
+      const horizontalFlow = Math.abs(forceDirection.x) >= Math.abs(forceDirection.y);
+      const width = Math.round(horizontalFlow ? 44 : cellSize * 0.62);
+      const height = Math.round(horizontalFlow ? cellSize * 0.46 : 44);
+      const center = clampPointToCell(
+        index,
+        target.x - forceDirection.x * Math.max(width, height) * 0.62,
+        target.y - forceDirection.y * Math.max(width, height) * 0.62,
+        Math.max(width, height) * 0.45,
+        Math.max(width, height) * 0.45
+      );
+      return {
+        x: Math.round(center.x - width / 2),
+        y: Math.round(center.y - height / 2),
+        width,
+        height,
+        forceX: Math.round(forceDirection.x * 100) / 100,
+        forceY: Math.round(forceDirection.y * 100) / 100,
+        power,
+        streamLength: Math.round(cellSize * (preferLaneFlow ? 1.3 : 1.22))
+      };
     };
     const reserveCell = index => {
       if (index == null || index < 0 || index >= cells.length) return false;
@@ -4873,7 +5026,15 @@
       resetReservedCells();
       const spotlightCount = Math.min(
         cells.length - startBufferCells - endBufferCells - 1,
-        settings.key === "hardcore" ? Math.max(4, Math.floor(cells.length * 0.42)) : Math.max(3, Math.floor(cells.length * 0.32))
+        spotlight.id === "magnet_field"
+          ? settings.key === "hardcore"
+            ? Math.max(5, Math.floor(cells.length * 0.5))
+            : settings.key === "beginner"
+              ? Math.max(4, Math.floor(cells.length * 0.42))
+              : Math.max(4, Math.floor(cells.length * 0.4))
+          : settings.key === "hardcore"
+            ? Math.max(4, Math.floor(cells.length * 0.42))
+            : Math.max(3, Math.floor(cells.length * 0.32))
       );
       const indices = getTemplateIndices(spotlightCount, 0.2, 0.88);
       if (spotlight.id === "magnet_field") {
@@ -4883,6 +5044,7 @@
             x: Math.round(anchor.x),
             y: Math.round(anchor.y),
             radius: Math.round(cellSize * (i % 3 === 0 ? 0.23 : 0.19)),
+            pulseRadius: Math.round(cellSize * (i % 3 === 0 ? 0.34 : 0.3)),
             strength: settings.key === "hardcore" ? 0.34 : 0.26,
             mode: i % 3 === 1 ? "push" : "pull"
           });
@@ -4908,7 +5070,8 @@
           const padInsetX = axis === "horizontal" ? cellSize * 0.38 : 28;
           const padInsetY = axis === "horizontal" ? 28 : cellSize * 0.38;
           const anchor = getObstacleCenter(index, getCentralContestAlong(index, 0), getCentralContestSide(index, getLaneSign(index), 0.01), false, Math.max(padInsetX, padInsetY));
-          pads.push(makeCellPad({ x: anchor.x, y: anchor.y }, direction, cellSize, 1.16 + (i % 2 === 0 ? 0.06 : 0), axis, sign));
+          const guidedDirection = getLaneGuidedDirection(anchor, index, 0, cellSize * 0.28, false);
+          pads.push(makeCellPad({ x: anchor.x, y: anchor.y }, guidedDirection, cellSize, 1.16 + (i % 2 === 0 ? 0.06 : 0), axis, sign));
           if (i % 3 === 1) {
             walls.push(makeLaneChokeBlocker(cells[index].rect, getCellDirection(cells, index), rng, settings.key));
             chokeBlockerCount++;
@@ -4916,16 +5079,50 @@
         });
       } else if (spotlight.id === "fan_drift") {
         indices.forEach((index, i) => {
-          const anchor = getObstacleCenter(index, 0, getCentralContestSide(index, getLaneSign(index), 0.018), false, cellSize * 0.22);
-          fanZones.push({
-            x: Math.round(anchor.x - (Math.abs(anchor.direction.y) > 0.5 ? 22 : cellSize * 0.32)),
-            y: Math.round(anchor.y - (Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.22 : 22)),
-            width: Math.round(Math.abs(anchor.direction.y) > 0.5 ? 44 : cellSize * 0.64),
-            height: Math.round(Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.44 : 44),
-            forceX: Math.round((i % 2 === 0 ? anchor.perp.x : anchor.direction.x) * 100) / 100,
-            forceY: Math.round((i % 2 === 0 ? anchor.perp.y : anchor.direction.y) * 100) / 100,
-            power: settings.key === "hardcore" ? 0.18 : 0.14
+          const sideOffset = getCentralContestSide(index, getLaneSign(index), 0.018);
+          fanZones.push(createFanZoneAtCell(index, sideOffset, i % 3 === 1, false, settings.key === "hardcore" ? 0.18 : 0.14));
+        });
+      }
+    };
+    const ensureSpotlightHazards = spotlight => {
+      if (!spotlight) return;
+      const fallbackCount = settings.key === "hardcore" ? 4 : settings.key === "beginner" ? 3 : 3;
+      const fallbackIndices = getTemplateIndices(fallbackCount, 0.24, 0.82);
+      if (spotlight.id === "magnet_field" && magneticZones.length < fallbackCount) {
+        fallbackIndices.forEach((index, i) => {
+          if (magneticZones.length >= fallbackCount) return;
+          const anchor = getObstacleCenter(index, 0, getCentralContestSide(index, getLaneSign(index), 0.016), false, cellSize * 0.18);
+          magneticZones.push({
+            x: Math.round(anchor.x),
+            y: Math.round(anchor.y),
+            radius: Math.round(cellSize * (settings.key === "hardcore" ? 0.24 : 0.2)),
+            pulseRadius: Math.round(cellSize * (settings.key === "hardcore" ? 0.34 : 0.3)),
+            strength: settings.key === "hardcore" ? 0.36 : 0.28,
+            mode: i % 2 === 0 ? "pull" : "push"
           });
+        });
+      }
+      if (spotlight.id === "sandstorm" && sandTraps.length < fallbackCount) {
+        fallbackIndices.forEach(index => {
+          if (sandTraps.length >= fallbackCount) return;
+          const anchor = getObstacleCenter(index, 0, getCentralContestSide(index, getLaneSign(index), 0.01), false, cellSize * 0.22);
+          const trapWidth = Math.round(cellSize * 0.56);
+          const trapHeight = Math.round(cellSize * 0.48);
+          const trapPos = clampRectToCell(index, anchor.x - trapWidth / 2, anchor.y - trapHeight / 2, trapWidth, trapHeight, wallThickness * 0.5 + 14);
+          sandTraps.push({ x: trapPos.x, y: trapPos.y, width: trapWidth, height: trapHeight });
+        });
+      }
+      if (spotlight.id === "boost_grid" && pads.length < fallbackCount) {
+        fallbackIndices.forEach((index, i) => {
+          if (pads.length >= fallbackCount) return;
+          placePadAtCell(index, 1.14 + (i % 2 === 0 ? 0.06 : 0), getCentralContestAlong(index, 0), getCentralContestSide(index, getLaneSign(index), 0.012), false);
+        });
+      }
+      if (spotlight.id === "fan_drift" && fanZones.length < fallbackCount) {
+        fallbackIndices.forEach((index, i) => {
+          if (fanZones.length >= fallbackCount) return;
+          const sideOffset = getCentralContestSide(index, getLaneSign(index), 0.016);
+          fanZones.push(createFanZoneAtCell(index, sideOffset, i % 3 === 1, false, settings.key === "hardcore" ? 0.2 : 0.16));
         });
       }
     };
@@ -4949,16 +5146,7 @@
         });
         const fanIndices = getTemplateIndices(1, 0.64, 0.72);
         fanIndices.forEach(index => {
-          const anchor = getObstacleCenter(index, 0, 0, false, cellSize * 0.26);
-          fanZones.push({
-            x: Math.round(anchor.x - (Math.abs(anchor.direction.y) > 0.5 ? 24 : cellSize * 0.3)),
-            y: Math.round(anchor.y - (Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.22 : 24)),
-            width: Math.round(Math.abs(anchor.direction.y) > 0.5 ? 48 : cellSize * 0.6),
-            height: Math.round(Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.44 : 48),
-            forceX: Math.round(anchor.direction.x * 100) / 100,
-            forceY: Math.round(anchor.direction.y * 100) / 100,
-            power: settings.key === "hardcore" ? 0.15 : 0.11
-          });
+          fanZones.push(createFanZoneAtCell(index, 0, true, false, settings.key === "hardcore" ? 0.15 : 0.11));
         });
       } else if (setpiece.id === "magnetic_maze") {
         const magnetIndices = getTemplateIndices(settings.key === "hardcore" ? 3 : 2, 0.26, 0.8);
@@ -5004,16 +5192,8 @@
       } else if (setpiece.id === "fan_tunnel") {
         const fanIndices = getTemplateIndices(settings.key === "hardcore" ? 3 : 2, 0.3, 0.74);
         fanIndices.forEach((index, i) => {
-          const anchor = getObstacleCenter(index, 0, i % 2 === 0 ? -cellSize * 0.08 : cellSize * 0.08, false, cellSize * 0.26);
-          fanZones.push({
-            x: Math.round(anchor.x - (Math.abs(anchor.direction.y) > 0.5 ? 24 : cellSize * 0.32)),
-            y: Math.round(anchor.y - (Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.22 : 24)),
-            width: Math.round(Math.abs(anchor.direction.y) > 0.5 ? 48 : cellSize * 0.64),
-            height: Math.round(Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.44 : 48),
-            forceX: Math.round(anchor.perp.x * (i % 2 === 0 ? 1 : -1) * 100) / 100,
-            forceY: Math.round(anchor.perp.y * (i % 2 === 0 ? 1 : -1) * 100) / 100,
-            power: settings.key === "hardcore" ? 0.18 : 0.13
-          });
+          const sideOffset = i % 2 === 0 ? -cellSize * 0.08 : cellSize * 0.08;
+          fanZones.push(createFanZoneAtCell(index, sideOffset, false, false, settings.key === "hardcore" ? 0.18 : 0.13));
         });
       } else if (setpiece.id === "needle_lane") {
         const blockerIndices = getTemplateIndices(3, 0.24, 0.78);
@@ -5336,22 +5516,8 @@
           ? takePressureCell(index => index > startBufferCells && index < cells.length - endBufferCells)
           : takeOpenCell(index => index > startBufferCells && index < cells.length - endBufferCells);
         if (fanIndex != null) {
-          const anchor = getObstacleCenter(
-            fanIndex,
-            0,
-            settings.key === "hardcore" ? 0 : settings.key === "average" ? getLaneSign(fanIndex) * cellSize * 0.02 : getLaneSign(fanIndex) * cellSize * 0.08,
-            false,
-            cellSize * 0.25
-          );
-          fanZones.push({
-            x: Math.round(anchor.x - (Math.abs(anchor.direction.y) > 0.5 ? 20 : cellSize * 0.28)),
-            y: Math.round(anchor.y - (Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.22 : 20)),
-            width: Math.round(Math.abs(anchor.direction.y) > 0.5 ? 40 : cellSize * 0.56),
-            height: Math.round(Math.abs(anchor.direction.y) > 0.5 ? cellSize * 0.44 : 40),
-            forceX: Math.round(anchor.perp.x * 100) / 100,
-            forceY: Math.round(anchor.perp.y * 100) / 100,
-            power: settings.key === "hardcore" ? 0.16 : 0.11
-          });
+          const sideOffset = settings.key === "hardcore" ? 0 : settings.key === "average" ? getLaneSign(fanIndex) * cellSize * 0.02 : getLaneSign(fanIndex) * cellSize * 0.08;
+          fanZones.push(createFanZoneAtCell(fanIndex, sideOffset, settings.key === "hardcore", false, settings.key === "hardcore" ? 0.16 : 0.11));
         }
       }
 
@@ -5561,6 +5727,7 @@
 
       if (hazardTheme) {
         applyHazardSpotlightTheme(hazardTheme);
+        ensureSpotlightHazards(hazardTheme);
       }
 
       if ((holeIndex >= 4 || (settings.key === "hardcore" && holeIndex >= 2)) && settings.key !== "beginner" && rng() < (settings.key === "hardcore" ? 0.58 : 0.26)) {
@@ -5630,7 +5797,7 @@
       8
     );
 
-    return pruneHazardOverlaps({
+    const pruned = pruneHazardOverlaps({
       id: holeIndex + 1,
       seed: holeSeed,
       archetype,
@@ -5661,6 +5828,37 @@
       holeGuardStyle: settings.key !== "beginner" && (holeIndex >= 3 || settings.key === "hardcore") ? "mirrored" : "none",
       mirroredFalseCupSand
     });
+    if (hazardTheme?.id === "magnet_field" && pruned.magneticZones.length === 0) {
+      const fallbackIndex = Math.max(1, Math.floor(cells.length * 0.55));
+      const candidateIndex = Math.min(fallbackIndex, cells.length - 2);
+      const sideOffsets = [0, cellSize * 0.16, -cellSize * 0.16, cellSize * 0.28, -cellSize * 0.28];
+      for (const sideOffset of sideOffsets) {
+        const anchor = getObstacleCenter(candidateIndex, 0, sideOffset, false, cellSize * 0.18);
+        const magnet = {
+          x: Math.round(anchor.x),
+          y: Math.round(anchor.y),
+          radius: Math.round(cellSize * 0.2),
+          pulseRadius: Math.round(cellSize * 0.3),
+          strength: settings.key === "hardcore" ? 0.36 : 0.28,
+          mode: "pull"
+        };
+        if (!canPlaceHazardWithoutOverlap(pruned, "magnet", magnet, 20)) continue;
+        pruned.magneticZones.push(magnet);
+        break;
+      }
+    }
+    if (hazardTheme?.id === "fan_drift" && pruned.fanZones.length === 0) {
+      const fallbackIndex = Math.max(1, Math.floor(cells.length * 0.55));
+      const candidateIndex = Math.min(fallbackIndex, cells.length - 2);
+      const sideOffsets = [0, cellSize * 0.18, -cellSize * 0.18, cellSize * 0.3, -cellSize * 0.3];
+      for (const sideOffset of sideOffsets) {
+        const fan = createFanZoneAtCell(candidateIndex, sideOffset, false, false, settings.key === "hardcore" ? 0.2 : 0.16);
+        if (!canPlaceHazardWithoutOverlap(pruned, "fan", fan, 14)) continue;
+        pruned.fanZones.push(fan);
+        break;
+      }
+    }
+    return pruneHazardOverlaps(pruned);
   }
 
   function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null, modeKey = "standard") {
@@ -9124,7 +9322,7 @@
   }
 
 class FanZone {
-  constructor({ x, y, width, height, forceX, forceY, power }) {
+  constructor({ x, y, width, height, forceX, forceY, power, streamLength }) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -9132,10 +9330,17 @@ class FanZone {
     this.forceX = forceX;
     this.forceY = forceY;
     this.power = power;
+    this.streamLength = streamLength || Math.max(width, height) * 3.2;
+  }
+  getInfluenceBounds() {
+    return getFanInfluenceBounds(this);
   }
   render(ctx) {
     const phase = (performance.now() / 420) % 1;
     ctx.save();
+    const stream = this.getInfluenceBounds();
+    fillRoundedRect(ctx, stream.x, stream.y, stream.width, stream.height, 16, "rgba(229,231,235,0.16)");
+    drawDotGrid(ctx, stream.x + 4, stream.y + 4, Math.max(0, stream.width - 8), Math.max(0, stream.height - 8), 18, 0.9, "rgba(17,17,17,0.06)");
     fillRoundedRect(ctx, this.x, this.y, this.width, this.height, 12, VISUAL_STYLE.utilityFill);
     drawDotGrid(ctx, this.x + 2, this.y + 2, this.width - 4, this.height - 4, 14, 1, "rgba(17,17,17,0.12)");
     strokeRoundedRect(ctx, this.x, this.y, this.width, this.height, 12, VISUAL_STYLE.ink, 2);
@@ -9168,15 +9373,31 @@ class FanZone {
     ctx.restore();
   }
   apply(ball) {
+    const stream = this.getInfluenceBounds();
     if (
-      ball.x > this.x && ball.x < this.x + this.width &&
-      ball.y > this.y && ball.y < this.y + this.height
+      ball.x > stream.x && ball.x < stream.x + stream.width &&
+      ball.y > stream.y && ball.y < stream.y + stream.height
     ) {
+      const currentSpeed = ball.speed ? ball.speed() : Math.hypot(ball.vx, ball.vy);
+      if (currentSpeed < 0.2) {
+        ball.vx = 0;
+        ball.vy = 0;
+        return;
+      }
       const centerX = this.x + this.width / 2;
       const centerY = this.y + this.height / 2;
-      const normX = Math.abs(ball.x - centerX) / Math.max(1, this.width / 2);
-      const normY = Math.abs(ball.y - centerY) / Math.max(1, this.height / 2);
-      const depth = 1 - clamp(Math.max(normX, normY), 0, 1);
+      const bodyNormX = Math.abs(ball.x - centerX) / Math.max(1, this.width / 2);
+      const bodyNormY = Math.abs(ball.y - centerY) / Math.max(1, this.height / 2);
+      const crossDepth = 1 - clamp(
+        Math.abs(this.forceX) > Math.abs(this.forceY) ? bodyNormY : bodyNormX,
+        0,
+        1
+      );
+      const along = Math.abs(this.forceX) > Math.abs(this.forceY)
+        ? (this.forceX > 0 ? ball.x - this.x : this.x + this.width - ball.x)
+        : (this.forceY > 0 ? ball.y - this.y : this.y + this.height - ball.y);
+      const alongDepth = clamp(1 - along / Math.max(1, this.streamLength + Math.max(this.width, this.height)), 0.15, 1);
+      const depth = clamp(crossDepth * 0.7 + alongDepth * 0.55, 0.18, 1);
       const resist = ball.getFieldResistance ? ball.getFieldResistance() : 1;
       const push = this.power * (1.4 + depth * 1.5) * resist;
       ball.vx += this.forceX * push;
@@ -9298,10 +9519,11 @@ class RicochetRail extends Wall {
 }
 
 class MagneticZone {
-  constructor({ x, y, radius, strength, mode }) {
+  constructor({ x, y, radius, pulseRadius, strength, mode }) {
     this.x = x;
     this.y = y;
     this.radius = radius;
+    this.pulseRadius = pulseRadius || radius * 1.45;
     this.strength = strength;
     this.mode = mode || "pull";
   }
@@ -9321,6 +9543,13 @@ class MagneticZone {
     ctx.arc(this.x, this.y, this.radius * 0.58, 0, Math.PI * 2);
     ctx.strokeStyle = "rgba(17,17,17,0.2)";
     ctx.lineWidth = 1.2;
+    ctx.stroke();
+    const pulseT = (Math.sin(phase * 2.2) + 1) * 0.5;
+    const pulseRadius = lerp(this.radius * 1.06, this.pulseRadius, pulseT);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, pulseRadius, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(156,163,175,${0.18 + pulseT * 0.12})`;
+    ctx.lineWidth = 2.2;
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(this.x - 7, this.y);
@@ -9361,16 +9590,28 @@ class MagneticZone {
     const dx = this.x - ball.x;
     const dy = this.y - ball.y;
     const dist = Math.hypot(dx, dy);
-    if (dist <= 0.001 || dist > this.radius) return;
-    const falloff = 1 - dist / this.radius;
+    if (dist <= 0.001 || dist > this.pulseRadius) return;
+    const currentSpeed = ball.speed ? ball.speed() : Math.hypot(ball.vx, ball.vy);
+    const settleRadius = this.radius * 0.18;
+    if (this.mode === "pull" && dist < settleRadius && currentSpeed < 0.22) {
+      ball.vx = 0;
+      ball.vy = 0;
+      return;
+    }
+    const falloff = 1 - dist / this.pulseRadius;
     const sign = this.mode === "pull" ? 1 : -1;
     const resist = ball.getFieldResistance ? ball.getFieldResistance() : 1;
-    const force = this.strength * (0.32 + falloff * 0.96) * resist;
+    const innerBoost = dist < this.radius ? 0.55 : 0.18;
+    const force = this.strength * (innerBoost + falloff * (dist < this.radius ? 1.02 : 0.72)) * resist;
     ball.vx += (dx / dist) * force * sign;
     ball.vy += (dy / dist) * force * sign;
     if (this.mode === "pull" && dist < this.radius * 0.46) {
-      ball.vx *= 0.992;
-      ball.vy *= 0.992;
+      const centerDamping = dist < this.radius * 0.28 ? 0.9 : 0.982;
+      ball.vx *= centerDamping;
+      ball.vy *= centerDamping;
+    } else if (this.mode === "pull" && dist < this.pulseRadius) {
+      ball.vx *= 0.995;
+      ball.vy *= 0.995;
     }
   }
 }

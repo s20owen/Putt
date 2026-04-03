@@ -1,4 +1,5 @@
-const CACHE_NAME = "putt-mobile-cache-v1";
+const APP_CACHE_VERSION = "2026.04.02";
+const CACHE_NAME = `putt-mobile-cache-${APP_CACHE_VERSION}`;
 const APP_SHELL = [
   "./",
   "./putt.html",
