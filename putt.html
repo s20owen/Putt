@@ -134,6 +134,10 @@
       background: #111827;
       color: #fff;
     }
+    .mode-toggle button:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
     .menu-section-label {
       margin-top: 14px;
       font-size: 11px;
@@ -230,7 +234,7 @@
       gap: 6px;
     }
     .calendar-strip.long {
-      grid-template-columns: repeat(10, minmax(0, 1fr));
+      display: none;
     }
     .calendar-day {
       border-radius: 12px;
@@ -349,6 +353,10 @@
       gap: 12px;
       font-size: 12px;
       color: #4b5563;
+    }
+    .menu-progress-row span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
     .menu-carousel-wrap {
       margin-top: 14px;
@@ -1092,8 +1100,8 @@
         gap: 4px;
       }
       .menu-progress-row {
-        grid-template-columns: 92px 1fr;
-        gap: 10px;
+        grid-template-columns: 1fr;
+        gap: 4px;
       }
       canvas {
         border-radius: 0;
@@ -1231,7 +1239,7 @@
       <div id="menuHero" class="menu-hero"></div>
       <div class="menu-section-label">Round Length</div>
       <div class="mode-toggle">
-        <button class="active" data-round-length="default">Default</button>
+        <button class="active" data-round-length="default">By Difficulty</button>
         <button data-round-length="18">18 Holes</button>
       </div>
       <div class="menu-section-label">Difficulty</div>
@@ -1253,7 +1261,6 @@
       <div class="menu-calendar">
         <strong>Daily Track</strong>
         <div id="menuCalendar7" class="calendar-strip"></div>
-        <div id="menuCalendar30" class="calendar-strip long"></div>
         <div id="menuCalendarDetail" class="calendar-detail"></div>
       </div>
       <div class="menu-carousel-wrap">
@@ -1298,9 +1305,10 @@
     </div>
   </div>
 
+<script src="./custom-maps.js"></script>
 <script>
 
-  const APP_VERSION = "2026.04.02";
+  const APP_VERSION = "2026.04.04";
   const SAVE_SCHEMA_VERSION = 2;
   const STORAGE_KEY = "putt-mobile-progress";
   const LEGACY_STORAGE_KEYS = ["putt-mobile-progress-v1"];
@@ -1670,7 +1678,7 @@
     beginner: {
       key: "beginner",
       label: "Beginner",
-      holeCount: 6,
+      holeCount: 9,
       obstacleScale: 0.75,
       lanePressureBias: -0.22,
       startBufferBonus: 1,
@@ -1680,7 +1688,7 @@
     average: {
       key: "average",
       label: "Average",
-      holeCount: 9,
+      holeCount: 12,
       obstacleScale: 1,
       lanePressureBias: 0,
       startBufferBonus: 0,
@@ -1690,7 +1698,7 @@
     hardcore: {
       key: "hardcore",
       label: "Hardcore",
-      holeCount: 9,
+      holeCount: 18,
       obstacleScale: 1.3,
       lanePressureBias: 0.18,
       startBufferBonus: -1,
@@ -1774,6 +1782,7 @@
     bounce_forge: { id: "bounce_forge", name: "Bounce Forge" },
     fan_tunnel: { id: "fan_tunnel", name: "Fan Tunnel" },
     needle_lane: { id: "needle_lane", name: "Needle Lane" },
+    needle_pocket: { id: "needle_pocket", name: "Needle Pocket" },
     relay_orbit: { id: "relay_orbit", name: "Relay Orbit" },
     lockstep: { id: "lockstep", name: "Lockstep" },
     shutter_stack: { id: "shutter_stack", name: "Shutter Stack" },
@@ -1907,8 +1916,354 @@
     forcePreview: DEBUG_PARAMS.get('forcePreview') === '1',
     autostartDifficulty: DEBUG_PARAMS.get('autostart'),
     debugHole: Math.max(1, Number(DEBUG_PARAMS.get('hole')) || 1),
-    forceLayout: DEBUG_LAYOUTS.has(DEBUG_PARAMS.get('forceLayout')) ? DEBUG_PARAMS.get('forceLayout') : null
+    forceLayout: DEBUG_LAYOUTS.has(DEBUG_PARAMS.get('forceLayout')) ? DEBUG_PARAMS.get('forceLayout') : null,
+    handmadeId: DEBUG_PARAMS.get('handmade') || null
   };
+  function slugifyHandmadeName(value, fallback = "handmade-map") {
+    const slug = String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    return slug || fallback;
+  }
+  function normalizeWallForHandmade(wall) {
+    if (!wall || typeof wall !== "object") return null;
+    if (wall.type === "arc") {
+      if (![wall.cx, wall.cy, wall.radius].every(Number.isFinite)) return null;
+      return {
+        type: "arc",
+        cx: Math.round(wall.cx),
+        cy: Math.round(wall.cy),
+        radius: Math.max(12, Math.round(wall.radius)),
+        thickness: Math.max(8, Math.round(Number(wall.thickness) || 14)),
+        startAngle: Number.isFinite(wall.startAngle) ? wall.startAngle : 0,
+        endAngle: Number.isFinite(wall.endAngle) ? wall.endAngle : Math.PI
+      };
+    }
+    if (![wall.x, wall.y, wall.width, wall.height].every(Number.isFinite)) return null;
+    const normalized = {
+      x: Math.round(wall.x),
+      y: Math.round(wall.y),
+      width: Math.max(8, Math.round(wall.width)),
+      height: Math.max(8, Math.round(wall.height))
+    };
+    if (Number.isFinite(wall.rotation)) normalized.rotation = Math.round(wall.rotation);
+    return normalized;
+  }
+  function normalizePointList(points = []) {
+    return Array.isArray(points)
+      ? points
+        .filter(point => point && Number.isFinite(point.x) && Number.isFinite(point.y))
+        .map(point => ({ x: Math.round(point.x), y: Math.round(point.y) }))
+      : [];
+  }
+  function normalizeRectLike(rect, fallbackX = 0, fallbackY = 0, fallbackSize = 212) {
+    return {
+      x: Math.round(Number(rect?.x) || fallbackX),
+      y: Math.round(Number(rect?.y) || fallbackY),
+      width: Math.max(20, Math.round(Number(rect?.width) || fallbackSize)),
+      height: Math.max(20, Math.round(Number(rect?.height) || fallbackSize))
+    };
+  }
+  function normalizeHandmadeObstacleArray(list, mapper) {
+    return Array.isArray(list) ? list.map(mapper).filter(Boolean) : [];
+  }
+  function normalizeHandmadeTagList(value, fallbackList) {
+    const source = Array.isArray(value) ? value : value == null ? [] : [value];
+    const normalized = source
+      .flatMap((item) => String(item || "").split(","))
+      .map((item) => item.trim())
+      .filter(Boolean);
+    return normalized.length ? normalized : [...fallbackList];
+  }
+  function directionFromRotationDegrees(rotation = 0) {
+    const angle = (Number(rotation) || 0) * Math.PI / 180;
+    const x = Math.cos(angle);
+    const y = Math.sin(angle);
+    const magnitude = Math.hypot(x, y) || 1;
+    return {
+      x: Math.round((x / magnitude) * 100) / 100,
+      y: Math.round((y / magnitude) * 100) / 100
+    };
+  }
+  function normalizeHandmadeRuntimeDraft(raw, index = 0) {
+    if (!raw || typeof raw !== "object") return null;
+    const width = Math.max(800, Math.round(Number(raw.width) || 1600));
+    const height = Math.max(800, Math.round(Number(raw.height) || 1200));
+    const ballStart = raw.ballStart && Number.isFinite(raw.ballStart.x) && Number.isFinite(raw.ballStart.y)
+      ? { x: Math.round(raw.ballStart.x), y: Math.round(raw.ballStart.y) }
+      : { x: Math.round(width * 0.18), y: Math.round(height * 0.82) };
+    const hole = raw.hole && Number.isFinite(raw.hole.x) && Number.isFinite(raw.hole.y)
+      ? { x: Math.round(raw.hole.x), y: Math.round(raw.hole.y), radius: Math.max(8, Math.round(Number(raw.hole.radius) || 12)) }
+      : { x: Math.round(width * 0.82), y: Math.round(height * 0.18), radius: 12 };
+    const pathPoints = normalizePointList(raw.pathPoints);
+    const cells = Array.isArray(raw.cells) && raw.cells.length
+      ? raw.cells.map((cell, cellIndex) => ({
+          index: Number.isFinite(cell.index) ? cell.index : cellIndex,
+          col: Number.isFinite(cell.col) ? cell.col : cellIndex,
+          row: Number.isFinite(cell.row) ? cell.row : 0,
+          cx: Math.round(Number(cell.cx) || ballStart.x),
+          cy: Math.round(Number(cell.cy) || ballStart.y),
+          rect: normalizeRectLike(cell.rect, (Number(cell.cx) || ballStart.x) - 106, (Number(cell.cy) || ballStart.y) - 106)
+        }))
+      : pathPoints.map((point, cellIndex) => ({
+          index: cellIndex,
+          col: cellIndex,
+          row: 0,
+          cx: point.x,
+          cy: point.y,
+          rect: normalizeRectLike(null, point.x - 106, point.y - 106)
+        }));
+    return {
+      editorVersion: Number(raw.editorVersion || 2),
+      name: String(raw.name || `Handmade Map ${index + 1}`),
+      width,
+      height,
+      par: Math.max(1, Math.round(Number(raw.par) || 0)) || null,
+      cellSize: Math.max(80, Math.round(Number(raw.cellSize) || 212)),
+      wallThickness: Math.max(8, Math.round(Number(raw.wallThickness) || 14)),
+      ballStart,
+      hole,
+      holeApproach: raw.holeApproach && Number.isFinite(raw.holeApproach.x) && Number.isFinite(raw.holeApproach.y)
+        ? { x: Math.round(raw.holeApproach.x), y: Math.round(raw.holeApproach.y) }
+        : { x: 0, y: -1 },
+      pathPoints,
+      cells,
+      walls: normalizeHandmadeObstacleArray(raw.walls, normalizeWallForHandmade).filter((wall) =>
+        wall?.type === "arc" || (wall.width > 0 && wall.height > 0)
+      ),
+      spinners: normalizeHandmadeObstacleArray(raw.spinners, item => item && Number.isFinite(item.x) && Number.isFinite(item.y) ? ({
+        x: Math.round(item.x), y: Math.round(item.y), radius: Math.max(8, Math.round(Number(item.radius) || 24))
+      }) : null),
+      bumpers: normalizeHandmadeObstacleArray(raw.bumpers, item => item && Number.isFinite(item.x) && Number.isFinite(item.y) ? ({
+        x: Math.round(item.x), y: Math.round(item.y), radius: Math.max(8, Math.round(Number(item.radius) || 24))
+      }) : null),
+      sandTraps: normalizeHandmadeObstacleArray(raw.sandTraps, item => {
+        if (!item) return null;
+        if (Number.isFinite(item.radius)) {
+          return {
+            x: Math.round(Number(item.x) || 0),
+            y: Math.round(Number(item.y) || 0),
+            radius: Math.max(12, Math.round(item.radius)),
+            ...(Number.isFinite(item.innerRadius) ? { innerRadius: Math.max(0, Math.round(item.innerRadius)) } : {})
+          };
+        }
+        if (![item.x, item.y, item.width, item.height].every(Number.isFinite)) return null;
+        return {
+          x: Math.round(item.x),
+          y: Math.round(item.y),
+          width: Math.max(20, Math.round(item.width)),
+          height: Math.max(20, Math.round(item.height))
+        };
+      }),
+      pads: normalizeHandmadeObstacleArray(raw.pads, item => item && [item.x, item.y, item.width, item.height].every(Number.isFinite) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        width: Math.max(12, Math.round(item.width)),
+        height: Math.max(12, Math.round(item.height)),
+        rotation: Math.round(Number(item.rotation) || 0),
+        boost: Number(item.boost) || 1.18
+      }) : null),
+      fanZones: normalizeHandmadeObstacleArray(raw.fanZones, item => item && [item.x, item.y, item.width, item.height].every(Number.isFinite) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        width: Math.max(12, Math.round(item.width)),
+        height: Math.max(12, Math.round(item.height)),
+        rotation: Math.round(Number(item.rotation) || 0),
+        forceX: Number.isFinite(item.forceX) ? Number(item.forceX) : directionFromRotationDegrees(item.rotation).x,
+        forceY: Number.isFinite(item.forceY) ? Number(item.forceY) : directionFromRotationDegrees(item.rotation).y,
+        streamLength: Math.max(20, Math.round(Number(item.streamLength) || 260)),
+        power: Number(item.power) || 0.11
+      }) : null),
+      magneticZones: normalizeHandmadeObstacleArray(raw.magneticZones, item => item && Number.isFinite(item.x) && Number.isFinite(item.y) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        radius: Math.max(12, Math.round(Number(item.radius) || 32)),
+        pulseRadius: Math.max(12, Math.round(Number(item.pulseRadius) || Number(item.radius) || 42)),
+        strength: Number(item.strength) || 0.18,
+        mode: item.mode === "push" ? "push" : "pull"
+      }) : null),
+      teleports: normalizeHandmadeObstacleArray(raw.teleports, item => item?.a && item?.b && Number.isFinite(item.a.x) && Number.isFinite(item.a.y) && Number.isFinite(item.b.x) && Number.isFinite(item.b.y) ? ({
+        a: { x: Math.round(item.a.x), y: Math.round(item.a.y) },
+        b: { x: Math.round(item.b.x), y: Math.round(item.b.y) },
+        radius: Math.max(8, Math.round(Number(item.radius) || 24)),
+        color: item.color || "#0ea5e9"
+      }) : null),
+      shutterDoors: normalizeHandmadeObstacleArray(raw.shutterDoors, item => item && [item.x, item.y, item.width, item.height].every(Number.isFinite) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        width: Math.max(12, Math.round(item.width)),
+        height: Math.max(12, Math.round(item.height)),
+        rotation: Math.round(Number(item.rotation) || 0),
+        period: Math.max(12, Math.round(Number(item.period) || 96)),
+        closedFrames: Math.max(1, Math.round(Number(item.closedFrames) || 52)),
+        phase: Math.round(Number(item.phase) || 0)
+      }) : null),
+      staticShutters: normalizeHandmadeObstacleArray(raw.staticShutters, item => item && [item.x, item.y, item.width, item.height].every(Number.isFinite) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        width: Math.max(12, Math.round(item.width)),
+        height: Math.max(12, Math.round(item.height)),
+        rotation: Math.round(Number(item.rotation) || 0)
+      }) : null),
+      ricochetRails: normalizeHandmadeObstacleArray(raw.ricochetRails, item => item && [item.x, item.y, item.width, item.height].every(Number.isFinite) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        width: Math.max(12, Math.round(item.width)),
+        height: Math.max(8, Math.round(item.height)),
+        rotation: Math.round(Number(item.rotation) || 0)
+      }) : null),
+      falseHoles: normalizeHandmadeObstacleArray(raw.falseHoles, item => item && Number.isFinite(item.x) && Number.isFinite(item.y) ? ({
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        radius: Math.max(8, Math.round(Number(item.radius) || 12))
+      }) : null),
+      editorMeta: raw.editorMeta || null
+    };
+  }
+  function normalizeHandmadeMapEntry(entry, index = 0, source = "bundled") {
+    if (!entry) return null;
+    const runtimeDraft = normalizeHandmadeRuntimeDraft(entry.data || entry.runtimeDraft || entry, index);
+    if (!runtimeDraft) return null;
+    const name = String(entry.name || runtimeDraft.name || `Handmade Map ${index + 1}`);
+    return {
+      id: String(entry.id || slugifyHandmadeName(name, `handmade-${index + 1}`)),
+      name,
+      source,
+      enabled: entry.enabled !== false,
+      difficulties: normalizeHandmadeTagList(entry.difficulties, ["beginner", "average", "hardcore"]).filter(key => DIFFICULTY_PRESETS[key]),
+      modes: normalizeHandmadeTagList(entry.modes, ["standard"]),
+      weight: Math.max(1, Math.round(Number(entry.weight) || 1)),
+      data: runtimeDraft
+    };
+  }
+  let handmadeMapsCache = [];
+  let handmadeMapsReady = Promise.resolve([]);
+  async function loadCustomMapsRegistry() {
+    const scriptMaps = Array.isArray(window.CUSTOM_MAPS)
+      ? window.CUSTOM_MAPS
+      : Array.isArray(window.CUSTOM_MAPS?.maps)
+        ? window.CUSTOM_MAPS.maps
+        : null;
+    if (scriptMaps && scriptMaps.length) {
+      handmadeMapsCache = scriptMaps
+        .map((entry, index) => normalizeHandmadeMapEntry(entry, index, "script"))
+        .filter(Boolean);
+      return handmadeMapsCache;
+    }
+    try {
+      const response = await fetch("./custom-maps.json");
+      if (!response.ok) throw new Error(`custom maps ${response.status}`);
+      const parsed = await response.json();
+      const sourceList = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.maps)
+          ? parsed.maps
+          : [];
+      handmadeMapsCache = sourceList
+        .map((entry, index) => normalizeHandmadeMapEntry(entry, index, "file"))
+        .filter(Boolean);
+      return handmadeMapsCache;
+    } catch {
+      try {
+        const parsed = await loadCustomMapsRegistryFromFrame();
+        const sourceList = Array.isArray(parsed)
+          ? parsed
+          : Array.isArray(parsed?.maps)
+            ? parsed.maps
+            : [];
+        handmadeMapsCache = sourceList
+          .map((entry, index) => normalizeHandmadeMapEntry(entry, index, "file"))
+          .filter(Boolean);
+        return handmadeMapsCache;
+      } catch {
+        handmadeMapsCache = [];
+        return handmadeMapsCache;
+      }
+    }
+  }
+  function loadCustomMapsRegistryFromFrame() {
+    return new Promise((resolve, reject) => {
+      const frame = document.createElement("iframe");
+      frame.style.display = "none";
+      frame.src = "./custom-maps.json";
+      const cleanup = () => frame.remove();
+      frame.onload = () => {
+        try {
+          const doc = frame.contentDocument;
+          const text = doc?.body?.innerText || doc?.documentElement?.innerText || "";
+          cleanup();
+          resolve(JSON.parse(text));
+        } catch (error) {
+          cleanup();
+          reject(error);
+        }
+      };
+      frame.onerror = (error) => {
+        cleanup();
+        reject(error);
+      };
+      document.body.appendChild(frame);
+    });
+  }
+  function getAllHandmadeMaps() {
+    return handmadeMapsCache;
+  }
+  function getEligibleHandmadeMaps(difficultyKey = "average", modeKey = "standard") {
+    return getAllHandmadeMaps().filter(entry =>
+      entry.enabled &&
+      entry.modes.includes(modeKey) &&
+      entry.difficulties.includes(difficultyKey)
+    );
+  }
+  function findHandmadeMapByQuery(query) {
+    if (!query) return null;
+    const needle = String(query).trim().toLowerCase();
+    return getAllHandmadeMaps().find(entry => {
+      const id = String(entry.id || "").toLowerCase();
+      const name = String(entry.name || "").toLowerCase();
+      const slug = slugifyHandmadeName(entry.name || entry.id || "").toLowerCase();
+      return needle === id || needle === name || needle === slug;
+    }) || null;
+  }
+  function getHandmadeInsertionIndices(holeCount, desiredCount) {
+    const candidates = [
+      0,
+      1,
+      Math.max(1, Math.floor(holeCount * 0.35)),
+      Math.max(1, Math.floor(holeCount * 0.58)),
+      Math.max(1, holeCount - 2)
+    ].filter(index => index >= 0 && index < holeCount);
+    return [...new Set(candidates)].slice(0, Math.max(0, desiredCount));
+  }
+  function buildHandmadeAssignments(seed, holeCount, difficultyKey = "average", modeKey = "standard") {
+    if (DEBUG_FLAGS.handmadeId) {
+      const forced = findHandmadeMapByQuery(DEBUG_FLAGS.handmadeId);
+      return forced ? new Map([[Math.min(Math.max(0, DEBUG_FLAGS.debugHole - 1), Math.max(0, holeCount - 1)), forced]]) : new Map();
+    }
+    const eligible = getEligibleHandmadeMaps(difficultyKey, modeKey);
+    if (!eligible.length || modeKey === "daily") return new Map();
+    const desiredCount = difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1;
+    const holeIndices = getHandmadeInsertionIndices(holeCount, Math.min(desiredCount, eligible.length));
+    const rng = mulberry32((seed ^ 0x5f27b11d ^ (difficultyKey.length * 641)) >>> 0);
+    const bag = [];
+    eligible.forEach(entry => {
+      for (let i = 0; i < entry.weight; i++) bag.push(entry);
+    });
+    shuffleInPlace(bag, rng);
+    if (holeIndices.length && bag.length) {
+      const preferred = bag[0];
+      bag[0] = preferred;
+    }
+    const assignments = new Map();
+    holeIndices.forEach((holeIndex, idx) => {
+      assignments.set(holeIndex, bag[idx % bag.length]);
+    });
+    if (!assignments.size && eligible.length) {
+      assignments.set(0, eligible[0]);
+    }
+    return assignments;
+  }
   function getTodayKey() {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -2119,10 +2474,27 @@
       .filter(Boolean)
       .filter(variant => !variant.requiresReward || hasDailyReward(progress || {}, variant.requiresReward));
     if (!available.length) return DAILY_VARIANTS.wind_day;
-    const key = `${dateKey}:${difficultyKey}:variant`;
+    const key = `${dateKey}:variant`;
     let hash = 0;
     for (const char of key) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
     return available[Math.abs(hash) % available.length] || available[0];
+  }
+  function getDisplayDailyStreak(progress, dateKey = getTodayKey()) {
+    const todayStatus = getCalendarDayStatus(progress, dateKey);
+    if (todayStatus.record && !todayStatus.record.failed) return getDailyStreak(progress);
+    const yesterday = getDateFromKey(dateKey);
+    yesterday.setDate(yesterday.getDate() - 1);
+    let streak = 0;
+    let cursor = yesterday;
+    while (true) {
+      const key = getDateKey(cursor);
+      const status = getCalendarDayStatus(progress, key);
+      if (!status.record || status.record.failed) break;
+      streak++;
+      cursor = new Date(cursor);
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
   }
   function pickFromList(rng, list, fallback) {
     if (!Array.isArray(list) || !list.length) return fallback;
@@ -2480,15 +2852,15 @@
     if (rng() > chance) return SETPIECE_TEMPLATES.none;
     if (holeIndex >= 5 && rng() < (difficultyKey === "hardcore" ? 0.34 : 0.2)) {
       const signatureChoices = layoutType === "straight"
-        ? ["needle_lane", "relay_orbit", "lockstep", "rail_crossfire"]
-        : ["relay_orbit", "lockstep", "needle_lane", "shutter_stack"];
+        ? ["needle_lane", "needle_pocket", "relay_orbit", "lockstep", "rail_crossfire"]
+        : ["relay_orbit", "lockstep", "needle_lane", "needle_pocket", "shutter_stack"];
       return SETPIECE_TEMPLATES[signatureChoices[randInt(rng, 0, signatureChoices.length - 1)]] || SETPIECE_TEMPLATES.none;
     }
     const choices = layoutType === "straight"
-      ? ["fan_tunnel", "shutter_run", "magnetic_maze", "bounce_forge", "shutter_stack"]
+      ? ["fan_tunnel", "shutter_run", "magnetic_maze", "bounce_forge", "needle_pocket", "shutter_stack"]
       : layoutType === "z_shape" || layoutType === "horseshoe" || layoutType === "switchback"
-        ? ["magnetic_maze", "shutter_run", "bounce_forge", "rail_crossfire"]
-      : ["shutter_run", "bounce_forge", "fan_tunnel", "rail_crossfire"];
+        ? ["magnetic_maze", "shutter_run", "bounce_forge", "needle_pocket", "rail_crossfire"]
+      : ["shutter_run", "bounce_forge", "fan_tunnel", "needle_pocket", "rail_crossfire"];
     return SETPIECE_TEMPLATES[choices[randInt(rng, 0, choices.length - 1)]] || SETPIECE_TEMPLATES.none;
   }
   function getUnlockedSetpieceIds(progress) {
@@ -2499,6 +2871,7 @@
     if (tree.hopper_frame) unlocked.add("magnetic_maze");
     if (tree.impact_core || tree.hardline_curve) unlocked.add("shutter_run");
     if (tree.shell_guard) unlocked.add("needle_lane");
+    if (tree.shell_guard || tree.impact_core) unlocked.add("needle_pocket");
     if (tree.curve_drive) unlocked.add("relay_orbit");
     if (tree.hardline_curve) unlocked.add("lockstep");
     if (tree.impact_core) unlocked.add("shutter_stack");
@@ -2720,12 +3093,17 @@
   function playTone({ freq, toFreq = null, duration = 0.08, gain = 0.03, type = "sine", when = 0 }) {
     const ctx = ensureFxContext();
     if (!ctx || !FX_STATE.unlocked || ctx.state !== "running") return;
+    if (!Number.isFinite(freq)) return;
+    if (toFreq != null && !Number.isFinite(toFreq)) toFreq = null;
+    duration = Number.isFinite(duration) ? clamp(duration, 0.005, 0.5) : 0.08;
+    gain = Number.isFinite(gain) ? clamp(gain, 0.0001, 0.08) : 0.03;
+    when = Number.isFinite(when) ? Math.max(0, when) : 0;
     const osc = ctx.createOscillator();
     const amp = ctx.createGain();
     const start = ctx.currentTime + when;
     const end = start + duration;
     osc.type = type;
-    osc.frequency.setValueAtTime(freq, start);
+    osc.frequency.setValueAtTime(Math.max(20, freq), start);
     if (toFreq != null) osc.frequency.exponentialRampToValueAtTime(Math.max(20, toFreq), end);
     amp.gain.setValueAtTime(0.0001, start);
     amp.gain.exponentialRampToValueAtTime(gain, start + Math.min(0.015, duration * 0.35));
@@ -2746,7 +3124,7 @@
   function emitGameFx(name, intensity = 1) {
     const settings = getLiveSettings();
     if (isUiFx(name) ? !settings.uiAudioEnabled : !settings.gameAudioEnabled) return;
-    intensity = clamp(intensity, 0.2, 1.4);
+    intensity = Number.isFinite(intensity) ? clamp(intensity, 0.2, 1.4) : 1;
     if (name === "ui") {
       if (!shouldPlayFx("ui", 50)) return;
       playTone({ freq: 620, toFreq: 700, duration: 0.03, gain: 0.006, type: "square" });
@@ -3115,6 +3493,8 @@
     return CHALLENGE_RULES[choices[randInt(rng, 0, choices.length - 1)]] || CHALLENGE_RULES.none;
   }
   function formatLayoutLabel(layoutType) {
+    if (!layoutType) return "Unknown";
+    if (layoutType.startsWith("handmade:")) return "Handmade";
     return layoutType.replace(/_/g, " ").replace(/\b\w/g, match => match.toUpperCase());
   }
   function buildFixedGifPalette() {
@@ -3248,9 +3628,9 @@
     return choices[randInt(rng, 0, choices.length - 1)];
   }
   function getLayoutPool(difficultyKey = "average") {
-    if (difficultyKey === "beginner") return ["straight", "left_turn", "right_turn", "z_shape", "hook_left", "hook_right"];
+    if (difficultyKey === "beginner") return ["straight", "left_turn", "right_turn", "z_shape", "hook_left", "hook_right", "dogleg_arc"];
     if (difficultyKey === "hardcore") return ["left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle", "dogleg_arc"];
-    return ["straight", "left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle"];
+    return ["straight", "left_turn", "right_turn", "z_shape", "horseshoe", "switchback", "hook_left", "hook_right", "full_circle", "dogleg_arc"];
   }
   function getArchetypePool(difficultyKey = "average") {
     if (difficultyKey === "beginner") return ["fairway", "slalom", "islands", "fairway", "slalom"];
@@ -3260,12 +3640,12 @@
   function getDailyLayoutPool(signature, difficultyKey = "average") {
     const featured = signature?.featuredLayout;
     if (difficultyKey === "beginner") {
-      return [featured, "z_shape", "hook_left", "hook_right", "left_turn", "right_turn"].filter((item, index, arr) => item && arr.indexOf(item) === index);
+      return [featured, "dogleg_arc", "z_shape", "hook_left", "hook_right", "left_turn", "right_turn"].filter((item, index, arr) => item && arr.indexOf(item) === index);
     }
     if (difficultyKey === "hardcore") {
-      return [featured, "switchback", "horseshoe", "full_circle", "dogleg_arc", "hook_left", "hook_right"].filter((item, index, arr) => item && arr.indexOf(item) === index);
+      return [featured, "switchback", "horseshoe", "dogleg_arc", "full_circle", "hook_left", "hook_right"].filter((item, index, arr) => item && arr.indexOf(item) === index);
     }
-    return [featured, "switchback", "horseshoe", "full_circle", "hook_left", "hook_right", "z_shape"].filter((item, index, arr) => item && arr.indexOf(item) === index);
+    return [featured, "dogleg_arc", "switchback", "horseshoe", "full_circle", "hook_left", "hook_right", "z_shape"].filter((item, index, arr) => item && arr.indexOf(item) === index);
   }
   function getDailyArchetypePool(signature, difficultyKey = "average") {
     const spotlight = signature?.featuredSpotlight;
@@ -3294,17 +3674,17 @@
     const openerLayouts = modeKey === "daily"
       ? layoutPool.slice(0, Math.min(layoutPool.length, difficultyKey === "hardcore" ? 4 : 3))
       : difficultyKey === "beginner"
-        ? ["straight", "hook_left", "hook_right"]
+        ? ["straight", "dogleg_arc", "hook_left", "hook_right"]
         : difficultyKey === "hardcore"
           ? ["z_shape", "horseshoe", "switchback", "dogleg_arc"]
-          : ["straight", "left_turn", "right_turn", "switchback"];
+          : ["straight", "dogleg_arc", "left_turn", "right_turn", "switchback"];
     const secondLayouts = modeKey === "daily"
       ? layoutPool.slice(1, Math.min(layoutPool.length, difficultyKey === "hardcore" ? 5 : 4))
       : difficultyKey === "beginner"
         ? ["left_turn", "right_turn", "z_shape"]
         : difficultyKey === "hardcore"
-          ? ["horseshoe", "hook_left", "hook_right", "full_circle"]
-          : ["left_turn", "right_turn", "hook_left", "hook_right", "horseshoe"];
+          ? ["horseshoe", "hook_left", "hook_right", "full_circle", "dogleg_arc"]
+          : ["left_turn", "right_turn", "dogleg_arc", "hook_left", "hook_right", "horseshoe"];
     const spotlightPool = Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
     const spotlightSlots = modeKey === "daily"
       ? Math.max(1, holeCount - 1)
@@ -3385,10 +3765,10 @@
       };
     }
     if (layoutType === "left_turn" || layoutType === "right_turn") {
-      return { width: 1080, height: 1280 };
+      return { width: 1160, height: 1420 };
     }
     if (layoutType === "z_shape") {
-      return { width: 1180, height: 1320 };
+      return { width: 1260, height: 1500 };
     }
     if (layoutType === "horseshoe") {
       return { width: 1180, height: 1380 };
@@ -3399,8 +3779,14 @@
     if (layoutType === "curved_sweep") {
       return { width: 1260, height: 1500 };
     }
+    if (layoutType === "sweep_left" || layoutType === "sweep_right") {
+      return { width: 1320, height: 1540 };
+    }
+    if (layoutType === "crescent") {
+      return { width: 1340, height: 1520 };
+    }
     if (layoutType === "hook_left" || layoutType === "hook_right") {
-      return { width: 1160, height: 1360 };
+      return { width: 1220, height: 1460 };
     }
     return { width: 1280, height: 1280 };
   }
@@ -3420,28 +3806,35 @@
     }
     if (layoutType === "left_turn") {
       return [
-        { x: px(0.7), y: py(0.92) },
-        { x: px(0.7), y: py(0.56) },
-        { x: px(0.28), y: py(0.56) },
-        { x: px(0.28), y: py(0.08) }
+        { x: px(0.74), y: py(0.94) },
+        { x: px(0.74), y: py(0.66) },
+        { x: px(0.58), y: py(0.66) },
+        { x: px(0.3), y: py(0.66) },
+        { x: px(0.3), y: py(0.28) },
+        { x: px(0.3), y: py(0.08) }
       ];
     }
     if (layoutType === "right_turn") {
       return [
-        { x: px(0.3), y: py(0.92) },
-        { x: px(0.3), y: py(0.56) },
-        { x: px(0.72), y: py(0.56) },
-        { x: px(0.72), y: py(0.08) }
+        { x: px(0.26), y: py(0.94) },
+        { x: px(0.26), y: py(0.66) },
+        { x: px(0.42), y: py(0.66) },
+        { x: px(0.7), y: py(0.66) },
+        { x: px(0.7), y: py(0.28) },
+        { x: px(0.7), y: py(0.08) }
       ];
     }
     if (layoutType === "z_shape") {
       return [
-        { x: px(0.24), y: py(0.92) },
-        { x: px(0.24), y: py(0.72) },
-        { x: px(0.8), y: py(0.72) },
-        { x: px(0.8), y: py(0.44) },
-        { x: px(0.32), y: py(0.44) },
-        { x: px(0.32), y: py(0.08) }
+        { x: px(0.22), y: py(0.94) },
+        { x: px(0.22), y: py(0.78) },
+        { x: px(0.22), y: py(0.66) },
+        { x: px(0.82), y: py(0.66) },
+        { x: px(0.82), y: py(0.5) },
+        { x: px(0.82), y: py(0.38) },
+        { x: px(0.28), y: py(0.38) },
+        { x: px(0.28), y: py(0.2) },
+        { x: px(0.28), y: py(0.08) }
       ];
     }
     if (layoutType === "horseshoe") {
@@ -3473,24 +3866,56 @@
         { x: px(0.42), y: py(0.08) }
       ];
     }
+    if (layoutType === "sweep_left") {
+      return [
+        { x: px(0.72), y: py(0.93) },
+        { x: px(0.68), y: py(0.76) },
+        { x: px(0.32), y: py(0.56) },
+        { x: px(0.22), y: py(0.3) },
+        { x: px(0.44), y: py(0.08) }
+      ];
+    }
+    if (layoutType === "sweep_right") {
+      return [
+        { x: px(0.28), y: py(0.93) },
+        { x: px(0.32), y: py(0.76) },
+        { x: px(0.68), y: py(0.56) },
+        { x: px(0.78), y: py(0.3) },
+        { x: px(0.56), y: py(0.08) }
+      ];
+    }
+    if (layoutType === "crescent") {
+      return [
+        { x: px(0.24), y: py(0.9) },
+        { x: px(0.24), y: py(0.64) },
+        { x: px(0.4), y: py(0.34) },
+        { x: px(0.68), y: py(0.18) },
+        { x: px(0.84), y: py(0.28) },
+        { x: px(0.78), y: py(0.08) }
+      ];
+    }
     if (layoutType === "hook_left") {
       return [
-        { x: px(0.7), y: py(0.93) },
-        { x: px(0.7), y: py(0.64) },
-        { x: px(0.3), y: py(0.64) },
-        { x: px(0.3), y: py(0.36) },
-        { x: px(0.74), y: py(0.36) },
-        { x: px(0.74), y: py(0.08) }
+        { x: px(0.72), y: py(0.94) },
+        { x: px(0.72), y: py(0.72) },
+        { x: px(0.72), y: py(0.6) },
+        { x: px(0.28), y: py(0.6) },
+        { x: px(0.28), y: py(0.4) },
+        { x: px(0.28), y: py(0.28) },
+        { x: px(0.76), y: py(0.28) },
+        { x: px(0.76), y: py(0.08) }
       ];
     }
     if (layoutType === "hook_right") {
       return [
-        { x: px(0.3), y: py(0.93) },
-        { x: px(0.3), y: py(0.64) },
-        { x: px(0.7), y: py(0.64) },
-        { x: px(0.7), y: py(0.36) },
-        { x: px(0.26), y: py(0.36) },
-        { x: px(0.26), y: py(0.08) }
+        { x: px(0.28), y: py(0.94) },
+        { x: px(0.28), y: py(0.72) },
+        { x: px(0.28), y: py(0.6) },
+        { x: px(0.72), y: py(0.6) },
+        { x: px(0.72), y: py(0.4) },
+        { x: px(0.72), y: py(0.28) },
+        { x: px(0.24), y: py(0.28) },
+        { x: px(0.24), y: py(0.08) }
       ];
     }
     return [
@@ -3613,6 +4038,9 @@
       "left_turn",
       "right_turn",
       "curved_sweep",
+      "sweep_left",
+      "sweep_right",
+      "crescent",
       "hook_left",
       "hook_right",
       "horseshoe",
@@ -3745,24 +4173,9 @@
       return boundary;
     };
 
-    const pushWallSegment = (a, b) => {
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      if (Math.abs(dx) >= Math.abs(dy)) {
-        walls.push({
-          x: Math.min(a.x, b.x),
-          y: a.y - wallThickness / 2,
-          width: Math.abs(dx),
-          height: wallThickness
-        });
-      } else {
-        walls.push({
-          x: a.x - wallThickness / 2,
-          y: Math.min(a.y, b.y),
-          width: wallThickness,
-          height: Math.abs(dy)
-        });
-      }
+    const pushWallSegment = (a, b, extra = wallThickness + 8) => {
+      const segment = makeRotatedWallSegment(a, b, wallThickness, extra);
+      if (segment) walls.push(segment);
     };
 
     const leftBoundary = buildBoundaryPolyline(-1);
@@ -3773,23 +4186,7 @@
       }
     }
 
-    const pushCap = (a, b) => {
-      if (Math.abs(a.x - b.x) >= Math.abs(a.y - b.y)) {
-        walls.push({
-          x: Math.min(a.x, b.x),
-          y: a.y - wallThickness / 2,
-          width: Math.abs(a.x - b.x),
-          height: wallThickness
-        });
-      } else {
-        walls.push({
-          x: a.x - wallThickness / 2,
-          y: Math.min(a.y, b.y),
-          width: wallThickness,
-          height: Math.abs(a.y - b.y)
-        });
-      }
-    };
+    const pushCap = (a, b) => pushWallSegment(a, b, wallThickness + 2);
 
     pushCap(leftBoundary[0], rightBoundary[0]);
     pushCap(leftBoundary[leftBoundary.length - 1], rightBoundary[rightBoundary.length - 1]);
@@ -3865,13 +4262,13 @@
       return [[0, 5], [0, 4], [0, 3], [0, 2], [0, 1], [0, 0]];
     }
     if (layoutType === "left_turn") {
-      return [[1, 5], [1, 4], [1, 3], [0, 3], [0, 2], [0, 1], [0, 0]];
+      return [[1, 7], [1, 6], [1, 5], [1, 4], [0, 4], [0, 3], [0, 2], [0, 1], [0, 0]];
     }
     if (layoutType === "right_turn") {
-      return [[0, 5], [0, 4], [0, 3], [1, 3], [1, 2], [1, 1], [1, 0]];
+      return [[0, 7], [0, 6], [0, 5], [0, 4], [1, 4], [1, 3], [1, 2], [1, 1], [1, 0]];
     }
     if (layoutType === "z_shape") {
-      return [[0, 6], [0, 5], [0, 4], [1, 4], [2, 4], [2, 3], [2, 2], [1, 2], [0, 2], [0, 1], [0, 0]];
+      return [[0, 8], [0, 7], [0, 6], [0, 5], [1, 5], [2, 5], [2, 4], [2, 3], [1, 3], [0, 3], [0, 2], [0, 1], [0, 0]];
     }
     if (layoutType === "horseshoe") {
       return [[0, 5], [0, 4], [0, 3], [0, 2], [0, 1], [0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5]];
@@ -3882,11 +4279,20 @@
     if (layoutType === "curved_sweep") {
       return [[1, 7], [1, 6], [1, 5], [2, 4], [3, 4], [3, 3], [3, 2], [2, 1], [1, 0]];
     }
+    if (layoutType === "sweep_left") {
+      return [[2, 7], [2, 6], [2, 5], [1, 4], [0, 4], [0, 3], [0, 2], [1, 1], [2, 0]];
+    }
+    if (layoutType === "sweep_right") {
+      return [[0, 7], [0, 6], [0, 5], [1, 4], [2, 4], [2, 3], [2, 2], [1, 1], [0, 0]];
+    }
+    if (layoutType === "crescent") {
+      return [[0, 7], [0, 6], [0, 5], [0, 4], [1, 3], [2, 2], [3, 2], [3, 1], [3, 0]];
+    }
     if (layoutType === "hook_left") {
-      return [[1, 6], [1, 5], [1, 4], [0, 4], [0, 3], [0, 2], [1, 2], [2, 2], [2, 1], [2, 0]];
+      return [[1, 8], [1, 7], [1, 6], [1, 5], [0, 5], [0, 4], [0, 3], [1, 3], [2, 3], [2, 2], [2, 1], [2, 0]];
     }
     if (layoutType === "hook_right") {
-      return [[1, 6], [1, 5], [1, 4], [2, 4], [2, 3], [2, 2], [1, 2], [0, 2], [0, 1], [0, 0]];
+      return [[1, 8], [1, 7], [1, 6], [1, 5], [2, 5], [2, 4], [2, 3], [1, 3], [0, 3], [0, 2], [0, 1], [0, 0]];
     }
     return [[1, 6], [0, 6], [0, 5], [0, 4], [0, 3], [0, 2], [0, 1], [1, 1], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [1, 5], [1, 4], [1, 3], [1, 2], [1, 0]];
   }
@@ -3912,6 +4318,189 @@
       });
     }
     return points;
+  }
+
+  function sampleLinePoints(a, b, steps = 8) {
+    const points = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      points.push({
+        x: lerp(a.x, b.x, t),
+        y: lerp(a.y, b.y, t)
+      });
+    }
+    return points;
+  }
+
+  function getArcEndpoint(cx, cy, radius, angle) {
+    return {
+      x: cx + Math.cos(angle) * radius,
+      y: cy + Math.sin(angle) * radius
+    };
+  }
+
+  function getSegmentEndpoint(segment, atEnd = false) {
+    if (segment.type === "line") return atEnd ? segment.to : segment.from;
+    const angle = atEnd ? segment.endAngle : segment.startAngle;
+    return getArcEndpoint(segment.cx, segment.cy, segment.radius, angle);
+  }
+
+  function sampleCenterlineSegments(segments) {
+    const points = [];
+    for (const segment of segments) {
+      const segmentPoints = segment.type === "line"
+        ? sampleLinePoints(segment.from, segment.to, segment.steps || 8)
+        : sampleArcPoints(segment.cx, segment.cy, segment.radius, segment.startAngle, segment.endAngle, segment.steps || 18);
+      if (!points.length) {
+        points.push(...segmentPoints);
+      } else {
+        points.push(...segmentPoints.slice(1));
+      }
+    }
+    return points;
+  }
+
+  function getSegmentTangent(segment, atEnd = false) {
+    if (segment.type === "line") {
+      const dx = segment.to.x - segment.from.x;
+      const dy = segment.to.y - segment.from.y;
+      const len = Math.hypot(dx, dy) || 1;
+      return { x: dx / len, y: dy / len };
+    }
+    const angle = atEnd ? segment.endAngle : segment.startAngle;
+    const delta = segment.endAngle - segment.startAngle;
+    const direction = delta >= 0 ? 1 : -1;
+    const tangent = {
+      x: -Math.sin(angle) * direction,
+      y: Math.cos(angle) * direction
+    };
+    const len = Math.hypot(tangent.x, tangent.y) || 1;
+    return { x: tangent.x / len, y: tangent.y / len };
+  }
+
+  function buildSegmentedCurveWorld({ width, height, corridorHalf, wallThickness, cellSize, segments, holeIndex, marginPreset = "curved_sweep" }) {
+    const centerline = sampleCenterlineSegments(segments);
+    if (!isLayoutSafe(centerline, corridorHalf, wallThickness)) {
+      return null;
+    }
+    const walls = [];
+    for (const segment of segments) {
+      if (segment.type === "line") {
+        const dx = segment.to.x - segment.from.x;
+        const dy = segment.to.y - segment.from.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const dir = { x: dx / len, y: dy / len };
+        const perp = { x: -dir.y, y: dir.x };
+        const leftWall = makeRotatedWallSegment(
+          { x: segment.from.x + perp.x * corridorHalf, y: segment.from.y + perp.y * corridorHalf },
+          { x: segment.to.x + perp.x * corridorHalf, y: segment.to.y + perp.y * corridorHalf },
+          wallThickness,
+          wallThickness + 8
+        );
+        const rightWall = makeRotatedWallSegment(
+          { x: segment.from.x - perp.x * corridorHalf, y: segment.from.y - perp.y * corridorHalf },
+          { x: segment.to.x - perp.x * corridorHalf, y: segment.to.y - perp.y * corridorHalf },
+          wallThickness,
+          wallThickness + 8
+        );
+        if (leftWall) walls.push(leftWall);
+        if (rightWall) walls.push(rightWall);
+      } else if (segment.type === "arc") {
+        walls.push({
+          type: "arc",
+          cx: segment.cx,
+          cy: segment.cy,
+          radius: segment.radius - corridorHalf,
+          thickness: wallThickness,
+          startAngle: segment.startAngle,
+          endAngle: segment.endAngle
+        });
+        walls.push({
+          type: "arc",
+          cx: segment.cx,
+          cy: segment.cy,
+          radius: segment.radius + corridorHalf,
+          thickness: wallThickness,
+          startAngle: segment.startAngle,
+          endAngle: segment.endAngle
+        });
+      }
+    }
+    const firstSegment = segments[0];
+    const lastSegment = segments[segments.length - 1];
+    const startPoint = getSegmentEndpoint(firstSegment, false);
+    const endPoint = getSegmentEndpoint(lastSegment, true);
+    const startTangent = getSegmentTangent(firstSegment, false);
+    const endTangent = getSegmentTangent(lastSegment, true);
+    const startPerp = { x: -startTangent.y, y: startTangent.x };
+    const endPerp = { x: -endTangent.y, y: endTangent.x };
+    const startCap = makeRotatedWallSegment(
+      { x: startPoint.x + startPerp.x * corridorHalf, y: startPoint.y + startPerp.y * corridorHalf },
+      { x: startPoint.x - startPerp.x * corridorHalf, y: startPoint.y - startPerp.y * corridorHalf },
+      wallThickness,
+      wallThickness + 2
+    );
+    const endCap = makeRotatedWallSegment(
+      { x: endPoint.x + endPerp.x * corridorHalf, y: endPoint.y + endPerp.y * corridorHalf },
+      { x: endPoint.x - endPerp.x * corridorHalf, y: endPoint.y - endPerp.y * corridorHalf },
+      wallThickness,
+      wallThickness + 2
+    );
+    if (startCap) walls.push(startCap);
+    if (endCap) walls.push(endCap);
+
+    const margins = getAnchorMargins(marginPreset, holeIndex);
+    const anchorCount = holeIndex >= 6 ? 10 : 9;
+    const cells = [];
+    for (let i = 0; i < anchorCount; i++) {
+      const t = anchorCount === 1 ? 0.5 : i / (anchorCount - 1);
+      const sample = samplePolylineWithMargins(centerline, t, margins.start, margins.middle, margins.end);
+      const rect = {
+        x: Math.round(sample.x - cellSize / 2),
+        y: Math.round(sample.y - cellSize / 2),
+        width: cellSize,
+        height: cellSize
+      };
+      cells.push({ index: i, col: i, row: 0, cx: Math.round(sample.x), cy: Math.round(sample.y), rect });
+    }
+    return {
+      width,
+      height,
+      cellSize,
+      wallThickness,
+      cells,
+      walls,
+      ballStart: {
+        x: Math.round(cells[0].cx + startTangent.x * cellSize * 0.3),
+        y: Math.round(cells[0].cy + startTangent.y * cellSize * 0.3)
+      },
+      hole: {
+        x: Math.round(cells[cells.length - 1].cx - endTangent.x * cellSize * 0.3),
+        y: Math.round(cells[cells.length - 1].cy - endTangent.y * cellSize * 0.3),
+        radius: 10
+      },
+      holeApproach: { x: Math.round(endTangent.x), y: Math.round(endTangent.y) },
+      falseHoles: [],
+      pathPoints: centerline
+    };
+  }
+
+  function stitchCurvesWithTransition(pointsA, pointsB, steps = 6) {
+    if (!pointsA.length) return pointsB.slice();
+    if (!pointsB.length) return pointsA.slice();
+    const joinA = pointsA[pointsA.length - 1];
+    const prevA = pointsA[Math.max(0, pointsA.length - 2)];
+    const nextB = pointsB[Math.min(pointsB.length - 1, 1)];
+    const leadIn = {
+      x: lerp(prevA.x, joinA.x, 0.6),
+      y: lerp(prevA.y, joinA.y, 0.6)
+    };
+    const leadOut = {
+      x: lerp(joinA.x, nextB.x, 0.4),
+      y: lerp(joinA.y, nextB.y, 0.4)
+    };
+    const transition = sampleQuadraticBezier(leadIn, joinA, leadOut, steps);
+    return pointsA.slice(0, -1).concat(transition, pointsB.slice(2));
   }
 
   function makeRotatedWallSegment(a, b, thickness, extra = thickness) {
@@ -3948,6 +4537,39 @@
     }
     return angleN >= startN || angleN <= endN;
   }
+  function sweptPointRectHit(start, end, left, right, top, bottom) {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    let tEnter = 0;
+    let tExit = 1;
+    let hitNormal = null;
+    const resolveAxis = (startValue, delta, minBound, maxBound, axis) => {
+      if (Math.abs(delta) < 1e-8) {
+        return startValue >= minBound && startValue <= maxBound;
+      }
+      let nearTime = (minBound - startValue) / delta;
+      let farTime = (maxBound - startValue) / delta;
+      let nearNormal = axis === "x"
+        ? { x: delta > 0 ? -1 : 1, y: 0 }
+        : { x: 0, y: delta > 0 ? -1 : 1 };
+      if (nearTime > farTime) {
+        [nearTime, farTime] = [farTime, nearTime];
+        nearNormal = axis === "x"
+          ? { x: delta > 0 ? 1 : -1, y: 0 }
+          : { x: 0, y: delta > 0 ? 1 : -1 };
+      }
+      if (nearTime > tEnter) {
+        tEnter = nearTime;
+        hitNormal = nearNormal;
+      }
+      tExit = Math.min(tExit, farTime);
+      return tEnter <= tExit;
+    };
+    if (!resolveAxis(start.x, dx, left, right, "x")) return null;
+    if (!resolveAxis(start.y, dy, top, bottom, "y")) return null;
+    if (tEnter < 0 || tEnter > 1 || !hitNormal) return null;
+    return { t: tEnter, normal: hitNormal };
+  }
 
   function sampleArcPoints(centerX, centerY, radius, startAngle, endAngle, steps = 18) {
     const points = [];
@@ -3962,24 +4584,24 @@
     return points;
   }
 
-  function buildDoglegArcWorld(holeIndex, rng) {
-    const width = 1260;
-    const height = 1500;
-    const wallThickness = 14;
-    const corridorHalf = 108 + Math.min(16, holeIndex * 2);
-    const centerRadius = 400 + (holeIndex >= 6 ? 24 : 0);
-    const centerX = 760;
-    const centerY = 980;
-    const startAngle = Math.PI;
-    const endAngle = Math.PI * 1.5;
+  function buildDoglegArcWorld(holeIndex, rng, config = {}) {
+    const width = config.width || 1260;
+    const height = config.height || 1500;
+    const wallThickness = config.wallThickness || 14;
+    const corridorHalf = (config.corridorHalfBase || 108) + Math.min(config.corridorHalfCap || 16, holeIndex * (config.corridorHalfStep || 2));
+    const centerRadius = (config.centerRadius || 400) + (holeIndex >= 6 ? (config.lateRadiusBonus || 24) : 0);
+    const centerX = config.centerX || 760;
+    const centerY = config.centerY || 980;
+    const startAngle = config.startAngle ?? Math.PI;
+    const endAngle = config.endAngle ?? Math.PI * 1.5;
     const joinOverlap = wallThickness * 2;
     const arcStartAngle = startAngle - 0.035;
     const arcEndAngle = endAngle + 0.035;
     const startCenter = { x: centerX - centerRadius, y: centerY };
     const endCenter = { x: centerX, y: centerY - centerRadius };
-    const entryBottomY = height - 130;
-    const entryTopY = centerY;
-    const exitRightX = width - 180;
+    const entryBottomY = config.entryBottomY || (height - 130);
+    const entryTopY = config.entryTopY || centerY;
+    const exitRightX = config.exitRightX || (width - 180);
 
     const walls = [];
     walls.push({
@@ -4034,9 +4656,11 @@
     ];
     const centerline = entryPoints.concat(arcPoints.slice(1), exitPoints.slice(1));
 
-    const cellSize = holeIndex <= 1 ? 196 : 212 + (holeIndex >= 6 ? 10 : 0);
-    const margins = { start: 190, middle: 150, end: 190 };
-    const anchorCount = holeIndex >= 6 ? 10 : 9;
+    const cellSize = holeIndex <= 1
+      ? (config.cellSizeEarly || 196)
+      : (config.cellSizeBase || 212) + (holeIndex >= 6 ? (config.cellSizeLateBonus || 10) : 0);
+    const margins = config.margins || { start: 190, middle: 150, end: 190 };
+    const anchorCount = config.anchorCount || (holeIndex >= 6 ? 10 : 9);
     const cells = [];
     for (let i = 0; i < anchorCount; i++) {
       const t = anchorCount === 1 ? 0.5 : i / (anchorCount - 1);
@@ -4080,110 +4704,198 @@
     };
   }
 
+  function mirrorWorldHorizontally(world) {
+    if (!world) return null;
+    const mirrorPoint = (point) => ({ x: Math.round(world.width - point.x), y: Math.round(point.y) });
+    const mirrorAngle = (angle) => Math.PI - angle;
+    const walls = world.walls.map((wall) => {
+      if (wall.type === "arc") {
+        return {
+          ...wall,
+          cx: Math.round(world.width - wall.cx),
+          startAngle: mirrorAngle(wall.startAngle),
+          endAngle: mirrorAngle(wall.endAngle)
+        };
+      }
+      const cx = wall.x + wall.width / 2;
+      const mirroredCx = world.width - cx;
+      return {
+        ...wall,
+        x: Math.round(mirroredCx - wall.width / 2),
+        rotation: wall.rotation ? -wall.rotation : wall.rotation
+      };
+    });
+    return {
+      ...world,
+      walls,
+      cells: world.cells.map((cell) => ({
+        ...cell,
+        cx: Math.round(world.width - cell.cx),
+        rect: {
+          ...cell.rect,
+          x: Math.round(world.width - cell.rect.x - cell.rect.width)
+        }
+      })),
+      ballStart: mirrorPoint(world.ballStart),
+      hole: {
+        ...world.hole,
+        x: Math.round(world.width - world.hole.x)
+      },
+      holeApproach: world.holeApproach ? { x: -world.holeApproach.x, y: world.holeApproach.y } : world.holeApproach,
+      falseHoles: (world.falseHoles || []).map((falseHole) => ({
+        ...falseHole,
+        x: typeof falseHole.x === "number" ? Math.round(world.width - falseHole.x) : falseHole.x
+      })),
+      pathPoints: (world.pathPoints || []).map(mirrorPoint)
+    };
+  }
+
   function buildCurvedSweepWorld(holeIndex, rng) {
-    const width = 1260;
+    const width = 1280;
     const height = 1500;
     const wallThickness = 14;
-    const corridorHalf = 98 + Math.min(18, holeIndex * 2);
-    const cellSize = holeIndex <= 1 ? 196 : 208 + (holeIndex >= 6 ? 10 : 0);
-    const pointsA = sampleQuadraticBezier(
-      { x: width * 0.34, y: height * 0.93 },
-      { x: width * 0.18, y: height * 0.68 },
-      { x: width * 0.72, y: height * 0.52 },
-      14
-    );
-    const pointsB = sampleQuadraticBezier(
-      { x: width * 0.72, y: height * 0.52 },
-      { x: width * 0.84, y: height * 0.24 },
-      { x: width * 0.42, y: height * 0.08 },
-      14
-    );
-    const centerline = pointsA.concat(pointsB.slice(1));
-    const walls = [];
-    for (let i = 0; i < centerline.length - 1; i++) {
-      const a = centerline[i];
-      const b = centerline[i + 1];
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const len = Math.hypot(dx, dy);
-      if (len < 2) continue;
-      const dir = { x: dx / len, y: dy / len };
-      const perp = { x: -dir.y, y: dir.x };
-      const leftA = { x: a.x + perp.x * corridorHalf, y: a.y + perp.y * corridorHalf };
-      const leftB = { x: b.x + perp.x * corridorHalf, y: b.y + perp.y * corridorHalf };
-      const rightA = { x: a.x - perp.x * corridorHalf, y: a.y - perp.y * corridorHalf };
-      const rightB = { x: b.x - perp.x * corridorHalf, y: b.y - perp.y * corridorHalf };
-      const leftWall = makeRotatedWallSegment(leftA, leftB, wallThickness, wallThickness + 6);
-      const rightWall = makeRotatedWallSegment(rightA, rightB, wallThickness, wallThickness + 6);
-      if (leftWall) walls.push(leftWall);
-      if (rightWall) walls.push(rightWall);
-    }
-    const startDir = {
-      x: centerline[1].x - centerline[0].x,
-      y: centerline[1].y - centerline[0].y
-    };
-    const startLen = Math.hypot(startDir.x, startDir.y) || 1;
-    const startUnit = { x: startDir.x / startLen, y: startDir.y / startLen };
-    const endDir = {
-      x: centerline[centerline.length - 1].x - centerline[centerline.length - 2].x,
-      y: centerline[centerline.length - 1].y - centerline[centerline.length - 2].y
-    };
-    const endLen = Math.hypot(endDir.x, endDir.y) || 1;
-    const endUnit = { x: endDir.x / endLen, y: endDir.y / endLen };
-    const startPerp = { x: -startUnit.y, y: startUnit.x };
-    const endPerp = { x: -endUnit.y, y: endUnit.x };
-    const startCapA = { x: centerline[0].x + startPerp.x * corridorHalf, y: centerline[0].y + startPerp.y * corridorHalf };
-    const startCapB = { x: centerline[0].x - startPerp.x * corridorHalf, y: centerline[0].y - startPerp.y * corridorHalf };
-    const endCapA = { x: centerline[centerline.length - 1].x + endPerp.x * corridorHalf, y: centerline[centerline.length - 1].y + endPerp.y * corridorHalf };
-    const endCapB = { x: centerline[centerline.length - 1].x - endPerp.x * corridorHalf, y: centerline[centerline.length - 1].y - endPerp.y * corridorHalf };
-    const startCap = makeRotatedWallSegment(startCapA, startCapB, wallThickness, wallThickness);
-    const endCap = makeRotatedWallSegment(endCapA, endCapB, wallThickness, wallThickness);
-    if (startCap) walls.push(startCap);
-    if (endCap) walls.push(endCap);
-
-    const margins = getAnchorMargins("straight", holeIndex);
-    const anchorCount = holeIndex >= 6 ? 10 : 9;
-    const cells = [];
-    for (let i = 0; i < anchorCount; i++) {
-      const t = anchorCount === 1 ? 0.5 : i / (anchorCount - 1);
-      const sample = samplePolylineWithMargins(centerline, t, margins.start, margins.middle, margins.end);
-      const rect = {
-        x: Math.round(sample.x - cellSize / 2),
-        y: Math.round(sample.y - cellSize / 2),
-        width: cellSize,
-        height: cellSize
-      };
-      cells.push({
-        index: i,
-        col: i,
-        row: 0,
-        cx: Math.round(sample.x),
-        cy: Math.round(sample.y),
-        rect
-      });
-    }
-    const ballStart = {
-      x: Math.round(cells[0].cx + startUnit.x * cellSize * 0.3),
-      y: Math.round(cells[0].cy + startUnit.y * cellSize * 0.3)
-    };
-    const hole = {
-      x: Math.round(cells[cells.length - 1].cx - endUnit.x * cellSize * 0.3),
-      y: Math.round(cells[cells.length - 1].cy - endUnit.y * cellSize * 0.3),
-      radius: 10
-    };
-    return {
+    const corridorHalf = 100 + Math.min(16, holeIndex * 2);
+    const cellSize = holeIndex <= 1 ? 196 : 210 + (holeIndex >= 6 ? 10 : 0);
+    const arcCenter = { x: width * 0.42, y: height * 0.54 };
+    const arcRadius = width * 0.26;
+    const arcStart = Math.PI * 0.9;
+    const arcEnd = -0.08;
+    const arcEntry = getArcEndpoint(arcCenter.x, arcCenter.y, arcRadius, arcStart);
+    const arcExit = getArcEndpoint(arcCenter.x, arcCenter.y, arcRadius, arcEnd);
+    return buildSegmentedCurveWorld({
       width,
       height,
-      cellSize,
+      corridorHalf,
       wallThickness,
-      cells,
-      walls,
-      ballStart,
-      hole,
-      holeApproach: { x: Math.round(endUnit.x), y: Math.round(endUnit.y) },
-      falseHoles: [],
-      pathPoints: centerline
-    };
+      cellSize,
+      holeIndex,
+      marginPreset: "curved_sweep",
+      segments: [
+        {
+          type: "line",
+          from: { x: width * 0.2, y: height * 0.92 },
+          to: arcEntry,
+          steps: 9
+        },
+        {
+          type: "arc",
+          cx: arcCenter.x,
+          cy: arcCenter.y,
+          radius: arcRadius,
+          startAngle: arcStart,
+          endAngle: arcEnd,
+          steps: 20
+        },
+        {
+          type: "line",
+          from: arcExit,
+          to: { x: width * 0.78, y: height * 0.16 },
+          steps: 8
+        }
+      ]
+    });
+  }
+
+  function buildSweepRightWorld(holeIndex, rng) {
+    const width = 1320;
+    const height = 1540;
+    const wallThickness = 14;
+    const corridorHalf = 102 + Math.min(18, holeIndex * 2);
+    const cellSize = holeIndex <= 1 ? 196 : 214 + (holeIndex >= 6 ? 12 : 0);
+    const arcCenter = { x: width * 0.58, y: height * 0.72 };
+    const arcRadius = width * 0.18;
+    const arcStart = Math.PI;
+    const arcEnd = Math.PI * 1.5;
+    const arcEntry = getArcEndpoint(arcCenter.x, arcCenter.y, arcRadius, arcStart);
+    const arcExit = getArcEndpoint(arcCenter.x, arcCenter.y, arcRadius, arcEnd);
+    return buildSegmentedCurveWorld({
+      width,
+      height,
+      corridorHalf,
+      wallThickness,
+      cellSize,
+      holeIndex,
+      marginPreset: "sweep_right",
+      segments: [
+        {
+          type: "line",
+          from: { x: width * 0.18, y: height * 0.92 },
+          to: arcEntry,
+          steps: 8
+        },
+        {
+          type: "arc",
+          cx: arcCenter.x,
+          cy: arcCenter.y,
+          radius: arcRadius,
+          startAngle: arcStart,
+          endAngle: arcEnd,
+          steps: 14
+        },
+        {
+          type: "line",
+          from: arcExit,
+          to: { x: width * 0.78, y: height * 0.12 },
+          steps: 8
+        }
+      ]
+    });
+  }
+
+  function buildCrescentWorld(holeIndex, rng) {
+    const width = 1340;
+    const height = 1520;
+    const wallThickness = 14;
+    const corridorHalf = 98 + Math.min(16, holeIndex * 2);
+    const cellSize = holeIndex <= 1 ? 196 : 212 + (holeIndex >= 6 ? 10 : 0);
+    const arcCenter = { x: width * 0.52, y: height * 0.5 };
+    const arcRadius = width * 0.34;
+    const arcStart = 0.92;
+    const arcEnd = Math.PI * 1.5;
+    const arcEntry = getArcEndpoint(arcCenter.x, arcCenter.y, arcRadius, arcStart);
+    const arcExit = getArcEndpoint(arcCenter.x, arcCenter.y, arcRadius, arcEnd);
+    return buildSegmentedCurveWorld({
+      width,
+      height,
+      corridorHalf,
+      wallThickness,
+      cellSize,
+      holeIndex,
+      marginPreset: "crescent",
+      segments: [
+        {
+          type: "line",
+          from: { x: width * 0.84, y: height * 0.92 },
+          to: arcEntry,
+          steps: 8
+        },
+        {
+          type: "arc",
+          cx: arcCenter.x,
+          cy: arcCenter.y,
+          radius: arcRadius,
+          startAngle: arcStart,
+          endAngle: arcEnd,
+          steps: 22
+        },
+        {
+          type: "line",
+          from: arcExit,
+          to: { x: width * 0.28, y: height * 0.12 },
+          steps: 8
+        }
+      ]
+    });
+  }
+
+  function buildSweepingCurveWorld(holeIndex, rng, variant = "curved_sweep") {
+    if (variant === "sweep_left") {
+      return mirrorWorldHorizontally(buildSweepRightWorld(holeIndex, rng));
+    }
+    if (variant === "sweep_right") {
+      return buildSweepRightWorld(holeIndex, rng);
+    }
+    return buildCrescentWorld(holeIndex, rng);
   }
 
   function getCellDirection(cells, index) {
@@ -4363,7 +5075,10 @@
       return buildDoglegArcWorld(holeIndex, rng);
     }
     if (layoutType === "curved_sweep") {
-      return buildCurvedSweepWorld(holeIndex, rng);
+      return buildCurvedSweepWorld(holeIndex, rng) || getCellWorld("switchback", holeIndex, rng, difficultyKey);
+    }
+    if (layoutType === "sweep_left" || layoutType === "sweep_right" || layoutType === "crescent") {
+      return buildSweepingCurveWorld(holeIndex, rng, layoutType) || getCellWorld("hook_left", holeIndex, rng, difficultyKey);
     }
     const rawCells = getCellLayout(layoutType);
     const falseBranch = buildFalseHoleBranch(rawCells, rng, difficultyKey, holeIndex);
@@ -5213,6 +5928,78 @@
           const anchor = getObstacleCenter(index, 0, 0, false, cellSize * 0.2);
           spinners.push({ x: Math.round(anchor.x), y: Math.round(anchor.y), radius: Math.round(cellSize * 0.18) });
         });
+      } else if (setpiece.id === "needle_pocket") {
+        const pocketIndex = getTemplateIndices(1, 0.44, 0.78)[0];
+        if (pocketIndex != null) {
+          const anchor = getObstacleCenter(pocketIndex, 0, 0, false, cellSize * 0.18);
+          const dir = getCellDirection(cells, pocketIndex);
+          const vertical = Math.abs(dir.y) > 0.5;
+          const laneLength = Math.round(cellSize * 0.42);
+          const laneGap = Math.max(16, Math.round(cellSize * 0.12));
+          const sideReach = Math.round(cellSize * 0.34);
+          if (vertical) {
+            walls.push({
+              x: Math.round(anchor.x - sideReach),
+              y: Math.round(anchor.y - laneLength * 0.5),
+              width: Math.max(18, sideReach - laneGap * 0.5),
+              height: wallThickness
+            });
+            walls.push({
+              x: Math.round(anchor.x + laneGap * 0.5),
+              y: Math.round(anchor.y - laneLength * 0.5),
+              width: Math.max(18, sideReach - laneGap * 0.5),
+              height: wallThickness
+            });
+            walls.push({
+              x: Math.round(anchor.x - wallThickness * 0.5),
+              y: Math.round(anchor.y - laneLength * 0.5 - cellSize * 0.18),
+              width: wallThickness,
+              height: Math.round(cellSize * 0.24)
+            });
+            walls.push({
+              x: Math.round(anchor.x - cellSize * 0.18),
+              y: Math.round(anchor.y - cellSize * 0.06),
+              width: Math.round(cellSize * 0.36),
+              height: wallThickness
+            });
+          } else {
+            walls.push({
+              x: Math.round(anchor.x - laneLength * 0.5),
+              y: Math.round(anchor.y - sideReach),
+              width: wallThickness,
+              height: Math.max(18, sideReach - laneGap * 0.5)
+            });
+            walls.push({
+              x: Math.round(anchor.x - laneLength * 0.5),
+              y: Math.round(anchor.y + laneGap * 0.5),
+              width: wallThickness,
+              height: Math.max(18, sideReach - laneGap * 0.5)
+            });
+            walls.push({
+              x: Math.round(anchor.x - laneLength * 0.5 - cellSize * 0.18),
+              y: Math.round(anchor.y - wallThickness * 0.5),
+              width: Math.round(cellSize * 0.24),
+              height: wallThickness
+            });
+            walls.push({
+              x: Math.round(anchor.x - cellSize * 0.06),
+              y: Math.round(anchor.y - cellSize * 0.18),
+              width: wallThickness,
+              height: Math.round(cellSize * 0.36)
+            });
+          }
+          const frontAnchor = projectAroundAnchor(anchor, -cellSize * 0.1, 0);
+          spinners.push({
+            x: Math.round(frontAnchor.x - dir.x * cellSize * 0.12),
+            y: Math.round(frontAnchor.y - dir.y * cellSize * 0.12),
+            radius: Math.round(cellSize * 0.17)
+          });
+          if (settings.key !== "beginner") {
+            const padAnchor = projectAroundAnchor(anchor, cellSize * 0.16, getLaneSign(pocketIndex) * cellSize * 0.12);
+            const guidedDirection = getLaneGuidedDirection({ ...padAnchor, direction: dir }, pocketIndex, getLaneSign(pocketIndex) * cellSize * 0.12, cellSize * 0.18, false);
+            pads.push(makeCellPad({ x: padAnchor.x, y: padAnchor.y }, guidedDirection, cellSize, 0.84, vertical ? "vertical" : "horizontal"));
+          }
+        }
       } else if (setpiece.id === "relay_orbit") {
         const first = getTemplateIndices(1, 0.22, 0.28)[0];
         const second = getTemplateIndices(1, 0.72, 0.8)[0];
@@ -5861,9 +6648,84 @@
     return pruneHazardOverlaps(pruned);
   }
 
+  function estimateHandmadePar(data, difficultyKey = "average") {
+    const fallbackPoints = [
+      data?.ballStart || { x: 0, y: 0 },
+      data?.hole || { x: 360, y: 0 }
+    ];
+    const path = Array.isArray(data?.pathPoints) && data.pathPoints.length >= 2 ? data.pathPoints : fallbackPoints;
+    const { totalLength } = getPolylineSegments(path);
+    const lengthFactor = difficultyKey === "hardcore" ? 330 : difficultyKey === "beginner" ? 420 : 370;
+    const obstaclePressure = (
+      (data.spinners?.length || 0) * 0.28 +
+      (data.bumpers?.length || 0) * 0.22 +
+      (data.sandTraps?.length || 0) * 0.22 +
+      (data.pads?.length || 0) * 0.18 +
+      (data.fanZones?.length || 0) * 0.26 +
+      (data.magneticZones?.length || 0) * 0.3 +
+      (data.ricochetRails?.length || 0) * 0.22 +
+      (data.shutterDoors?.length || 0) * 0.26 +
+      (data.staticShutters?.length || 0) * 0.24 +
+      (data.teleports?.length || 0) * 0.16
+    );
+    return clamp(Math.round(totalLength / lengthFactor + obstaclePressure), 3, 8);
+  }
+  function inferHandmadeHazardTheme(data) {
+    if (data.magneticZones?.length) return HAZARD_SPOTLIGHTS.magnet_field || null;
+    if (data.fanZones?.length) return HAZARD_SPOTLIGHTS.fan_drift || null;
+    if (data.pads?.length) return HAZARD_SPOTLIGHTS.boost_grid || null;
+    if (data.sandTraps?.length) return HAZARD_SPOTLIGHTS.sandstorm || null;
+    return null;
+  }
+  function createHandmadeHole(holeIndex, courseSeed, difficultyKey, handmadeEntry, planEntry = null) {
+    const data = handmadeEntry.data;
+    const cloneItems = items => Array.isArray(items) ? items.map(item => ({ ...item })) : [];
+    return {
+      id: holeIndex + 1,
+      seed: (courseSeed + holeIndex * 9973) >>> 0,
+      archetype: "handmade",
+      layoutType: `handmade:${handmadeEntry.id}`,
+      hazardTheme: inferHandmadeHazardTheme(data),
+      setpiece: { id: "handmade_map", name: handmadeEntry.name },
+      difficultyKey,
+      modifier: HOLE_MODIFIERS.none,
+      dailyVariant: planEntry?.dailyVariantName || null,
+      par: Math.max(1, Number(data.par) || estimateHandmadePar(data, difficultyKey)),
+      width: data.width,
+      height: data.height,
+      ballStart: { ...data.ballStart },
+      hole: { ...data.hole },
+      holeApproach: data.holeApproach ? { ...data.holeApproach } : { x: 0, y: -1 },
+      falseHoles: cloneItems(data.falseHoles),
+      pathPoints: cloneItems(data.pathPoints),
+      walls: cloneItems(data.walls),
+      spinners: cloneItems(data.spinners),
+      pads: cloneItems(data.pads),
+      sandTraps: cloneItems(data.sandTraps),
+      bumpers: cloneItems(data.bumpers),
+      teleports: cloneItems(data.teleports).map(item => ({ ...item, a: { ...item.a }, b: { ...item.b } })),
+      fanZones: cloneItems(data.fanZones),
+      shutterDoors: cloneItems(data.shutterDoors),
+      staticShutters: cloneItems(data.staticShutters),
+      magneticZones: cloneItems(data.magneticZones),
+      ricochetRails: cloneItems(data.ricochetRails),
+      holeGuardStyle: "none",
+      mirroredFalseCupSand: [],
+      cells: cloneItems(data.cells).map(cell => ({ ...cell, rect: { ...cell.rect } })),
+      handmadeMapId: handmadeEntry.id,
+      handmadeMapName: handmadeEntry.name
+    };
+  }
+
   function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null, modeKey = "standard") {
     const coursePlan = buildCoursePlan(seed, holeCount, difficultyKey, modeKey, progress);
-    return Array.from({ length: holeCount }, (_, index) => generateHole(index, seed, difficultyKey, progress, coursePlan[index]));
+    const handmadeAssignments = buildHandmadeAssignments(seed, holeCount, difficultyKey, modeKey);
+    return Array.from({ length: holeCount }, (_, index) => {
+      const handmadeEntry = handmadeAssignments.get(index);
+      return handmadeEntry
+        ? createHandmadeHole(index, seed, difficultyKey, handmadeEntry, coursePlan[index])
+        : generateHole(index, seed, difficultyKey, progress, coursePlan[index]);
+    });
   }
 
   let startRoundLengthKey = "default";
@@ -6377,7 +7239,7 @@
         </div>
       `;
       this.replayMeta.textContent = this.modeKey === 'daily'
-        ? `Daily ${getTodayKey()} • Seed ${this.seed} • Beat my score.`
+        ? `${this.difficulty.label} • ${getDailyRankTier(this.getRoundTotals().par, this.getRoundTotals().shots)} • Beat that!`
         : `Hole ${this.currentLevelIndex + 1} replay • Seed ${this.seed}`;
     }
     async downloadReplayFile() {
@@ -6437,12 +7299,7 @@
     }
     getDailyChallengeSummary(totalPar, totalShots) {
       if (this.modeKey !== 'daily') return '';
-      const diff = totalShots - totalPar;
-      const relation = diff === 0 ? 'even par' : diff > 0 ? `+${diff}` : `${diff}`;
-      const medal = getDailyRankTier(totalPar, totalShots);
-      const streak = getDailyStreak(this.progress);
-      const streakCopy = streak > 1 ? ` • ${streak}-day streak` : '';
-      return `Today's Score: ${relation} (${medal}) • ${getTodayKey()} • Seed ${this.seed}${streakCopy}. Beat my score.`;
+      return `${this.difficulty.label} • ${getDailyRankTier(totalPar, totalShots)} • Beat that!`;
     }
     getRankGapCopy(totalPar, totalShots) {
       const gap = this.modeKey === 'daily' ? getShotsToNextTier(totalPar, totalShots) : getShotsToNextRank(totalPar, totalShots);
@@ -6567,12 +7424,9 @@
         return;
       }
       const file = new File([blob], `putt-scorecard-${this.difficultyKey}.png`, { type: 'image/png' });
-      const streakText = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
       const totals = this.getRoundTotals();
-      const dailyRelation = totals.shots - totals.par === 0 ? 'E' : totals.shots - totals.par > 0 ? `+${totals.shots - totals.par}` : `${totals.shots - totals.par}`;
-      const dailyMedal = getRoundMedal(totals.par, totals.shots);
       const scorecardText = this.modeKey === 'daily'
-        ? `Today's Score: ${dailyRelation} (${dailyMedal}) • ${getTodayKey()} • Seed ${this.seed}${streakText}`
+        ? `${this.difficulty.label} • ${getDailyRankTier(totals.par, totals.shots)} • Beat that!`
         : `Putt Putt round • Seed ${this.seed}`;
       if (await this.tryNativeShareFile(file, 'Putt Putt Scorecard', scorecardText)) {
         this.progress.stats.totalShares++;
@@ -6611,12 +7465,9 @@
       }
       const { blob, filename } = exportResult;
       const file = new File([blob], filename, { type: blob.type || 'image/gif' });
-      const streakText = this.modeKey === 'daily' && getDailyStreak(this.progress) > 1 ? ` • ${getDailyStreak(this.progress)}-day streak` : '';
       const totals = this.getRoundTotals();
-      const dailyRelation = totals.shots - totals.par === 0 ? 'E' : totals.shots - totals.par > 0 ? `+${totals.shots - totals.par}` : `${totals.shots - totals.par}`;
-      const dailyMedal = getRoundMedal(totals.par, totals.shots);
       const replayText = this.modeKey === 'daily'
-        ? `Today's Score: ${dailyRelation} (${dailyMedal}) • ${getTodayKey()} • Seed ${this.seed}${streakText} • Beat this.`
+        ? `${this.difficulty.label} • ${getDailyRankTier(totals.par, totals.shots)} • Beat that!`
         : `Putt Putt replay • Seed ${this.seed}`;
       if (await this.tryNativeShareFile(file, 'Putt Putt Replay', replayText)) {
         this.progress.stats.totalShares++;
@@ -7320,6 +8171,8 @@
         holeCount: this.levels.length,
         archetype: level ? level.data.archetype : null,
         layoutType: level ? level.data.layoutType : null,
+        handmadeMapId: level ? level.data.handmadeMapId || null : null,
+        handmadeMapName: level ? level.data.handmadeMapName || null : null,
         hazardTheme: level ? level.data.hazardTheme?.id || null : null,
         setpiece: level ? level.data.setpiece?.id : null,
         par: level ? level.data.par : null,
@@ -7673,19 +8526,25 @@
       hole.pulse *= 0.9;
       if (hole.cooldown > 0) hole.cooldown--;
     });
-    this.ball.update();
-    this.walls.forEach(w => w.collide(this.ball));
-    this.spinners.forEach(s => { s.update(); s.collide(this.ball); });
-    this.pads.forEach(p => p.apply(this.ball));
-    this.sandTraps.forEach(trap => trap.apply(this.ball));
-    this.bumpers.forEach(bumper => bumper.collide(this.ball));
-    this.teleports.forEach(teleport => teleport.apply(this.ball));
-    this.fanZones.forEach(zone => zone.apply(this.ball));
-    this.shutterDoors.forEach(door => { door.update(); door.collide(this.ball); });
-    this.staticShutters.forEach(shutter => shutter.collide(this.ball));
-    this.magneticZones.forEach(zone => zone.apply(this.ball));
-    this.ricochetRails.forEach(rail => rail.collide(this.ball));
-    this.applyModifierForces();
+    this.spinners.forEach(s => s.update());
+    this.shutterDoors.forEach(door => door.update());
+    const substeps = clamp(Math.ceil(Math.max(1, this.ball.speed()) / 3), 1, 4);
+    const dt = 1 / substeps;
+    for (let stepIndex = 0; stepIndex < substeps; stepIndex++) {
+      this.ball.update(dt);
+      this.walls.forEach(w => w.collide(this.ball));
+      this.spinners.forEach(s => s.collide(this.ball));
+      this.pads.forEach(p => p.apply(this.ball));
+      this.sandTraps.forEach(trap => trap.apply(this.ball));
+      this.bumpers.forEach(bumper => bumper.collide(this.ball));
+      this.teleports.forEach(teleport => teleport.apply(this.ball));
+      this.fanZones.forEach(zone => zone.apply(this.ball));
+      this.shutterDoors.forEach(door => door.collide(this.ball));
+      this.staticShutters.forEach(shutter => shutter.collide(this.ball));
+      this.magneticZones.forEach(zone => zone.apply(this.ball));
+      this.ricochetRails.forEach(rail => rail.collide(this.ball));
+      this.applyModifierForces(dt);
+    }
     this.ball.clampSpeed(16);
     this.captureReplayFrame();
 
@@ -7805,21 +8664,23 @@
     this.zoomRestoreState = null;
   }
 
-  applyModifierForces() {
+  applyModifierForces(dt = 1) {
+    const stepScale = clamp(Number(dt) || 1, 0.1, 1);
     const speed = this.ball.speed();
     if (this.modifier.id === "low_gravity" && speed > 0.14) {
-      this.ball.vx *= 1.004;
-      this.ball.vy *= 1.004;
+      const gravityScale = Math.pow(1.004, stepScale);
+      this.ball.vx *= gravityScale;
+      this.ball.vy *= gravityScale;
     }
     if (this.modifier.id === "crosswind_left" || this.modifier.id === "crosswind_right") {
       if (speed > 0.16) {
         const windScale = clamp((speed - 0.16) / 0.9, 0.2, 1);
-        const wind = (0.0032 + Math.min(0.0042, speed * 0.0011)) * windScale;
+        const wind = (0.0032 + Math.min(0.0042, speed * 0.0011)) * windScale * stepScale;
         const resist = this.ball.getFieldResistance ? this.ball.getFieldResistance() : 1;
         this.ball.vx += (this.modifier.id === "crosswind_left" ? -wind : wind) * resist;
       } else if (speed > 0.03) {
-        this.ball.vx *= 0.88;
-        this.ball.vy *= 0.91;
+        this.ball.vx *= Math.pow(0.88, stepScale);
+        this.ball.vy *= Math.pow(0.91, stepScale);
       }
     }
   }
@@ -8427,6 +9288,8 @@
     constructor(x, y, loadout) {
       this.x = x;
       this.y = y;
+      this.prevX = x;
+      this.prevY = y;
       this.isLiveBall = true;
       this.vx = 0;
       this.vy = 0;
@@ -8448,6 +9311,14 @@
       this.trailHistory = [];
       this.bounds = null;
       this.applyLoadout(loadout || { cosmetic: BALL_COSMETICS[0], trail: TRAIL_SHOP[0], ability: ABILITY_SHOP[0] });
+    }
+    sanitizeMotion() {
+      if (!Number.isFinite(this.x)) this.x = Number.isFinite(this.prevX) ? this.prevX : 0;
+      if (!Number.isFinite(this.y)) this.y = Number.isFinite(this.prevY) ? this.prevY : 0;
+      if (!Number.isFinite(this.prevX)) this.prevX = this.x;
+      if (!Number.isFinite(this.prevY)) this.prevY = this.y;
+      if (!Number.isFinite(this.vx)) this.vx = 0;
+      if (!Number.isFinite(this.vy)) this.vy = 0;
     }
     shoot(angle, power, curveDirection = 1) {
       this.vx = Math.cos(angle) * power;
@@ -8566,19 +9437,23 @@
     isGhostJumping() {
       return this.jumpGhostFrames > 0;
     }
-    update() {
+    update(dt = 1) {
+      const stepScale = clamp(Number(dt) || 1, 0.1, 1);
+      this.sanitizeMotion();
+      this.prevX = this.x;
+      this.prevY = this.y;
       const curveStrength = this.getCurveStrength();
       const speed = this.speed();
       if (curveStrength > 0 && speed > 0.35) {
         const currentVx = this.vx;
         const currentVy = this.vy;
         const curveScale = Math.min(1, (speed - 0.35) / 1.8);
-        this.vx += (-currentVy / speed) * curveStrength * curveScale * this.curveDirection;
-        this.vy += (currentVx / speed) * curveStrength * curveScale * this.curveDirection;
+        this.vx += (-currentVy / speed) * curveStrength * curveScale * this.curveDirection * stepScale;
+        this.vy += (currentVx / speed) * curveStrength * curveScale * this.curveDirection * stepScale;
       }
-      this.x += this.vx; this.y += this.vy;
+      this.x += this.vx * stepScale; this.y += this.vy * stepScale;
       if (this.pulseFrames > 0) {
-        this.pulseFrames--;
+        this.pulseFrames = Math.max(0, this.pulseFrames - stepScale);
         if (!this.pulseTriggered && this.pulseFrames === 0 && this.speed() > 0.3) {
           const speedNow = this.speed();
           if (speedNow > 0.001) {
@@ -8589,11 +9464,12 @@
           this.pulseFlash = 1;
         }
       }
-      this.vx *= this.getRollFriction(); this.vy *= this.getRollFriction();
+      const friction = Math.pow(this.getRollFriction(), stepScale);
+      this.vx *= friction; this.vy *= friction;
       const stopThreshold = this.getStopThreshold();
       if (Math.abs(this.vx) < stopThreshold) this.vx = 0;
       if (Math.abs(this.vy) < stopThreshold) this.vy = 0;
-      if (this.jumpGhostFrames > 0) this.jumpGhostFrames--;
+      if (this.jumpGhostFrames > 0) this.jumpGhostFrames = Math.max(0, this.jumpGhostFrames - stepScale);
       if (this.jumpFrames > 0) {
         const progress = 1 - this.jumpFrames / this.jumpTotalFrames;
         if (progress < 0.16) {
@@ -8617,7 +9493,7 @@
           this.visualScaleX = 0.96 + (0.12 + this.jumpStrength * 0.05) * t;
           this.visualScaleY = 1.02 - (0.12 + this.jumpStrength * 0.06) * t;
         }
-        this.jumpFrames--;
+        this.jumpFrames = Math.max(0, this.jumpFrames - stepScale);
       } else {
         this.visualScale += (1 - this.visualScale) * 0.25;
         this.visualScaleX += (1 - this.visualScaleX) * 0.25;
@@ -8625,16 +9501,19 @@
         this.jumpPeakScale = 1;
         this.jumpStrength = 0;
       }
-      this.pulseFlash *= 0.84;
+      this.pulseFlash *= Math.pow(0.84, stepScale);
       this.clampToBounds();
       if (this.trail.id !== "none" && this.speed() > 0.12) {
         this.trailHistory.push({ x: this.x, y: this.y, life: 1 });
         if (this.trailHistory.length > 16) this.trailHistory.shift();
       }
-      this.trailHistory.forEach(point => { point.life *= 0.88; });
+      const trailDecay = Math.pow(0.88, stepScale);
+      this.trailHistory.forEach(point => { point.life *= trailDecay; });
       this.trailHistory = this.trailHistory.filter(point => point.life > 0.08);
+      this.sanitizeMotion();
     }
     clampSpeed(maxSpeed) {
+      this.sanitizeMotion();
       const speed = this.speed();
       if (!speed || speed <= maxSpeed) return;
       const scale = maxSpeed / speed;
@@ -8971,30 +9850,70 @@
     }
     ctx.restore();
   }
-    collide(ball) {
-      const cos = Math.cos(-this.rotation);
-      const sin = Math.sin(-this.rotation);
-      const relX = ball.x - (this.x + this.width / 2);
-      const relY = ball.y - (this.y + this.height / 2);
-      const localX = relX * cos - relY * sin;
-      const localY = relX * sin + relY * cos;
-      const halfW = this.width / 2, halfH = this.height / 2;
-      if (localX + ball.radius > -halfW && localX - ball.radius < halfW &&
-          localY + ball.radius > -halfH && localY - ball.radius < halfH) {
-        const overlapX = Math.min(localX + ball.radius - (-halfW), halfW - (localX - ball.radius));
-        const overlapY = Math.min(localY + ball.radius - (-halfH), halfH - (localY - ball.radius));
-        if (overlapX < overlapY) {
-          ball.vx *= -ball.getBounceFactor(0.8);
-          if (localX < 0) { ball.x -= overlapX * cos; ball.y -= overlapX * sin; }
-          else { ball.x += overlapX * cos; ball.y += overlapX * sin; }
-        } else {
-          ball.vy *= -ball.getBounceFactor(0.8);
-          if (localY < 0) { ball.x -= overlapY * -sin; ball.y -= overlapY * cos; }
-          else { ball.x += overlapY * -sin; ball.y += overlapY * cos; }
-        }
-        if (ball.isLiveBall) emitGameFx('wall', Math.min(1.2, ball.speed() / 8));
+  collide(ball) {
+    const cos = Math.cos(-this.rotation);
+    const sin = Math.sin(-this.rotation);
+    const centerX = this.x + this.width / 2;
+    const centerY = this.y + this.height / 2;
+    const relX = ball.x - centerX;
+    const relY = ball.y - centerY;
+    const localX = relX * cos - relY * sin;
+    const localY = relX * sin + relY * cos;
+    const prevRelX = (Number.isFinite(ball.prevX) ? ball.prevX : ball.x) - centerX;
+    const prevRelY = (Number.isFinite(ball.prevY) ? ball.prevY : ball.y) - centerY;
+    const prevLocalX = prevRelX * cos - prevRelY * sin;
+    const prevLocalY = prevRelX * sin + prevRelY * cos;
+    const halfW = this.width / 2, halfH = this.height / 2;
+    const isOverlapping =
+      localX + ball.radius > -halfW && localX - ball.radius < halfW &&
+      localY + ball.radius > -halfH && localY - ball.radius < halfH;
+    let collisionNormal = null;
+    let collisionPoint = null;
+    if (!isOverlapping) {
+      const sweptHit = sweptPointRectHit(
+        { x: prevLocalX, y: prevLocalY },
+        { x: localX, y: localY },
+        -halfW - ball.radius,
+        halfW + ball.radius,
+        -halfH - ball.radius,
+        halfH + ball.radius
+      );
+      if (!sweptHit) return;
+      collisionNormal = sweptHit.normal;
+      collisionPoint = {
+        x: prevLocalX + (localX - prevLocalX) * sweptHit.t,
+        y: prevLocalY + (localY - prevLocalY) * sweptHit.t
+      };
+    } else {
+      const overlapX = Math.min(localX + ball.radius - (-halfW), halfW - (localX - ball.radius));
+      const overlapY = Math.min(localY + ball.radius - (-halfH), halfH - (localY - ball.radius));
+      collisionNormal = overlapX < overlapY
+        ? { x: localX < 0 ? -1 : 1, y: 0 }
+        : { x: 0, y: localY < 0 ? -1 : 1 };
+      collisionPoint = { x: localX, y: localY };
+      const separation = overlapX < overlapY ? overlapX : overlapY;
+      if (collisionNormal.x !== 0) {
+        collisionPoint.x += collisionNormal.x * separation;
+      } else {
+        collisionPoint.y += collisionNormal.y * separation;
       }
     }
+    if (!collisionNormal || !collisionPoint) return;
+    const worldNormalX = collisionNormal.x * cos + collisionNormal.y * sin;
+    const worldNormalY = -collisionNormal.x * sin + collisionNormal.y * cos;
+    const epsilon = 0.6;
+    const resolvedLocalX = collisionPoint.x + collisionNormal.x * epsilon;
+    const resolvedLocalY = collisionPoint.y + collisionNormal.y * epsilon;
+    ball.x = centerX + resolvedLocalX * cos + resolvedLocalY * sin;
+    ball.y = centerY - resolvedLocalX * sin + resolvedLocalY * cos;
+    const speedAlongNormal = ball.vx * worldNormalX + ball.vy * worldNormalY;
+    if (speedAlongNormal < 0) {
+      const bounce = ball.getBounceFactor(0.8);
+      ball.vx -= (1 + bounce) * speedAlongNormal * worldNormalX;
+      ball.vy -= (1 + bounce) * speedAlongNormal * worldNormalY;
+      if (ball.isLiveBall) emitGameFx('wall', Math.min(1.2, ball.speed() / 8));
+    }
+  }
   }
 
   class ArcWall {
@@ -9080,6 +9999,10 @@
       ctx.restore();
     }
     collide(ball) {
+      if (![ball.x, ball.y, ball.vx, ball.vy, this.x, this.y, this.radius].every(Number.isFinite)) {
+        if (ball && ball.sanitizeMotion) ball.sanitizeMotion();
+        return;
+      }
       if (ball.isGhostJumping && ball.isGhostJumping()) return;
       const dx = ball.x - this.x;
       const dy = ball.y - this.y;
@@ -9373,6 +10296,10 @@ class FanZone {
     ctx.restore();
   }
   apply(ball) {
+    if (![ball.x, ball.y, ball.vx, ball.vy, this.forceX, this.forceY, this.power].every(Number.isFinite)) {
+      if (ball && ball.sanitizeMotion) ball.sanitizeMotion();
+      return;
+    }
     const stream = this.getInfluenceBounds();
     if (
       ball.x > stream.x && ball.x < stream.x + stream.width &&
@@ -9791,16 +10718,28 @@ function renderObstacleGalleryPage() {
   document.body.appendChild(root);
 }
 
-  function resolveInitialSeed() {
-    const params = new URLSearchParams(window.location.search);
-    const fromQuery = Number(params.get('seed'));
-    if (Number.isInteger(fromQuery) && fromQuery >= 0) return fromQuery >>> 0;
+  function resolveInitialSeed(options = {}) {
+    const { allowQuerySeed = false } = options;
+    if (allowQuerySeed) {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = Number(params.get('seed'));
+      if (Number.isInteger(fromQuery) && fromQuery >= 0) return fromQuery >>> 0;
+    }
     if (window.crypto && window.crypto.getRandomValues) {
       const values = new Uint32Array(1);
       window.crypto.getRandomValues(values);
       return values[0] >>> 0;
     }
     return Math.floor((Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0);
+  }
+
+  function shouldAutostartPractice() {
+    const params = new URLSearchParams(window.location.search);
+    return Boolean(DEBUG_FLAGS.autostartDifficulty) ||
+      DEBUG_FLAGS.debugHole > 1 ||
+      Boolean(DEBUG_FLAGS.handmadeId) ||
+      Boolean(DEBUG_FLAGS.forceLayout) ||
+      params.has('seed');
   }
 
   let game = null;
@@ -9856,21 +10795,20 @@ function renderObstacleGalleryPage() {
     const leaderboardGrid = document.getElementById('menuLeaderboardGrid');
     const rewardsGrid = document.getElementById('menuRewardsGrid');
     const calendar7 = document.getElementById('menuCalendar7');
-    const calendar30 = document.getElementById('menuCalendar30');
     const calendarDetail = document.getElementById('menuCalendarDetail');
-    const useFullCard = roundLengthKey === "18";
+    const useFullCard = modeKey !== "daily" && roundLengthKey === "18";
     const roundLengthLabel = useFullCard ? "18-hole card" : "default card";
-    const streak = getDailyStreak(progress);
-    const nextReward = getNextDailyReward(progress);
+    const streak = getDisplayDailyStreak(progress);
+    const nextReward = DAILY_MECHANIC_REWARDS.find(reward => streak < reward.days) || null;
     const collection = getCollectionProgress(progress);
-    const averageSignature = getDailyCourseSignature(todayKey, "average", useFullCard ? 18 : 9, progress);
+    const averageSignature = getDailyCourseSignature(todayKey, "average", DIFFICULTY_PRESETS.average.holeCount, progress);
     const averageAttempts = getRemainingDailyAttempts(progress, todayKey, "average");
-    const averageBoard = buildLocalLeaderboard(progress, todayKey, "average", useFullCard ? 18 : 9);
+    const averageBoard = buildLocalLeaderboard(progress, todayKey, "average", DIFFICULTY_PRESETS.average.holeCount);
     const unlockedRewards = getUnlockedDailyRewards(progress);
     const tokenCount = Math.max(0, Number(progress.dailyTokens) || 0);
     const weeklyStats = getWeeklyGoalStats(progress, weekStartKey);
-    const tomorrowSignature = getDailyCourseSignature(tomorrowKey, "average", useFullCard ? 18 : 9, progress);
-    const tomorrowBoard = buildLocalLeaderboard(progress, tomorrowKey, "average", useFullCard ? 18 : 9);
+    const tomorrowSignature = getDailyCourseSignature(tomorrowKey, "average", DIFFICULTY_PRESETS.average.holeCount, progress);
+    const tomorrowBoard = buildLocalLeaderboard(progress, tomorrowKey, "average", DIFFICULTY_PRESETS.average.holeCount);
     const nextWeeklyGoal = WEEKLY_GOALS.find(goal => !progress.weeklyGoalClaims?.[weekStartKey]?.[goal.id] && getWeeklyGoalProgress(goal, progress, weekStartKey) < goal.target) || null;
     const weeklyChestReady = WEEKLY_GOALS.every(goal => Boolean(progress.weeklyGoalClaims?.[weekStartKey]?.[goal.id]));
     const weeklyChestOpened = Boolean(progress.weeklyChestClaims?.[weekStartKey]);
@@ -9936,9 +10874,17 @@ function renderObstacleGalleryPage() {
         `;
     }
 
+    const handmadeCount = getEligibleHandmadeMaps("average", "standard").length;
     note.textContent = modeKey === "daily"
-      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. One official run per difficulty. Miss the stroke caps and the card is gone until tomorrow.`
-      : `Practice uses a fresh random seed each time. No daily lockout here. Next official Daily reset in ${getTimeUntilNextResetLabel()}.`;
+      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. One official run per difficulty, with hole counts locked to Beginner 9, Average 12, and Hardcore 18. Miss the stroke caps and the card is gone until tomorrow.`
+      : `Practice uses a fresh random seed each time. ${handmadeCount ? `${handmadeCount} handmade map${handmadeCount === 1 ? "" : "s"} currently mix into the lineup.` : "No handmade maps are loaded yet."} No daily lockout here. Next official Daily reset in ${getTimeUntilNextResetLabel()}.`;
+
+    document.querySelectorAll('[data-round-length]').forEach(button => {
+      const isExtended = button.dataset.roundLength === "18";
+      const disabled = modeKey === "daily" && isExtended;
+      button.disabled = disabled;
+      button.classList.toggle('active', !disabled && button.dataset.roundLength === roundLengthKey);
+    });
 
     for (const [key, preset] of Object.entries(DIFFICULTY_PRESETS)) {
       const record = modeKey === "daily"
@@ -9951,7 +10897,7 @@ function renderObstacleGalleryPage() {
         : key === "average"
           ? "Main competitive card with medal pressure and lane reads."
           : "Sharpest caps, hardest late holes, fastest collapse if you miss.";
-      const holeCount = useFullCard ? 18 : preset.holeCount;
+      const holeCount = modeKey === "daily" ? preset.holeCount : (useFullCard ? 18 : preset.holeCount);
       if (modeKey === "daily") {
         const signature = getDailyCourseSignature(todayKey, key, holeCount, progress);
         const board = buildLocalLeaderboard(progress, todayKey, key, holeCount);
@@ -10010,9 +10956,6 @@ function renderObstacleGalleryPage() {
     }
     if (calendar7) {
       calendar7.innerHTML = renderCalendarStrip(getCalendarDays(7, todayKey), progress, [3, 5, 7]);
-    }
-    if (calendar30) {
-      calendar30.innerHTML = renderCalendarStrip(getCalendarDays(30, todayKey), progress, [3, 5, 7, 14, 30]);
     }
     if (calendarDetail) {
       calendarDetail.innerHTML = getCalendarDetailCopy(progress, todayKey);
@@ -10268,7 +11211,11 @@ function renderObstacleGalleryPage() {
     settingsModal.style.display = 'flex';
   }
 
-  function startGame(difficultyKey) {
+  async function startGame(difficultyKey) {
+    await handmadeMapsReady;
+    if (DEBUG_FLAGS.handmadeId) {
+      startModeKey = "standard";
+    }
     const selected = DIFFICULTY_PRESETS[difficultyKey] ? difficultyKey : "average";
     const progress = loadProgress();
     if (startModeKey === "daily") {
@@ -10281,8 +11228,11 @@ function renderObstacleGalleryPage() {
       }
     }
     document.getElementById('startMenu').style.display = 'none';
-    const seed = startModeKey === "daily" ? getDailySeedForKey(getTodayKey()) : resolveInitialSeed();
-    const roundHoleCount = startRoundLengthKey === "18" ? 18 : null;
+    const allowQuerySeed = startModeKey !== "daily" && (Boolean(DEBUG_FLAGS.autostartDifficulty) || DEBUG_FLAGS.debugHole > 1);
+    const seed = startModeKey === "daily"
+      ? getDailySeedForKey(getTodayKey())
+      : resolveInitialSeed({ allowQuerySeed });
+    const roundHoleCount = startModeKey === "daily" ? null : (startRoundLengthKey === "18" ? 18 : null);
     game = new GameManager(seed, selected, startModeKey, roundHoleCount);
     if (DEBUG_FLAGS.debugHole > 1 && DEBUG_FLAGS.debugHole <= game.levels.length) {
       game.currentLevelIndex = DEBUG_FLAGS.debugHole - 1;
@@ -10297,12 +11247,16 @@ function renderObstacleGalleryPage() {
   document.querySelectorAll('[data-mode]').forEach(button => {
     button.onclick = () => {
       startModeKey = button.dataset.mode;
+      if (startModeKey === "daily" && startRoundLengthKey === "18") {
+        startRoundLengthKey = "default";
+      }
       document.querySelectorAll('[data-mode]').forEach(other => other.classList.toggle('active', other === button));
       renderMenuMeta(startModeKey, startRoundLengthKey);
     };
   });
   document.querySelectorAll('[data-round-length]').forEach(button => {
     button.onclick = () => {
+      if (button.disabled) return;
       startRoundLengthKey = button.dataset.roundLength;
       document.querySelectorAll('[data-round-length]').forEach(other => other.classList.toggle('active', other === button));
       renderMenuMeta(startModeKey, startRoundLengthKey);
@@ -10319,12 +11273,26 @@ function renderObstacleGalleryPage() {
       document.getElementById('settingsModal').style.display = 'none';
     }
   };
+  handmadeMapsReady = loadCustomMapsRegistry();
   const urlParams = new URLSearchParams(window.location.search);
   const isObstacleGallery = urlParams.get('gallery') === '1';
   if (isObstacleGallery) {
     renderObstacleGalleryPage();
   } else {
+    if (shouldAutostartPractice()) {
+      startModeKey = "standard";
+      startRoundLengthKey = "default";
+      document.querySelectorAll('[data-mode]').forEach(button => {
+        button.classList.toggle('active', button.dataset.mode === startModeKey);
+      });
+      document.querySelectorAll('[data-round-length]').forEach(button => {
+        button.classList.toggle('active', button.dataset.roundLength === startRoundLengthKey);
+      });
+    }
     renderMenuMeta(startModeKey, startRoundLengthKey);
+    handmadeMapsReady.then(() => {
+      if (!window.__game) renderMenuMeta(startModeKey, startRoundLengthKey);
+    });
     if (DEBUG_FLAGS.autostartDifficulty && DIFFICULTY_PRESETS[DEBUG_FLAGS.autostartDifficulty]) {
       startGame(DEBUG_FLAGS.autostartDifficulty);
     }
