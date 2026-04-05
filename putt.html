@@ -500,7 +500,7 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.2);
       text-align: left;
     }
-    #settingsModal, #replayModal {
+    #settingsModal, #replayModal, #weeklyChestModal {
       display: none;
       position: fixed;
       inset: 0;
@@ -510,7 +510,7 @@
       padding: calc(var(--safe-top) + 16px) calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 16px) calc(var(--safe-left) + 16px);
       z-index: 103;
     }
-    #settingsModal .card, #replayModal .card {
+    #settingsModal .card, #replayModal .card, #weeklyChestModal .card {
       width: min(100%, 360px);
       max-height: min(84dvh, 680px);
       overflow: auto;
@@ -519,6 +519,27 @@
       padding: 18px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.2);
       text-align: left;
+    }
+    .chest-reveal {
+      text-align: center;
+      display: grid;
+      gap: 14px;
+    }
+    .chest-reveal-badge {
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #111827 0%, #374151 100%);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 46px;
+      box-shadow: 0 16px 40px rgba(17, 24, 39, 0.18);
+    }
+    .chest-reveal-copy {
+      color: #4b5563;
+      line-height: 1.45;
     }
     .shop-head {
       display: flex;
@@ -1219,6 +1240,24 @@
       <div class="buttons" style="margin-top:12px;">
         <button id="shareReplayNowBtn" class="primary">Share GIF</button>
         <button id="downloadReplayBtn" class="secondary">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="weeklyChestModal">
+    <div class="card">
+      <div class="shop-head">
+        <div>
+          <h2 style="margin:0;">Weekly Chest</h2>
+          <div id="weeklyChestSubhead" class="shop-balance">A bigger weekly reward hit.</div>
+        </div>
+        <button id="closeWeeklyChestBtn" class="secondary">Continue</button>
+      </div>
+      <div class="chest-reveal">
+        <div class="chest-reveal-badge">◈</div>
+        <div id="weeklyChestTitle" style="font-size:28px;font-weight:800;color:#111111;">Chest Opened</div>
+        <div id="weeklyChestCopy" class="chest-reveal-copy">You cleared the whole weekly board.</div>
+        <div id="weeklyChestRewards" class="summary-block" style="margin:0;text-align:left;"></div>
       </div>
     </div>
   </div>
@@ -2840,6 +2879,23 @@
     const name = item?.name || itemId;
     const nextCopy = info.next ? `${info.clears}/${info.next.clears}` : `${info.clears} clears`;
     return `${name} · L${info.level} · ${nextCopy}`;
+  }
+  function formatMasteryProgress(progress, bucketKey, itemId, fallback = "None") {
+    if (!itemId || itemId === "none" || itemId === "none_ability") return `${fallback} · no mastery track`;
+    const info = getMasteryInfo(progress, bucketKey, itemId);
+    const item = ITEM_LOOKUP[itemId] || BALL_COSMETICS.find(ball => ball.id === itemId) || TRAIL_SHOP.find(trail => trail.id === itemId);
+    const name = item?.name || itemId;
+    if (!info.next) return `${name} · L${info.level} maxed`;
+    const rewardCopy = info.next.rewardStars ? `+${info.next.rewardStars}★` : `+${info.next.rewardTokens}◈`;
+    return `${name} · L${info.level} • ${info.clears}/${info.next.clears} to L${info.next.level} • ${rewardCopy}`;
+  }
+  function buildWeeklyChestRevealCopy() {
+    const itemName = WEEKLY_CHEST_REWARD.itemId ? (ITEM_LOOKUP[WEEKLY_CHEST_REWARD.itemId]?.name || WEEKLY_CHEST_REWARD.itemId) : null;
+    return [
+      `+${WEEKLY_CHEST_REWARD.stars}★ stars`,
+      `+${WEEKLY_CHEST_REWARD.tokens}◈ daily tokens`,
+      itemName ? `${itemName} unlocked` : null
+    ].filter(Boolean);
   }
 
   function pickSetpieceTemplate(rng, holeIndex, difficultyKey, layoutType) {
@@ -6863,10 +6919,39 @@
       this.replayModal.onclick = (event) => {
         if (event.target === this.replayModal) this.closeReplayViewer();
       };
+      this.weeklyChestModal = document.getElementById('weeklyChestModal');
+      this.weeklyChestTitle = document.getElementById('weeklyChestTitle');
+      this.weeklyChestCopy = document.getElementById('weeklyChestCopy');
+      this.weeklyChestRewards = document.getElementById('weeklyChestRewards');
+      this.weeklyChestSubhead = document.getElementById('weeklyChestSubhead');
+      this.closeWeeklyChestBtn = document.getElementById('closeWeeklyChestBtn');
+      this.closeWeeklyChestBtn.onclick = () => this.closeWeeklyChestReveal();
+      this.weeklyChestModal.onclick = (event) => {
+        if (event.target === this.weeklyChestModal) this.closeWeeklyChestReveal();
+      };
+      this.weeklyChestResolve = null;
       this.registerLoadoutUsage();
       this.refreshMetaUi();
       this.resizeCanvas();
       this.loadLevel();
+    }
+    showWeeklyChestReveal(messages = [], onContinue = null) {
+      const revealLines = buildWeeklyChestRevealCopy();
+      this.weeklyChestSubhead.textContent = "You cleared every weekly goal.";
+      this.weeklyChestTitle.textContent = "Chest Opened";
+      this.weeklyChestCopy.textContent = "This is the weekly climax. Bank it, then chase the next one tomorrow.";
+      this.weeklyChestRewards.innerHTML = [
+        ...revealLines.map(line => `<div>${line}</div>`),
+        ...messages.map(line => `<div>${line}</div>`)
+      ].join("");
+      this.weeklyChestModal.style.display = 'flex';
+      this.weeklyChestResolve = onContinue;
+    }
+    closeWeeklyChestReveal() {
+      this.weeklyChestModal.style.display = 'none';
+      const resume = this.weeklyChestResolve;
+      this.weeklyChestResolve = null;
+      if (typeof resume === 'function') resume();
     }
     refreshMetaUi() {
       const previewItem = ITEM_LOOKUP.preview_path;
@@ -7961,7 +8046,7 @@
       saveProgress(this.progress);
       this.nextBtn.textContent = isLast ? 'Menu' : 'Next Hole ➡️';
       this.restartBtn.style.display = isLast && this.modeKey !== 'daily' ? 'inline-block' : 'none';
-      this.showRewardBurst({ starsEarned, resultLabel, streakBonus, cleanStreak: this.cleanStreak }, () => {
+      const revealScorecard = () => {
         this.scorecardEl.style.display = 'flex';
         if (isLast) {
           const bestLabel = formatBestLabel(this.getBestRoundRecord());
@@ -8014,6 +8099,13 @@
           this.scorecardEl.style.display = 'none';
           this.restartRound();
         };
+      };
+      this.showRewardBurst({ starsEarned, resultLabel, streakBonus, cleanStreak: this.cleanStreak }, () => {
+        if (isLast && this.modeKey === 'daily' && weeklyChestRewards.length) {
+          this.showWeeklyChestReveal(weeklyChestRewards, revealScorecard);
+          return;
+        }
+        revealScorecard();
       });
     }
     handleRoundFailure(reason, context = {}) {
@@ -10815,6 +10907,13 @@ function renderObstacleGalleryPage() {
     const cosmeticMastery = formatMasteryLabel(progress, "cosmetics", progress.equippedCosmetic, "Classic");
     const trailMastery = formatMasteryLabel(progress, "trails", progress.equippedTrail, "No Trail");
     const abilityMastery = formatMasteryLabel(progress, "abilities", progress.equippedAbility, "Standard Core");
+    const cosmeticMasteryProgress = formatMasteryProgress(progress, "cosmetics", progress.equippedCosmetic, "Classic");
+    const trailMasteryProgress = formatMasteryProgress(progress, "trails", progress.equippedTrail, "No Trail");
+    const abilityMasteryProgress = formatMasteryProgress(progress, "abilities", progress.equippedAbility, "Standard Core");
+    const goalsClaimedThisWeek = Object.values(progress.weeklyGoalClaims?.[weekStartKey] || {}).filter(Boolean).length;
+    const streakUrgencyCopy = streak > 0
+      ? `Miss tomorrow and the ${streak}-day streak breaks.`
+      : "Tomorrow starts the next streak chain.";
 
     if (hero) {
       hero.innerHTML = modeKey === "daily"
@@ -10925,6 +11024,8 @@ function renderObstacleGalleryPage() {
         `<div class="menu-progress-row"><span>Medal Line</span><span>Gold ${tomorrowBoard.targets.gold} · Silver ${tomorrowBoard.targets.silver} · Bronze ${tomorrowBoard.targets.bronze}</span></div>`,
         `<div class="menu-progress-row"><span>Tier Chase</span><span>Gold I ${tomorrowBoard.targets.gold - 2} · Gold II ${tomorrowBoard.targets.gold - 1} · Gold III ${tomorrowBoard.targets.gold}</span></div>`,
         `<div class="menu-progress-row"><span>Reward Tease</span><span>Gold pays ${DAILY_TOKEN_REWARDS.Gold}◈ tomorrow • ${weeklyPushCopy}</span></div>`,
+        `<div class="menu-progress-row"><span>Urgency</span><span>${streakUrgencyCopy}</span></div>`,
+        `<div class="menu-progress-row"><span>Weekly Chest</span><span>${weeklyChestOpened ? 'Already opened this week' : weeklyChestReady ? 'Chest ready right now' : `${goalsClaimedThisWeek}/${WEEKLY_GOALS.length} goals claimed • finish the board for a chest`}</span></div>`,
         `<div class="menu-progress-row"><span>Read</span><span>${tomorrowSignature.variantDescription}</span></div>`
       ].join("");
     }
@@ -10981,9 +11082,9 @@ function renderObstacleGalleryPage() {
           : "Branch complete";
         return `<div class="menu-progress-row"><span>${branch.label}</span><span>${clears} clears · ${ready} ready · ${suffix}</span></div>`;
       }).join("") + `
-        <div class="menu-progress-row"><span>Ball Mastery</span><span>${cosmeticMastery}</span></div>
-        <div class="menu-progress-row"><span>Trail Mastery</span><span>${trailMastery}</span></div>
-        <div class="menu-progress-row"><span>Core Mastery</span><span>${abilityMastery}</span></div>
+        <div class="menu-progress-row"><span>Ball Mastery</span><span>${cosmeticMasteryProgress}</span></div>
+        <div class="menu-progress-row"><span>Trail Mastery</span><span>${trailMasteryProgress}</span></div>
+        <div class="menu-progress-row"><span>Core Mastery</span><span>${abilityMasteryProgress}</span></div>
         <div class="menu-progress-row"><span>Overall</span><span>${countReadyTreeNodes(progress)} node${countReadyTreeNodes(progress) === 1 ? '' : 's'} ready · Collection ${collection.owned}/${collection.total}</span></div>`;
     }
     if (goalsGrid) {
