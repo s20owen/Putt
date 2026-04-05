@@ -2423,9 +2423,9 @@
       .sort();
     if (!keys.length) return 0;
     let streak = 0;
-    let cursor = new Date(`${getTodayKey()}T00:00:00`);
+    let cursor = getDateFromKey(getTodayKey());
     const seen = new Set(keys);
-    while (seen.has(cursor.toISOString().slice(0, 10))) {
+    while (seen.has(getDateKey(cursor))) {
       streak++;
       cursor.setDate(cursor.getDate() - 1);
     }
@@ -2519,18 +2519,20 @@
     return available[Math.abs(hash) % available.length] || available[0];
   }
   function getDisplayDailyStreak(progress, dateKey = getTodayKey()) {
-    const todayStatus = getCalendarDayStatus(progress, dateKey);
-    if (todayStatus.record && !todayStatus.record.failed) return getDailyStreak(progress);
-    const yesterday = getDateFromKey(dateKey);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const completedDates = new Set(
+      Object.entries(progress?.dailyRuns || {})
+        .filter(([, record]) => record?.completed && !record?.failed)
+        .map(([key]) => key.split(":")[0])
+        .filter(Boolean)
+    );
+    if (!completedDates.size) return 0;
+    const todayRecord = getCalendarDayRecord(progress, dateKey);
+    if (todayRecord && !todayRecord.failed) return getDailyStreak(progress);
+    const cursor = getDateFromKey(dateKey);
+    cursor.setDate(cursor.getDate() - 1);
     let streak = 0;
-    let cursor = yesterday;
-    while (true) {
-      const key = getDateKey(cursor);
-      const status = getCalendarDayStatus(progress, key);
-      if (!status.record || status.record.failed) break;
+    while (completedDates.has(getDateKey(cursor))) {
       streak++;
-      cursor = new Date(cursor);
       cursor.setDate(cursor.getDate() - 1);
     }
     return streak;
