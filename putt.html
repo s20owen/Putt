@@ -1347,8 +1347,8 @@
 <script src="./custom-maps.js"></script>
 <script>
 
-  const APP_VERSION = "2026.04.04";
-  const SAVE_SCHEMA_VERSION = 2;
+  const APP_VERSION = "2026.04.06";
+  const SAVE_SCHEMA_VERSION = 3;
   const STORAGE_KEY = "putt-mobile-progress";
   const LEGACY_STORAGE_KEYS = ["putt-mobile-progress-v1"];
   const DEFAULT_SETTINGS = {
@@ -1356,7 +1356,9 @@
     uiAudioEnabled: true,
     hapticsEnabled: true,
     reduceMotion: false,
-    replayQuality: "high"
+    replayQuality: "high",
+    dailyReminderEnabled: false,
+    dailyReminderHour: 9
   };
   const BALL_COSMETICS = [
     {
@@ -2338,6 +2340,141 @@
     if (minutes === 0) return `${hours}h`;
     return `${hours}h ${minutes}m`;
   }
+  let dailyReminderTimer = null;
+  function isNotificationSupported() {
+    return typeof window !== "undefined" && "Notification" in window;
+  }
+  function getNotificationPermission() {
+    return isNotificationSupported() ? Notification.permission : "unsupported";
+  }
+  function formatReminderHour(hour) {
+    const normalized = ((Math.round(Number(hour) || 9) % 24) + 24) % 24;
+    const suffix = normalized >= 12 ? "PM" : "AM";
+    const display = normalized % 12 || 12;
+    return `${display}:00 ${suffix}`;
+  }
+  function getDailyReminderHour(settings) {
+    return clamp(Math.round(Number(settings?.dailyReminderHour) || 9), 6, 22);
+  }
+  function getNextDailyReminderDate(progress, now = new Date()) {
+    const hour = getDailyReminderHour(progress?.settings || DEFAULT_SETTINGS);
+    const todayKey = getDateKey(now);
+    const todayRecord = getCalendarDayRecord(progress, todayKey);
+    const todayDone = Boolean(todayRecord && !todayRecord.failed);
+    const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, 0, 0, 0);
+    if (todayDone || target <= now) target.setDate(target.getDate() + 1);
+    return target;
+  }
+  function getDailyReminderStatusCopy(settings = DEFAULT_SETTINGS) {
+    if (!isNotificationSupported()) return "Notifications are not supported in this browser.";
+    const permission = getNotificationPermission();
+    if (permission === "denied") return "Notifications are blocked. Re-enable them in Safari/browser settings.";
+    if (!settings.dailyReminderEnabled) return "Off. Enable this from a user tap to get a Daily nudge.";
+    if (permission !== "granted") return "Permission needed before Daily reminders can fire.";
+    return `On. Next reminder target: ${formatReminderHour(getDailyReminderHour(settings))}.`;
+  }
+  function renderDailyReminderSettings(settings = DEFAULT_SETTINGS) {
+    const permission = getNotificationPermission();
+    const disabled = !isNotificationSupported() ? "disabled" : "";
+    const buttonText = permission === "granted" && settings.dailyReminderEnabled
+      ? "Disable"
+      : permission === "denied"
+        ? "Blocked"
+        : "Enable";
+    const hour = getDailyReminderHour(settings);
+    const options = Array.from({ length: 17 }, (_, index) => index + 6)
+      .map(value => `<option value="${value}" ${value === hour ? "selected" : ""}>${formatReminderHour(value)}</option>`)
+      .join("");
+    return `
+      <label class="settings-row">
+        <div><strong>Daily Reminder Time</strong><span>Local time for the Daily map nudge while reminders are enabled.</span></div>
+        <select data-setting="dailyReminderHour">
+          ${options}
+        </select>
+      </label>
+      <div class="settings-row settings-row-button">
+        <div><strong>Daily Notifications</strong><span>${getDailyReminderStatusCopy(settings)} Safari/iOS may require the game to be installed to Home Screen for reliable notifications.</span></div>
+        <button type="button" class="secondary" data-setting-action="daily-reminder" ${disabled}>${buttonText}</button>
+      </div>
+    `;
+  }
+  async function getNotificationRegistration() {
+    if (!("serviceWorker" in navigator)) return null;
+    try {
+      return await navigator.serviceWorker.ready;
+    } catch {
+      return null;
+    }
+  }
+  async function showDailyReminderNotification(progress = loadProgress(), options = {}) {
+    if (!isNotificationSupported() || Notification.permission !== "granted") return false;
+    const title = options.test ? "Daily reminders are on" : "Today’s Daily map is live";
+    const body = options.test
+      ? "You’ll get a nudge to chase the Daily card when the reminder time hits."
+      : "Get after today’s card, protect the streak, and push the weekly chest.";
+    const payload = {
+      body,
+      tag: options.test ? "putt-daily-reminder-test" : `putt-daily-reminder-${getTodayKey()}`,
+      renotify: false,
+      icon: "./icon.svg",
+      badge: "./icon-maskable.svg",
+      data: { url: "./putt.html" }
+    };
+    const registration = await getNotificationRegistration();
+    if (registration?.showNotification) {
+      await registration.showNotification(title, payload);
+      return true;
+    }
+    new Notification(title, payload);
+    return true;
+  }
+  function scheduleDailyReminderNotification(progress = loadProgress()) {
+    if (dailyReminderTimer) {
+      clearTimeout(dailyReminderTimer);
+      dailyReminderTimer = null;
+    }
+    const settings = { ...DEFAULT_SETTINGS, ...(progress.settings || {}) };
+    if (!settings.dailyReminderEnabled || !isNotificationSupported() || Notification.permission !== "granted") return;
+    const target = getNextDailyReminderDate(progress);
+    const delay = Math.max(1000, target.getTime() - Date.now());
+    dailyReminderTimer = setTimeout(async () => {
+      const latest = loadProgress();
+      const todayKey = getTodayKey();
+      const todayRecord = getCalendarDayRecord(latest, todayKey);
+      const alreadyDone = Boolean(todayRecord && !todayRecord.failed);
+      if (!alreadyDone && latest.dailyReminder?.lastShownKey !== todayKey) {
+        await showDailyReminderNotification(latest);
+        latest.dailyReminder = { ...(latest.dailyReminder || {}), lastShownKey: todayKey };
+        saveProgress(latest);
+      }
+      scheduleDailyReminderNotification(loadProgress());
+    }, Math.min(delay, 2147483647));
+  }
+  async function handleDailyReminderAction(progress) {
+    if (!isNotificationSupported()) return false;
+    progress.settings = { ...DEFAULT_SETTINGS, ...(progress.settings || {}) };
+    if (progress.settings.dailyReminderEnabled && Notification.permission === "granted") {
+      progress.settings.dailyReminderEnabled = false;
+      saveProgress(progress);
+      scheduleDailyReminderNotification(progress);
+      return true;
+    }
+    if (Notification.permission !== "granted") {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        progress.settings.dailyReminderEnabled = false;
+        saveProgress(progress);
+        scheduleDailyReminderNotification(progress);
+        return false;
+      }
+    }
+    progress.settings.dailyReminderEnabled = true;
+    progress.dailyReminder = { ...(progress.dailyReminder || {}) };
+    saveProgress(progress);
+    scheduleDailyReminderNotification(progress);
+    await showDailyReminderNotification(progress, { test: true });
+    return true;
+  }
   function getWeekStartKey(dateKey = getTodayKey()) {
     const cursor = getDateFromKey(dateKey);
     const dayOffset = (cursor.getDay() + 6) % 7;
@@ -3312,6 +3449,7 @@
       dailyBestRounds: {},
       dailyRuns: {},
       dailyLogin: { lastClaimDate: null, streakClaims: 0 },
+      dailyReminder: { lastShownKey: null },
       difficultyTracks: {},
       treeUnlocks: {},
       goalClaims: {},
@@ -3360,6 +3498,7 @@
     const dailyBestRounds = { ...(parsed.dailyBestRounds || {}) };
     const dailyRuns = { ...(parsed.dailyRuns || {}) };
     const dailyLogin = { lastClaimDate: null, streakClaims: 0, ...(parsed.dailyLogin || {}) };
+    const dailyReminder = { lastShownKey: null, ...(parsed.dailyReminder || {}) };
     const difficultyTracks = { ...(parsed.difficultyTracks || {}) };
     const treeUnlocks = { ...(parsed.treeUnlocks || {}) };
     const goalClaims = { ...(parsed.goalClaims || {}) };
@@ -3407,6 +3546,7 @@
       dailyBestRounds,
       dailyRuns,
       dailyLogin,
+      dailyReminder,
       difficultyTracks,
       treeUnlocks,
       goalClaims,
@@ -7270,10 +7410,11 @@
           <option value="ultra" ${settings.replayQuality === 'ultra' ? 'selected' : ''}>Ultra</option>
         </select>
       </label>
+      ${renderDailyReminderSettings(settings)}
       <div class="summary-block">
         <strong>Active tuning</strong><br />
         Share mode: <strong>${settings.replayQuality.toUpperCase()}</strong> replay output.<br />
-        Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong>.
+        Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong> · Daily reminder: <strong>${settings.dailyReminderEnabled ? 'On' : 'Off'}</strong>.
         <div style="margin-top:10px;"><button type="button" class="secondary" data-setting-action="ping">Test Audio</button></div>
       </div>
       `;
@@ -7282,17 +7423,23 @@
           const key = control.dataset.setting;
           this.progress.settings[key] = control.type === 'checkbox' ? control.checked : control.value;
           saveProgress(this.progress);
+          if (key === "dailyReminderHour") scheduleDailyReminderNotification(this.progress);
         };
       });
-      const pingBtn = this.settingsList.querySelector('[data-setting-action="ping"]');
-      if (pingBtn) {
-        pingBtn.onclick = () => {
+      this.settingsList.querySelectorAll('[data-setting-action]').forEach(button => {
+        button.onclick = async () => {
+          if (button.dataset.settingAction === "daily-reminder") {
+            await handleDailyReminderAction(this.progress);
+            this.renderSettings();
+            return;
+          }
+          if (button.dataset.settingAction !== "ping") return;
           unlockGameFx();
           emitGameFx('ui');
           emitGameFx('shot', 0.65);
           setTimeout(() => emitGameFx('rim', 0.6), 90);
         };
-      }
+      });
     }
     openSettings() {
       this.renderSettings();
@@ -11286,12 +11433,13 @@ function renderObstacleGalleryPage() {
           <option value="ultra" ${settings.replayQuality === 'ultra' ? 'selected' : ''}>Ultra</option>
         </select>
       </label>
+      ${renderDailyReminderSettings(settings)}
       <div class="settings-row settings-row-button">
         <div><strong>Test Audio</strong><span>Preview the current mix with a quick ping.</span></div>
         <button type="button" class="secondary" data-setting-action="ping">Test Audio</button>
       </div>
       <div class="summary-block" style="margin:0;">
-        Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong>.
+        Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong> · Daily reminder: <strong>${settings.dailyReminderEnabled ? 'On' : 'Off'}</strong>.
       </div>
     `;
     settingsList.querySelectorAll('[data-setting]').forEach(control => {
@@ -11299,11 +11447,17 @@ function renderObstacleGalleryPage() {
         progress.settings = progress.settings || { ...DEFAULT_SETTINGS };
         progress.settings[control.dataset.setting] = control.type === 'checkbox' ? control.checked : control.value;
         saveProgress(progress);
+        if (control.dataset.setting === "dailyReminderHour") scheduleDailyReminderNotification(progress);
         if (window.__game) window.__game.progress.settings = { ...progress.settings };
       };
     });
     settingsList.querySelectorAll('[data-setting-action]').forEach(button => {
-      button.onclick = () => {
+      button.onclick = async () => {
+        if (button.dataset.settingAction === 'daily-reminder') {
+          await handleDailyReminderAction(progress);
+          renderStandaloneSettingsModal();
+          return;
+        }
         if (button.dataset.settingAction !== 'ping') return;
         unlockGameFx();
         emitGameFx('ui');
@@ -11399,6 +11553,7 @@ function renderObstacleGalleryPage() {
     if (DEBUG_FLAGS.autostartDifficulty && DIFFICULTY_PRESETS[DEBUG_FLAGS.autostartDifficulty]) {
       startGame(DEBUG_FLAGS.autostartDifficulty);
     }
+    scheduleDailyReminderNotification(loadProgress());
   }
 
   window.__game = null;
@@ -11409,9 +11564,14 @@ function renderObstacleGalleryPage() {
   };
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+      navigator.serviceWorker.register("./service-worker.js")
+        .then(() => scheduleDailyReminderNotification(loadProgress()))
+        .catch(() => {});
     });
   }
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) scheduleDailyReminderNotification(loadProgress());
+  });
 </script>
 </body>
 </html>

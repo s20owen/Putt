@@ -1,4 +1,4 @@
-const APP_CACHE_VERSION = "2026.04.04";
+const APP_CACHE_VERSION = "2026.04.06";
 const CACHE_NAME = `putt-mobile-cache-${APP_CACHE_VERSION}`;
 const APP_SHELL = [
   "./",
@@ -53,6 +53,18 @@ self.addEventListener("fetch", event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
         return response;
       });
+    })
+  );
+});
+
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+  const targetUrl = new URL(event.notification?.data?.url || "./putt.html", self.location.href).href;
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then(clientList => {
+      const existing = clientList.find(client => client.url === targetUrl || client.url.endsWith("/putt.html"));
+      if (existing) return existing.focus();
+      return clients.openWindow(targetUrl);
     })
   );
 });
