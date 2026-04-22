@@ -1,10 +1,9 @@
-const APP_CACHE_VERSION = "2026.04.20";
+const APP_CACHE_VERSION = "2026.04.22";
 const CACHE_NAME = `putt-mobile-cache-${APP_CACHE_VERSION}`;
-const APP_SHELL = [
+const CORE_APP_SHELL = [
   "./",
   "./putt.html",
   "./custom-maps.js",
-  "./custom-maps.json",
   "./manifest.json",
   "./service-worker.js",
   "./icon.svg",
@@ -12,10 +11,29 @@ const APP_SHELL = [
   "./apple-launch-1125x2436.png",
   "./apple-launch-1179x2556.png"
 ];
+const OPTIONAL_APP_SHELL = [
+  "./custom-maps.json"
+];
+
+async function cacheUrls(cache, urls, { required = false } = {}) {
+  const results = await Promise.all(urls.map(async url => {
+    try {
+      await cache.add(url);
+      return { url, ok: true };
+    } catch (error) {
+      if (required) throw error;
+      return { url, ok: false };
+    }
+  }));
+  return results;
+}
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
+    caches.open(CACHE_NAME).then(async cache => {
+      await cacheUrls(cache, CORE_APP_SHELL, { required: true });
+      await cacheUrls(cache, OPTIONAL_APP_SHELL, { required: false });
+    })
   );
   self.skipWaiting();
 });

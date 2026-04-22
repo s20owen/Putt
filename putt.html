@@ -53,6 +53,8 @@
       font-size: clamp(28px, 7vw, 40px);
       line-height: 1.05;
       letter-spacing: -0.03em;
+      max-width: min(100%, 760px);
+      overflow-wrap: anywhere;
     }
     #ui {
       display: none;
@@ -114,6 +116,126 @@
       display: grid;
       gap: 10px;
       margin-top: 18px;
+    }
+    .course-location-wrap {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .course-location-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .course-location-head span {
+      color: #6b7280;
+      font-size: 12px;
+      line-height: 1.35;
+      text-align: right;
+    }
+    .course-location-list {
+      display: flex;
+      gap: 12px;
+      margin: 0 -4px;
+      padding: 0 4px 8px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .course-location-btn {
+      flex: 0 0 min(86%, 330px);
+      min-height: 218px;
+      border: 2px solid #111827;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+      color: #111827;
+      padding: 16px;
+      display: grid;
+      align-content: space-between;
+      gap: 14px;
+      text-align: left;
+      font: inherit;
+      scroll-snap-align: center;
+    }
+    .course-location-btn strong {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 24px;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+    .course-location-btn span {
+      color: #4b5563;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .course-location-btn.active {
+      border-color: #111827;
+      box-shadow: inset 0 0 0 1px #111827;
+    }
+    .course-location-btn.locked {
+      opacity: 0.52;
+      background: #f9fafb;
+    }
+    .course-location-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .course-location-meta div {
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      padding: 8px;
+      background: rgba(255,255,255,0.72);
+      font-size: 11px;
+      color: #4b5563;
+      line-height: 1.3;
+    }
+    .course-location-meta b {
+      display: block;
+      color: #111827;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .course-location-chip {
+      white-space: nowrap;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .course-setup-panel {
+      margin-top: 14px;
+      border: 2px solid #111827;
+      border-radius: 20px;
+      padding: 14px;
+      background: #ffffff;
+      display: grid;
+      gap: 10px;
+    }
+    .course-setup-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .course-setup-title {
+      font-size: 22px;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+    .course-setup-copy {
+      margin-top: 4px;
+      color: #4b5563;
+      font-size: 12px;
+      line-height: 1.4;
     }
     .mode-toggle {
       display: flex;
@@ -540,11 +662,20 @@
     .chest-reveal-badge.opening {
       animation: chestPop 820ms cubic-bezier(0.2, 0.9, 0.2, 1.08);
     }
+    .chest-reveal-badge.merging {
+      animation: mergePulse 1050ms cubic-bezier(0.2, 0.9, 0.2, 1.08);
+    }
     @keyframes chestPop {
       0% { transform: translateY(10px) scale(0.78) rotate(-5deg); filter: brightness(0.9); }
       42% { transform: translateY(-8px) scale(1.08) rotate(4deg); filter: brightness(1.25); }
       70% { transform: translateY(0) scale(0.96) rotate(-1deg); }
       100% { transform: translateY(0) scale(1) rotate(0deg); filter: brightness(1); }
+    }
+    @keyframes mergePulse {
+      0% { transform: scale(0.72) rotate(-10deg); filter: contrast(1); opacity: 0.5; }
+      35% { transform: scale(1.18) rotate(8deg); filter: contrast(1.4); opacity: 1; }
+      72% { transform: scale(0.94) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0deg); filter: contrast(1); opacity: 1; }
     }
     .chest-reveal-copy {
       color: #4b5563;
@@ -633,6 +764,8 @@
     .shop-action {
       min-width: 84px;
       text-align: right;
+      display: grid;
+      gap: 6px;
     }
     .shop-tag {
       display: inline-block;
@@ -673,6 +806,106 @@
       width: 34px;
       height: 34px;
       border-radius: 10px;
+    }
+    .course-trophy-panel, .merge-pro-panel {
+      border: 1.5px solid #111827;
+      border-radius: 16px;
+      padding: 12px;
+      background: #ffffff;
+      display: grid;
+      gap: 10px;
+      text-align: left;
+    }
+    .course-trophy-panel {
+      box-shadow: inset 0 0 0 4px rgba(17, 24, 39, 0.04);
+    }
+    .course-trophy-head, .merge-tier-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .course-trophy-medal {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #111827;
+      font-weight: 900;
+      border: 2px solid #111827;
+      background: #f9fafb;
+    }
+    .course-trophy-panel h3, .merge-pro-panel h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #111827;
+    }
+    .course-trophy-panel p, .merge-pro-panel p {
+      margin: 3px 0 0;
+      font-size: 13px;
+      line-height: 1.35;
+      color: #4b5563;
+    }
+    .course-trophy-grid, .merge-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .course-trophy-stat, .merge-stat {
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 8px;
+      background: #f9fafb;
+      min-width: 0;
+    }
+    .course-trophy-stat b, .merge-stat b {
+      display: block;
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .course-trophy-stat span, .merge-stat span {
+      display: block;
+      margin-top: 3px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #111827;
+      overflow-wrap: anywhere;
+    }
+    .merge-progress-track {
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid #111827;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .merge-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #111827;
+      transition: width 260ms ease;
+    }
+    .merge-inventory-panel {
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 9px;
+      margin-top: 8px;
+      display: grid;
+      gap: 7px;
+      background: #f9fafb;
+    }
+    .merge-inventory-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .merge-inventory-row strong {
+      color: #111827;
     }
     .currency-ball {
       display: inline-grid;
@@ -1180,7 +1413,7 @@
 </head>
 <body>
   <div id="app">
-    <h1>Putt Putt Game</h1>
+    <h1 id="gameTitle">Putt Putt Game</h1>
     <div id="ui">
       <span><strong>Hole:</strong> <span id="holeNum">1</span></span>
       <span><strong>Par:</strong> <span id="parNum">3</span></span>
@@ -1234,7 +1467,8 @@
       <div class="shop-tabs">
         <button id="shopTabChests" data-shop-tab="chests">Chests</button>
         <button id="shopTabTree" data-shop-tab="tree" class="active">Core Tree</button>
-        <button id="shopTabPowers" data-shop-tab="powers">Powers</button>
+        <button id="shopTabBalls" data-shop-tab="balls">Balls</button>
+        <button id="shopTabPutters" data-shop-tab="putters">Putters</button>
         <button id="shopTabSkins" data-shop-tab="skins">Ball Skins</button>
         <button id="shopTabDaily" data-shop-tab="daily">Daily Shop</button>
       </div>
@@ -1323,25 +1557,41 @@
         <button id="modeStandardBtn" data-mode="standard">Practice</button>
       </div>
       <div id="menuHero" class="menu-hero"></div>
-      <div class="menu-section-label">Round Length</div>
-      <div class="mode-toggle">
-        <button class="active" data-round-length="default">By Difficulty</button>
-        <button data-round-length="18">18 Holes</button>
+      <div id="courseLocationSection" class="course-location-wrap">
+        <div class="course-location-head">
+          <div class="menu-section-label" style="margin-top:0;">Course Locations</div>
+          <span>Swipe the tour cards. Pick one to set up the round.</span>
+        </div>
+        <div id="courseLocationList" class="course-location-list"></div>
       </div>
-      <div class="menu-section-label">Difficulty</div>
-      <div class="difficulty-list">
-        <button class="difficulty-btn" data-difficulty="beginner">
-          <strong>Beginner</strong>
-          <span id="menuBeginnerMeta">Open fairways, gentler obstacle pressure, and the easiest reads.</span>
-        </button>
-        <button class="difficulty-btn" data-difficulty="average">
-          <strong>Average</strong>
-          <span id="menuAverageMeta">Balanced routing, mixed hazards, and steadier decision-making.</span>
-        </button>
-        <button class="difficulty-btn" data-difficulty="hardcore">
-          <strong>Hardcore</strong>
-          <span id="menuHardcoreMeta">Tighter lanes, denser hazards, and more forced interactions.</span>
-        </button>
+      <div id="courseSetupPanel" class="course-setup-panel">
+        <div class="course-setup-head">
+          <div>
+            <div id="courseSetupTitle" class="course-setup-title">Round Setup</div>
+            <div id="courseSetupCopy" class="course-setup-copy">Choose difficulty and hole count.</div>
+          </div>
+          <button id="courseSetupBackBtn" class="secondary" type="button">Courses</button>
+        </div>
+        <div class="menu-section-label">Round Length</div>
+        <div class="mode-toggle">
+          <button class="active" data-round-length="default">By Difficulty</button>
+          <button data-round-length="18">18 Holes</button>
+        </div>
+        <div class="menu-section-label">Difficulty</div>
+        <div class="difficulty-list">
+          <button class="difficulty-btn" data-difficulty="beginner">
+            <strong>Beginner</strong>
+            <span id="menuBeginnerMeta">Open fairways, gentler obstacle pressure, and the easiest reads.</span>
+          </button>
+          <button class="difficulty-btn" data-difficulty="average">
+            <strong>Average</strong>
+            <span id="menuAverageMeta">Balanced routing, mixed hazards, and steadier decision-making.</span>
+          </button>
+          <button class="difficulty-btn" data-difficulty="hardcore">
+            <strong>Hardcore</strong>
+            <span id="menuHardcoreMeta">Tighter lanes, denser hazards, and more forced interactions.</span>
+          </button>
+        </div>
       </div>
       <div id="menuNote" class="menu-note"></div>
       <div class="menu-calendar">
@@ -1395,11 +1645,13 @@
 <script>
 
   const APP_VERSION = "2026.04.06";
-  const SAVE_SCHEMA_VERSION = 3;
+  const SAVE_SCHEMA_VERSION = 4;
   const STORAGE_KEY = "putt-mobile-progress";
   const LEGACY_STORAGE_KEYS = ["putt-mobile-progress-v1"];
   const SHOP_PRICE_MULTIPLIER = 3;
   const UPGRADE_TIER_COST_STEP = 42;
+  const MERGE_COPY_REQUIREMENT = 3;
+  const MERGE_TIER_LABELS = ["Locked", "Basic", "Uncommon", "Rare", "Epic", "Legendary"];
   const DEFAULT_SETTINGS = {
     gameAudioEnabled: true,
     uiAudioEnabled: true,
@@ -1638,6 +1890,7 @@
       name: "Power Core",
       cost: 18,
       maxTier: 5,
+      effect: { type: "power_drive", label: "Power drive", description: "Higher tiers raise max shot strength, with a legendary overdrive feel." },
       description: "Charge stronger shots with a higher max power."
     },
     {
@@ -1646,6 +1899,7 @@
       name: "True Roll",
       cost: 24,
       maxTier: 5,
+      effect: { type: "clean_roll", label: "Clean roll", description: "Higher tiers preserve pace and shrug off rough terrain." },
       description: "Keeps momentum a little longer and eases sand drag."
     },
     {
@@ -1654,6 +1908,7 @@
       name: "Soft Shell",
       cost: 18,
       maxTier: 5,
+      effect: { type: "impact_dampener", label: "Impact dampener", description: "Reduces hazard knockback and softens ugly rebounds." },
       description: "Tames bumpers, walls, and spinner hits for more control."
     },
     {
@@ -1662,6 +1917,7 @@
       name: "Curve Core",
       cost: 22,
       maxTier: 5,
+      effect: { type: "bend_line", label: "Bend line", description: "Higher tiers create stronger shot shape and easier wraparound routes." },
       description: "Adds a steady hook to shots so they bend around the lane."
     },
     {
@@ -1670,6 +1926,7 @@
       name: "Air Hopper",
       cost: 26,
       maxTier: 5,
+      effect: { type: "extra_hop", label: "Extra hop", description: "Epic and Legendary tiers gain a second hop on non-restricted holes." },
       description: "Skips over obstacles mid-roll with a quick hop pop."
     },
     {
@@ -1678,6 +1935,7 @@
       name: "Bank Shot Core",
       cost: 28,
       maxTier: 5,
+      effect: { type: "lively_bank", label: "Lively bank", description: "Higher tiers keep rebound speed and improve trick-shot saves." },
       description: "Keeps rebounds lively and more reliable off walls."
     },
     {
@@ -1686,6 +1944,7 @@
       name: "Anchor Core",
       cost: 26,
       maxTier: 5,
+      effect: { type: "field_anchor", label: "Field anchor", description: "Higher tiers resist wind, fans, and magnets more aggressively." },
       description: "Resists wind, fans, and magnetic pull for steadier lines."
     },
     {
@@ -1694,6 +1953,7 @@
       name: "Split Core",
       cost: 34,
       maxTier: 5,
+      effect: { type: "route_read", label: "Route read", description: "Higher tiers widen the alternate preview for risky bank choices." },
       description: "Shows a second projected line so the risky route is easier to read."
     },
     {
@@ -1702,6 +1962,7 @@
       name: "Pulse Core",
       cost: 30,
       maxTier: 5,
+      effect: { type: "delayed_burst", label: "Delayed burst", description: "Higher tiers fire the mid-roll kick sooner and harder." },
       description: "Kicks the ball once mid-roll with a delayed burst."
     },
     {
@@ -1710,6 +1971,7 @@
       name: "Needle Core",
       cost: 36,
       maxTier: 5,
+      effect: { type: "tight_profile", label: "Tight profile", description: "Higher tiers shrink the ball further for brutal precision gaps." },
       description: "Shrinks the ball slightly for tighter gaps, but bad contacts hit harder."
     },
     {
@@ -1758,7 +2020,9 @@
       name: "Starter Putter",
       cost: 0,
       rarity: "common",
+      maxTier: 5,
       stats: { power: 0, control: 0, forgiveness: 0 },
+      effect: { type: "starter_balance", label: "Balanced face", description: "Clean baseline touch with no penalty." },
       description: "Balanced club with standard touch."
     },
     {
@@ -1767,7 +2031,9 @@
       name: "Tempo Putter",
       cost: 90,
       rarity: "common",
+      maxTier: 5,
       stats: { power: 0.25, control: 1, forgiveness: 0 },
+      effect: { type: "tempo_focus", label: "Tempo focus", description: "Adds roll stability and a steadier aim feel as it tiers up." },
       description: "Smoother roll and a small power bump."
     },
     {
@@ -1776,7 +2042,9 @@
       name: "Mallet Putter",
       cost: 135,
       rarity: "rare",
+      maxTier: 5,
       stats: { power: 0.45, control: 0, forgiveness: 1 },
+      effect: { type: "soft_bank", label: "Soft banks", description: "Reduces harsh wall and bumper punishment." },
       description: "Heavier face that softens bad wall contact."
     },
     {
@@ -1785,7 +2053,9 @@
       name: "Blade Putter",
       cost: 165,
       rarity: "epic",
+      maxTier: 5,
       stats: { power: 0.8, control: 1, forgiveness: -0.2 },
+      effect: { type: "power_face", label: "Power face", description: "Raises top-end drive power but keeps the club less forgiving." },
       description: "High-skill club with sharper drives and lively reads."
     },
     {
@@ -1794,7 +2064,9 @@
       name: "Tour Putter",
       cost: 220,
       rarity: "legendary",
+      maxTier: 5,
       stats: { power: 1, control: 1, forgiveness: 1 },
+      effect: { type: "tour_resolve", label: "Tour resolve", description: "Combines control, field resistance, and cleaner banks at high tiers." },
       description: "Very rare club with clean power, roll, and touch."
     }
   ];
@@ -1952,11 +2224,107 @@
     }
   };
   const COURSE_THEMES = {
-    classic: { id: "classic", name: "Classic", glyph: "✦", glyphColor: "#d1d5db", wallStroke: null, wallDash: [] },
-    ledger: { id: "ledger", name: "Ledger", glyph: "+", glyphColor: "#d1d5db", wallStroke: "#ffffff", wallDash: [12, 8] },
-    halftone: { id: "halftone", name: "Halftone", glyph: "•", glyphColor: "#d1d5db", wallStroke: "#f3f4f6", wallDash: [] },
-    echo: { id: "echo", name: "Echo", glyph: "◇", glyphColor: "#d1d5db", wallStroke: "#ffffff", wallDash: [4, 6] }
+    classic: { id: "classic", name: "Classic", glyph: "✦", glyphs: ["✦", "·", "○", "—"], glyphColor: "#d1d5db", wallStroke: null, wallDash: [] },
+    ledger: { id: "ledger", name: "Ledger", glyph: "+", glyphs: ["+", "×", "=", "÷", "∷"], glyphColor: "#d1d5db", wallStroke: "#ffffff", wallDash: [12, 8] },
+    halftone: { id: "halftone", name: "Halftone", glyph: "•", glyphs: ["•", "◦", "∙", "○", "◌"], glyphColor: "#d1d5db", wallStroke: "#f3f4f6", wallDash: [] },
+    echo: { id: "echo", name: "Echo", glyph: "◇", glyphs: ["◇", "◆", "◈", "□", "△"], glyphColor: "#d1d5db", wallStroke: "#ffffff", wallDash: [4, 6] },
+    arcade: { id: "arcade", name: "Arcade", glyph: "▲", glyphs: ["▲", "■", "●", "◆", "✚", "▣"], glyphColor: "#d1d5db", wallStroke: "#ffffff", wallDash: [8, 8] },
+    caddy: { id: "caddy", name: "Caddy", glyph: "⚑", glyphs: ["⚑", "⌁", "◠", "○", "⌾"], glyphColor: "#d1d5db", wallStroke: null, wallDash: [2, 8] },
+    mixed: { id: "mixed", name: "Mixed Bag", glyph: "✧", glyphs: ["✧", "◇", "+", "•", "△", "□", "○", "×"], glyphColor: "#d1d5db", wallStroke: "#f9fafb", wallDash: [10, 5, 2, 5] }
   };
+  const COURSE_LOCATIONS = {
+    pine_valley: {
+      id: "pine_valley",
+      name: "Pine Valley Pitch",
+      terrain: "parkland fairways",
+      style: { bg: "#f4fbf1", fairway: "#ffffff", accent: "#6aa86d", glyphColor: "#b7c9b7", wallFill: "#111827" },
+      clearReward: { golfBalls: 4, stars: 12 },
+      description: "Clean grass lanes, readable banks, and gentle obstacle pressure.",
+      difficulties: ["beginner", "average"],
+      themeIds: ["classic", "caddy"],
+      layoutBias: ["straight", "left_turn", "right_turn", "dogleg_arc", "hook_left", "hook_right"],
+      archetypeBias: ["fairway", "slalom"],
+      spotlightBias: ["boost_grid"],
+      modifierBias: ["none", "none", "crosswind_left"],
+      setpieceBias: ["none", "needle_lane"]
+    },
+    cactus_ridge: {
+      id: "cactus_ridge",
+      name: "Cactus Ridge",
+      terrain: "dry desert runoffs",
+      style: { bg: "#fbf7ed", fairway: "#fffdf7", accent: "#c47a3b", glyphColor: "#d8c3a0", wallFill: "#1f1710" },
+      clearReward: { golfBalls: 6, stars: 18 },
+      description: "Sandy pressure, crosswind reads, and narrower recovery lanes.",
+      difficulties: ["beginner", "average", "hardcore"],
+      themeIds: ["ledger", "caddy", "mixed"],
+      layoutBias: ["z_shape", "switchback", "hook_left", "hook_right", "dogleg_arc"],
+      archetypeBias: ["slalom", "gauntlet", "splitter"],
+      spotlightBias: ["sandstorm", "fan_drift"],
+      modifierBias: ["crosswind_left", "crosswind_right", "no_preview"],
+      setpieceBias: ["needle_lane", "fan_tunnel"]
+    },
+    neon_links: {
+      id: "neon_links",
+      name: "Neon Links",
+      terrain: "arcade turf",
+      style: { bg: "#f4f6ff", fairway: "#ffffff", accent: "#6366f1", glyphColor: "#bcc3ff", wallFill: "#111827" },
+      clearReward: { golfBalls: 8, stars: 24 },
+      description: "Boosts, portals, rails, and combo routes built for chaos control.",
+      difficulties: ["average", "hardcore"],
+      themeIds: ["arcade", "echo", "mixed"],
+      layoutBias: ["full_circle", "horseshoe", "switchback", "z_shape", "dogleg_arc"],
+      archetypeBias: ["splitter", "gauntlet"],
+      spotlightBias: ["boost_grid", "fan_drift", "magnet_field"],
+      modifierBias: ["low_gravity", "crosswind_right", "one_hop_only"],
+      setpieceBias: ["relay_orbit", "rail_crossfire", "lockstep"]
+    },
+    frostbite_fairway: {
+      id: "frostbite_fairway",
+      name: "Frostbite Fairway",
+      terrain: "slick winter greens",
+      style: { bg: "#effaff", fairway: "#ffffff", accent: "#38bdf8", glyphColor: "#b8dff0", wallFill: "#0f172a" },
+      clearReward: { golfBalls: 10, stars: 30 },
+      description: "Long sliding reads with low-friction pacing and punishing exits.",
+      difficulties: ["average", "hardcore"],
+      themeIds: ["halftone", "echo", "classic"],
+      layoutBias: ["horseshoe", "full_circle", "hook_left", "hook_right", "switchback"],
+      archetypeBias: ["fairway", "slalom", "gauntlet"],
+      spotlightBias: ["fan_drift", "boost_grid"],
+      modifierBias: ["low_gravity", "crosswind_left", "crosswind_right"],
+      setpieceBias: ["shutter_run", "fan_tunnel", "needle_pocket"]
+    },
+    volcanic_back_nine: {
+      id: "volcanic_back_nine",
+      name: "Volcanic Back Nine",
+      terrain: "black-rock hazard shelves",
+      style: { bg: "#f7f2f0", fairway: "#fffafa", accent: "#dc2626", glyphColor: "#d8bab0", wallFill: "#16110f" },
+      clearReward: { golfBalls: 14, stars: 38 },
+      description: "Hardcore routes, aggressive hazards, and tiny safe landing zones.",
+      difficulties: ["hardcore"],
+      themeIds: ["ledger", "arcade", "mixed"],
+      layoutBias: ["z_shape", "switchback", "horseshoe", "full_circle"],
+      archetypeBias: ["gauntlet", "splitter"],
+      spotlightBias: ["magnet_field", "sandstorm", "boost_grid"],
+      modifierBias: ["no_preview", "crosswind_left", "crosswind_right"],
+      setpieceBias: ["shutter_stack", "magnetic_maze", "rail_crossfire"]
+    },
+    moonshot_greens: {
+      id: "moonshot_greens",
+      name: "Moonshot Greens",
+      terrain: "low-gravity lunar cups",
+      style: { bg: "#f8f7ff", fairway: "#ffffff", accent: "#7c3aed", glyphColor: "#cec4ef", wallFill: "#111827" },
+      clearReward: { golfBalls: 16, stars: 44 },
+      description: "Floaty pace, strange rebounds, and oversized trick-shot routes.",
+      difficulties: ["average", "hardcore"],
+      themeIds: ["echo", "halftone", "mixed"],
+      layoutBias: ["full_circle", "horseshoe", "dogleg_arc", "hook_left", "hook_right"],
+      archetypeBias: ["splitter", "fairway", "gauntlet"],
+      spotlightBias: ["magnet_field", "boost_grid"],
+      modifierBias: ["low_gravity", "low_gravity", "one_hop_only"],
+      setpieceBias: ["relay_orbit", "bounce_forge", "magnetic_maze"]
+    }
+  };
+  const COURSE_LOCATION_ORDER = ["pine_valley", "cactus_ridge", "neon_links", "frostbite_fairway", "volcanic_back_nine", "moonshot_greens"];
   const CHALLENGE_RULES = {
     none: { id: "none", name: "None", description: "Standard round rules." },
     one_shot_preview: { id: "one_shot_preview", name: "One Shot Preview", description: "Preview only before the first shot on each hole." },
@@ -2031,7 +2399,7 @@
       id: "wind_day",
       name: "Wind Day",
       description: "Crosswinds show up often and late holes lean harder into lane drift.",
-      themeIds: ["classic", "ledger"],
+      themeIds: ["classic", "ledger", "caddy"],
       challengeChoices: ["one_shot_preview", "par_rush"],
       spotlightChoices: ["fan_drift", "boost_grid"],
       modifierChoices: ["crosswind_left", "crosswind_right"],
@@ -2041,7 +2409,7 @@
       id: "magnet_madness",
       name: "Magnet Madness",
       description: "Magnet lanes and sharp recoveries dominate the card.",
-      themeIds: ["ledger", "halftone"],
+      themeIds: ["ledger", "halftone", "mixed"],
       challengeChoices: ["par_rush", "no_shop_loadout"],
       spotlightChoices: ["magnet_field"],
       modifierChoices: ["no_preview", "low_gravity"],
@@ -2051,7 +2419,7 @@
       id: "portal_party",
       name: "Portal Party",
       description: "Portal chains and split routes start to define the later holes.",
-      themeIds: ["classic", "echo"],
+      themeIds: ["classic", "echo", "arcade"],
       challengeChoices: ["par_rush", "one_shot_preview"],
       spotlightChoices: ["boost_grid", "fan_drift"],
       modifierChoices: ["low_gravity", "crosswind_right"],
@@ -2062,7 +2430,7 @@
       id: "rail_day",
       name: "Rail Day",
       description: "Trick-shot ricochets and one-hop reads start punishing lazy lines.",
-      themeIds: ["echo", "halftone"],
+      themeIds: ["echo", "halftone", "arcade"],
       challengeChoices: ["par_rush", "no_shop_loadout"],
       spotlightChoices: ["sandstorm", "boost_grid"],
       modifierChoices: ["one_hop_only", "no_preview"],
@@ -2073,7 +2441,7 @@
       id: "no_preview_day",
       name: "No Preview Day",
       description: "Reads matter more because planning lines must happen in your head.",
-      themeIds: ["ledger", "echo"],
+      themeIds: ["ledger", "echo", "mixed"],
       challengeChoices: ["one_shot_preview", "no_shop_loadout"],
       spotlightChoices: ["magnet_field", "sandstorm"],
       modifierChoices: ["no_preview"],
@@ -2327,6 +2695,7 @@
       enabled: entry.enabled !== false,
       difficulties: normalizeHandmadeTagList(entry.difficulties, ["beginner", "average", "hardcore"]).filter(key => DIFFICULTY_PRESETS[key]),
       modes: normalizeHandmadeTagList(entry.modes, ["standard"]),
+      locations: normalizeHandmadeTagList(entry.locations || entry.locationIds || entry.locationId, []),
       weight: Math.max(1, Math.round(Number(entry.weight) || 1)),
       data: runtimeDraft
     };
@@ -2403,12 +2772,26 @@
   function getAllHandmadeMaps() {
     return handmadeMapsCache;
   }
-  function getEligibleHandmadeMaps(difficultyKey = "average", modeKey = "standard") {
-    return getAllHandmadeMaps().filter(entry =>
+  function isHandmadeMapEligible(entry, difficultyKey = "average", modeKey = "standard") {
+    return Boolean(entry &&
       entry.enabled &&
       entry.modes.includes(modeKey) &&
       entry.difficulties.includes(difficultyKey)
     );
+  }
+  function getEligibleHandmadeMaps(difficultyKey = "average", modeKey = "standard", locationId = null) {
+    const eligible = getAllHandmadeMaps().filter(entry => isHandmadeMapEligible(entry, difficultyKey, modeKey));
+    if (!locationId) return eligible;
+    const locationMaps = eligible.filter(entry => entry.locations.includes(locationId));
+    return locationMaps.length ? locationMaps : eligible.filter(entry => !entry.locations.length);
+  }
+  function getCourseMapPackCount(locationId, difficultyKey = null, modeKey = "standard") {
+    return getAllHandmadeMaps().filter(entry =>
+      entry.enabled &&
+      (!difficultyKey || entry.difficulties.includes(difficultyKey)) &&
+      entry.modes.includes(modeKey) &&
+      entry.locations.includes(locationId)
+    ).length;
   }
   function findHandmadeMapByQuery(query) {
     if (!query) return null;
@@ -2430,30 +2813,34 @@
     ].filter(index => index >= 0 && index < holeCount);
     return [...new Set(candidates)].slice(0, Math.max(0, desiredCount));
   }
-  function buildHandmadeAssignments(seed, holeCount, difficultyKey = "average", modeKey = "standard") {
+  function buildHandmadeAssignments(seed, holeCount, difficultyKey = "average", modeKey = "standard", locationId = null) {
     if (DEBUG_FLAGS.handmadeId) {
       const forced = findHandmadeMapByQuery(DEBUG_FLAGS.handmadeId);
       return forced ? new Map([[Math.min(Math.max(0, DEBUG_FLAGS.debugHole - 1), Math.max(0, holeCount - 1)), forced]]) : new Map();
     }
-    const eligible = getEligibleHandmadeMaps(difficultyKey, modeKey);
+    const eligible = getEligibleHandmadeMaps(difficultyKey, modeKey, locationId);
     if (!eligible.length) return new Map();
+    const hasLocationPack = locationId && eligible.some(entry => entry.locations.includes(locationId));
     const desiredCount = modeKey === "daily"
-      ? (difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1)
-      : (difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1);
+      ? (hasLocationPack ? (difficultyKey === "hardcore" ? 3 : 2) : (difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1))
+      : (hasLocationPack ? Math.min(4, Math.max(2, Math.ceil(holeCount * 0.45))) : (difficultyKey === "hardcore" ? 3 : difficultyKey === "average" ? 2 : 1));
     const holeIndices = getHandmadeInsertionIndices(holeCount, Math.min(desiredCount, eligible.length));
     const rng = mulberry32((seed ^ 0x5f27b11d ^ (difficultyKey.length * 641)) >>> 0);
+    const distinctBag = [...eligible];
+    shuffleInPlace(distinctBag, rng);
     const bag = [];
     eligible.forEach(entry => {
       for (let i = 0; i < entry.weight; i++) bag.push(entry);
     });
     shuffleInPlace(bag, rng);
+    const pickPool = distinctBag.length >= holeIndices.length ? distinctBag : bag;
     if (holeIndices.length && bag.length) {
-      const preferred = bag[0];
-      bag[0] = preferred;
+      const preferred = pickPool[0];
+      pickPool[0] = preferred;
     }
     const assignments = new Map();
     holeIndices.forEach((holeIndex, idx) => {
-      assignments.set(holeIndex, bag[idx % bag.length]);
+      assignments.set(holeIndex, pickPool[idx % pickPool.length]);
     });
     if (!assignments.size && eligible.length) {
       assignments.set(0, eligible[0]);
@@ -3406,6 +3793,16 @@
     if (theme.id === "echo") return "#9ca3af";
     return "#9ca3af";
   }
+  function getThemeGlyph(theme, x = 0, y = 0) {
+    const glyphs = Array.isArray(theme?.glyphs) && theme.glyphs.length
+      ? theme.glyphs
+      : [theme?.glyph || "·"];
+    const gridX = Math.round(Number(x) || 0);
+    const gridY = Math.round(Number(y) || 0);
+    const themeSeed = Array.from(theme?.id || "classic").reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    const hash = Math.abs(((gridX * 73856093) ^ (gridY * 19349663) ^ (themeSeed * 83492791)) | 0);
+    return glyphs[hash % glyphs.length] || theme?.glyph || "·";
+  }
 
   const FX_STATE = {
     ctx: null,
@@ -3634,7 +4031,8 @@
       settings: { ...DEFAULT_SETTINGS },
       ownedItems: { classic: true, none: true, none_ability: true, starter_putter: true, classic_grip: true },
       abilityLevels: {},
-      putterLevels: {},
+      putterLevels: { starter_putter: 1 },
+      itemCopies: { abilities: {}, putters: {} },
       bestRounds: {},
       dailyBestRounds: {},
       dailyRuns: {},
@@ -3646,6 +4044,8 @@
       weeklyGoalClaims: {},
       weeklyChestClaims: {},
       calendarMilestoneClaims: {},
+      courseLocationUnlocks: { pine_valley: true },
+      courseLocationClears: {},
       mastery: { cosmetics: {}, trails: {}, abilities: {} },
       stats: {
         holesCompleted: 0,
@@ -3688,6 +4088,10 @@
     const ownedItems = { classic: true, none: true, none_ability: true, starter_putter: true, classic_grip: true, ...(parsed.ownedItems || {}) };
     const abilityLevels = { ...(parsed.abilityLevels || {}) };
     const putterLevels = { ...(parsed.putterLevels || {}) };
+    const itemCopies = {
+      abilities: { ...(parsed.itemCopies?.abilities || {}) },
+      putters: { ...(parsed.itemCopies?.putters || {}) }
+    };
     const bestRounds = { ...(parsed.bestRounds || {}) };
     const dailyBestRounds = { ...(parsed.dailyBestRounds || {}) };
     const dailyRuns = { ...(parsed.dailyRuns || {}) };
@@ -3699,6 +4103,8 @@
     const weeklyGoalClaims = { ...(parsed.weeklyGoalClaims || {}) };
     const weeklyChestClaims = { ...(parsed.weeklyChestClaims || {}) };
     const calendarMilestoneClaims = { ...(parsed.calendarMilestoneClaims || {}) };
+    const courseLocationUnlocks = { pine_valley: true, ...(parsed.courseLocationUnlocks || {}) };
+    const courseLocationClears = { ...(parsed.courseLocationClears || {}) };
     const mastery = {
       cosmetics: { ...(parsed.mastery?.cosmetics || {}) },
       trails: { ...(parsed.mastery?.trails || {}) },
@@ -3723,6 +4129,11 @@
         abilityLevels[ability.id] = 1;
       }
     }
+    for (const putter of PUTTER_SHOP) {
+      if (ownedItems[putter.id] && !putterLevels[putter.id]) {
+        putterLevels[putter.id] = 1;
+      }
+    }
     const equippedCosmetic = ownedItems[parsed.equippedCosmetic] ? parsed.equippedCosmetic : "classic";
     const equippedTrail = ownedItems[parsed.equippedTrail] ? parsed.equippedTrail : "none";
     const equippedAbility = (parsed.equippedAbility && (abilityLevels[parsed.equippedAbility] > 0 || parsed.equippedAbility === "none_ability"))
@@ -3740,6 +4151,7 @@
       ownedItems,
       abilityLevels,
       putterLevels,
+      itemCopies,
       bestRounds,
       dailyBestRounds,
       dailyRuns,
@@ -3751,6 +4163,8 @@
       weeklyGoalClaims,
       weeklyChestClaims,
       calendarMilestoneClaims,
+      courseLocationUnlocks,
+      courseLocationClears,
       mastery,
       stats,
       equippedCosmetic,
@@ -3820,6 +4234,53 @@
     const medal = track.bestMedal || "Bronze";
     return `${track.clears} clear${track.clears === 1 ? "" : "s"} · best ${medal}`;
   }
+  function getEligibleCourseLocations(difficultyKey = "average") {
+    const eligible = Object.values(COURSE_LOCATIONS).filter(location => (location.difficulties || []).includes(difficultyKey));
+    return eligible.length ? eligible : [COURSE_LOCATIONS.pine_valley];
+  }
+  function getCourseLocationIndex(locationId) {
+    return Math.max(0, COURSE_LOCATION_ORDER.indexOf(locationId));
+  }
+  function isCourseLocationUnlocked(progress, locationId) {
+    if (!locationId || !COURSE_LOCATIONS[locationId]) return false;
+    if (locationId === COURSE_LOCATION_ORDER[0]) return true;
+    return Boolean(progress?.courseLocationUnlocks?.[locationId]);
+  }
+  function getNextCourseLocation(locationId) {
+    const index = COURSE_LOCATION_ORDER.indexOf(locationId);
+    if (index < 0 || index >= COURSE_LOCATION_ORDER.length - 1) return null;
+    return COURSE_LOCATIONS[COURSE_LOCATION_ORDER[index + 1]] || null;
+  }
+  function getCourseLocationUnlockRequirement(locationId) {
+    const index = COURSE_LOCATION_ORDER.indexOf(locationId);
+    if (index <= 0) return "Unlocked";
+    const previous = COURSE_LOCATIONS[COURSE_LOCATION_ORDER[index - 1]];
+    return `Beat ${previous?.name || "the previous course"}`;
+  }
+  function pickCourseLocation(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, progress = null, preferredLocationId = null) {
+    if (modeKey === "daily") {
+      const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount, progress);
+      return COURSE_LOCATIONS[signature.locationId] || COURSE_LOCATIONS.pine_valley;
+    }
+    const pool = getEligibleCourseLocations(difficultyKey);
+    const preferred = COURSE_LOCATIONS[preferredLocationId];
+    if (preferred && pool.includes(preferred) && isCourseLocationUnlocked(progress, preferred.id)) return preferred;
+    const unlocked = pool.filter(location => isCourseLocationUnlocked(progress, location.id));
+    if (unlocked.length) return unlocked[randInt(rng, 0, unlocked.length - 1)] || COURSE_LOCATIONS.pine_valley;
+    return pool[randInt(rng, 0, pool.length - 1)] || COURSE_LOCATIONS.pine_valley;
+  }
+  function mixLocationBias(basePool, bias = [], difficultyKey = "average") {
+    const validBias = (bias || []).filter(item => basePool.includes(item));
+    if (!validBias.length) return basePool;
+    return [...validBias, ...validBias, ...basePool];
+  }
+  function getLocationSpotlight(location, fallbackId = null, difficultyKey = "average", rng = Math.random) {
+    const biased = (location?.spotlightBias || [])
+      .map(id => HAZARD_SPOTLIGHTS[id])
+      .filter(entry => entry && entry.difficulties.includes(difficultyKey));
+    if (biased.length) return biased[randInt(rng, 0, biased.length - 1)].id;
+    return fallbackId;
+  }
   function getDailyCourseSignature(dateKey, difficultyKey = "average", holeCount = null, progress = null) {
     const key = `${dateKey}:${difficultyKey}:${holeCount || 0}`;
     let hash = 0;
@@ -3827,8 +4288,12 @@
     const seed = Math.abs(hash) >>> 0;
     const rng = mulberry32(seed || 1);
     const variant = getDailyVariant(dateKey, difficultyKey, progress);
+    const locationPool = getEligibleCourseLocations(difficultyKey);
+    const location = locationPool[randInt(rng, 0, locationPool.length - 1)] || COURSE_LOCATIONS.pine_valley;
     const themeChoices = variant.themeIds && variant.themeIds.length
       ? variant.themeIds
+      : location.themeIds && location.themeIds.length
+        ? location.themeIds
       : difficultyKey === "beginner"
         ? ["classic", "ledger"]
         : difficultyKey === "hardcore"
@@ -3842,11 +4307,17 @@
           ? ["one_shot_preview", "par_rush", "no_shop_loadout"]
           : ["none", "one_shot_preview", "par_rush"];
     const layoutPool = getLayoutPool(difficultyKey).filter(layout => layout !== "straight");
+    const locationLayoutPool = mixLocationBias(layoutPool, location.layoutBias, difficultyKey);
     const spotlightPool = (variant.spotlightChoices || [])
+      .map(id => HAZARD_SPOTLIGHTS[id])
+      .filter(entry => entry && entry.difficulties.includes(difficultyKey));
+    const locationSpotlightPool = (location.spotlightBias || [])
       .map(id => HAZARD_SPOTLIGHTS[id])
       .filter(entry => entry && entry.difficulties.includes(difficultyKey));
     const eligibleSpotlights = spotlightPool.length
       ? spotlightPool
+      : locationSpotlightPool.length
+        ? locationSpotlightPool
       : Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
     const estimatedPar = Array.from({ length: holeCount || (DIFFICULTY_PRESETS[difficultyKey]?.holeCount || 9) }, (_, index) => {
       if (difficultyKey === "beginner") return index < 2 ? 2 : index < 4 ? 3 : 4 + Math.min(2, Math.floor(index / 3));
@@ -3857,25 +4328,31 @@
       variantId: variant.id,
       variantName: variant.name,
       variantDescription: variant.description,
+      locationId: location.id,
+      locationName: location.name,
+      locationDescription: location.description,
+      locationTerrain: location.terrain,
       themeId: pickFromList(rng, themeChoices, COURSE_THEMES.classic.id),
       challengeId: pickFromList(rng, challengeChoices, CHALLENGE_RULES.none.id),
-      featuredLayout: layoutPool[randInt(rng, 0, layoutPool.length - 1)] || getLayoutPool(difficultyKey)[0],
+      featuredLayout: locationLayoutPool[randInt(rng, 0, locationLayoutPool.length - 1)] || getLayoutPool(difficultyKey)[0],
       featuredSpotlight: eligibleSpotlights.length ? eligibleSpotlights[randInt(rng, 0, eligibleSpotlights.length - 1)].id : null,
-      featuredModifier: pickFromList(rng, variant.modifierChoices, null),
-      featuredSetpiece: pickFromList(rng, variant.setpieceChoices, null),
+      featuredModifier: pickFromList(rng, variant.modifierChoices || location.modifierBias, null),
+      featuredSetpiece: pickFromList(rng, variant.setpieceChoices || location.setpieceBias, null),
       estimatedPar
     };
   }
-  function pickCourseTheme(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, progress = null) {
+  function pickCourseTheme(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, progress = null, location = null) {
     if (modeKey === "daily") {
       const signature = getDailyCourseSignature(getTodayKey(), difficultyKey, roundHoleCount, progress);
       return COURSE_THEMES[signature.themeId] || COURSE_THEMES.classic;
     }
-    const choices = difficultyKey === "beginner"
-      ? ["classic", "ledger"]
+    const choices = location?.themeIds?.length
+      ? location.themeIds
+      : difficultyKey === "beginner"
+      ? ["classic", "ledger", "caddy"]
       : difficultyKey === "hardcore"
-        ? ["echo", "halftone", "ledger"]
-        : ["classic", "ledger", "halftone"];
+        ? ["echo", "halftone", "ledger", "arcade", "mixed"]
+        : ["classic", "ledger", "halftone", "caddy", "mixed"];
     return COURSE_THEMES[choices[randInt(rng, 0, choices.length - 1)]] || COURSE_THEMES.classic;
   }
   function pickChallengeRule(rng, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, progress = null) {
@@ -4062,11 +4539,12 @@
     if (pickIndex < 0) pickIndex = 0;
     return state.items.splice(pickIndex, 1)[0];
   }
-  function buildCoursePlan(seed, holeCount, difficultyKey = "average", modeKey = "standard", progress = null) {
+  function buildCoursePlan(seed, holeCount, difficultyKey = "average", modeKey = "standard", progress = null, location = null) {
     const rng = mulberry32((seed ^ (holeCount * 6151) ^ (difficultyKey.length * 1217)) >>> 0);
     const dailySignature = modeKey === "daily" ? getDailyCourseSignature(getTodayKey(), difficultyKey, holeCount, progress) : null;
-    const layoutPool = modeKey === "daily" ? getDailyLayoutPool(dailySignature, difficultyKey) : getLayoutPool(difficultyKey);
-    const archetypePool = modeKey === "daily" ? getDailyArchetypePool(dailySignature, difficultyKey) : getArchetypePool(difficultyKey);
+    const activeLocation = location || (dailySignature?.locationId ? COURSE_LOCATIONS[dailySignature.locationId] : null) || pickCourseLocation(rng, difficultyKey, modeKey, holeCount, progress);
+    const layoutPool = mixLocationBias(modeKey === "daily" ? getDailyLayoutPool(dailySignature, difficultyKey) : getLayoutPool(difficultyKey), activeLocation.layoutBias, difficultyKey);
+    const archetypePool = mixLocationBias(modeKey === "daily" ? getDailyArchetypePool(dailySignature, difficultyKey) : getArchetypePool(difficultyKey), activeLocation.archetypeBias, difficultyKey);
     const layoutState = { items: [] };
     const archetypeState = { items: [] };
     const openerLayouts = modeKey === "daily"
@@ -4083,7 +4561,12 @@
         : difficultyKey === "hardcore"
           ? ["horseshoe", "hook_left", "hook_right", "full_circle", "dogleg_arc"]
           : ["left_turn", "right_turn", "dogleg_arc", "hook_left", "hook_right", "horseshoe"];
-    const spotlightPool = Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
+    const locationSpotlightPool = (activeLocation.spotlightBias || [])
+      .map(id => HAZARD_SPOTLIGHTS[id])
+      .filter(entry => entry && entry.difficulties.includes(difficultyKey));
+    const spotlightPool = locationSpotlightPool.length
+      ? [...locationSpotlightPool, ...locationSpotlightPool, ...Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey))]
+      : Object.values(HAZARD_SPOTLIGHTS).filter(entry => entry.difficulties.includes(difficultyKey));
     const spotlightSlots = modeKey === "daily"
       ? Math.max(1, holeCount - 1)
       : difficultyKey === "hardcore" ? Math.min(3, Math.max(1, Math.floor(holeCount / 4))) : difficultyKey === "average" ? (holeCount >= 9 ? 1 : 0) : 0;
@@ -4141,11 +4624,18 @@
       plan.push({
         layoutType,
         archetype,
+        locationId: activeLocation.id,
+        locationName: activeLocation.name,
+        locationTerrain: activeLocation.terrain,
         hazardTheme: modeKey === "daily"
-          ? (spotlightMap.get(holeIndex) || dailySpotlight)
-          : (spotlightMap.get(holeIndex) || (dailySignature && holeIndex >= 1 && holeIndex % 3 === 0 ? dailySignature.featuredSpotlight : null)),
-        forcedModifier: dailySignature && holeIndex > 0 && holeIndex % 2 === 0 ? dailySignature.featuredModifier : null,
-        forcedSetpiece: dailySignature && (holeIndex === Math.max(2, Math.floor(holeCount / 2)) || holeIndex === holeCount - 2) ? dailySignature.featuredSetpiece : null,
+          ? (spotlightMap.get(holeIndex) || dailySpotlight || getLocationSpotlight(activeLocation, null, difficultyKey, rng))
+          : (spotlightMap.get(holeIndex) || (holeIndex >= 1 && holeIndex % 3 === 0 ? getLocationSpotlight(activeLocation, null, difficultyKey, rng) : null)),
+        forcedModifier: dailySignature && holeIndex > 0 && holeIndex % 2 === 0
+          ? (dailySignature.featuredModifier || pickFromList(rng, activeLocation.modifierBias, null))
+          : (holeIndex > 1 && holeIndex % 4 === 0 ? pickFromList(rng, activeLocation.modifierBias, null) : null),
+        forcedSetpiece: dailySignature && (holeIndex === Math.max(2, Math.floor(holeCount / 2)) || holeIndex === holeCount - 2)
+          ? (dailySignature.featuredSetpiece || pickFromList(rng, activeLocation.setpieceBias, null))
+          : (holeIndex > 2 && holeIndex % 5 === 0 ? pickFromList(rng, activeLocation.setpieceBias, null) : null),
         dailyVariant: dailySignature ? dailySignature.variantId : null,
         dailyVariantName: dailySignature ? dailySignature.variantName : null
       });
@@ -4649,9 +5139,12 @@
   }
 
   function projectAroundAnchor(anchor, forwardDistance = 0, sideDistance = 0) {
+    const base = anchor || { x: 0, y: 0 };
+    const dir = base.dir || base.direction || { x: 0, y: -1 };
+    const perp = base.perp || getPerp(dir);
     return {
-      x: anchor.x + anchor.dir.x * forwardDistance + anchor.perp.x * sideDistance,
-      y: anchor.y + anchor.dir.y * forwardDistance + anchor.perp.y * sideDistance
+      x: (Number.isFinite(base.x) ? base.x : 0) + dir.x * forwardDistance + perp.x * sideDistance,
+      y: (Number.isFinite(base.y) ? base.y : 0) + dir.y * forwardDistance + perp.y * sideDistance
     };
   }
 
@@ -6989,6 +7482,9 @@
       layoutType,
       hazardTheme,
       setpiece,
+      locationId: planEntry?.locationId || null,
+      locationName: planEntry?.locationName || null,
+      locationTerrain: planEntry?.locationTerrain || null,
       difficultyKey: settings.key,
       modifier,
       dailyVariant: planEntry?.dailyVariantName || null,
@@ -7085,6 +7581,9 @@
       layoutType: `handmade:${handmadeEntry.id}`,
       hazardTheme: inferHandmadeHazardTheme(data),
       setpiece: { id: "handmade_map", name: handmadeEntry.name },
+      locationId: planEntry?.locationId || null,
+      locationName: planEntry?.locationName || null,
+      locationTerrain: planEntry?.locationTerrain || null,
       difficultyKey,
       modifier: HOLE_MODIFIERS.none,
       dailyVariant: planEntry?.dailyVariantName || null,
@@ -7115,9 +7614,10 @@
     };
   }
 
-  function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null, modeKey = "standard") {
-    const coursePlan = buildCoursePlan(seed, holeCount, difficultyKey, modeKey, progress);
-    const handmadeAssignments = buildHandmadeAssignments(seed, holeCount, difficultyKey, modeKey);
+  function generateCourse(seed, holeCount = 9, difficultyKey = "average", progress = null, modeKey = "standard", location = null) {
+    const coursePlan = buildCoursePlan(seed, holeCount, difficultyKey, modeKey, progress, location);
+    const locationId = coursePlan[0]?.locationId || location?.id || null;
+    const handmadeAssignments = buildHandmadeAssignments(seed, holeCount, difficultyKey, modeKey, locationId);
     return Array.from({ length: holeCount }, (_, index) => {
       const handmadeEntry = handmadeAssignments.get(index);
       return handmadeEntry
@@ -7155,7 +7655,7 @@
 
   // ---------------- GameManager ----------------
   class GameManager {
-    constructor(seed, difficultyKey = "average", modeKey = "standard", roundHoleCount = null) {
+    constructor(seed, difficultyKey = "average", modeKey = "standard", roundHoleCount = null, selectedLocationId = null) {
       this.seed = seed >>> 0;
       this.difficultyKey = difficultyKey;
       this.modeKey = modeKey;
@@ -7166,9 +7666,11 @@
       this.dailySignature = this.modeKey === "daily"
         ? getDailyCourseSignature(getTodayKey(), this.difficultyKey, this.roundHoleCount, this.progress)
         : null;
-      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
+      this.selectedLocationId = selectedLocationId;
+      this.courseLocation = pickCourseLocation(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress, this.selectedLocationId);
+      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress, this.courseLocation);
       this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
-      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey);
+      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey, this.courseLocation);
       this.dailyRoundShotLimit = this.modeKey === "daily" ? getDailyRoundShotLimit(this.levels, this.difficultyKey) : null;
       this.dailyAttemptCommitted = this.modeKey === "daily"
         ? Math.max(0, Number(getDailyAttemptRecord(this.progress, getTodayKey(), this.difficultyKey)?.attemptsUsed) || 0) > 0
@@ -7284,11 +7786,13 @@
       const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
       if (badge) {
         badge.textContent = "◈";
-        badge.classList.remove('opening');
+        badge.style.background = "";
+        badge.classList.remove('opening', 'merging');
         void badge.offsetWidth;
         badge.classList.add('opening');
       }
       if (this.weeklyChestHeading) this.weeklyChestHeading.textContent = "Weekly Chest";
+      if (this.closeWeeklyChestBtn) this.closeWeeklyChestBtn.textContent = "Continue";
       this.weeklyChestSubhead.textContent = "You cleared every weekly goal.";
       this.weeklyChestTitle.textContent = "Chest Opened";
       this.weeklyChestCopy.textContent = "This is the weekly climax. Bank it, then chase the next one tomorrow.";
@@ -7301,14 +7805,20 @@
     }
     closeWeeklyChestReveal() {
       this.weeklyChestModal.style.display = 'none';
+      const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
+      if (badge) badge.style.background = "";
       const resume = this.weeklyChestResolve;
       this.weeklyChestResolve = null;
       if (typeof resume === 'function') resume();
     }
     refreshMetaUi() {
       const previewItem = ITEM_LOOKUP.preview_path;
+      const title = document.getElementById('gameTitle');
+      if (title) {
+        title.textContent = this.courseLocation?.name || (this.modeKey === "daily" ? "Daily Course" : "Practice Course");
+      }
       document.getElementById('difficultyLabel').textContent = this.difficulty.label;
-      document.getElementById('themeLabel').textContent = this.theme.name;
+      document.getElementById('themeLabel').textContent = `${this.courseLocation?.name || "Open Links"} · ${this.theme.name}`;
       document.getElementById('challengeLabel').textContent = this.challengeRule.name;
       document.getElementById('starCount').textContent = `${this.progress.stars}★ · ${this.progress.golfBalls || 0} Golf Balls · ${this.progress.dailyTokens || 0}◈`;
       const attempts = this.modeKey === "daily" ? getRemainingDailyAttempts(this.progress, getTodayKey(), this.difficultyKey) : null;
@@ -7376,6 +7886,36 @@
       this.progress.difficultyTracks[this.difficultyKey] = current;
       return { medal, rewardMessage, track: current };
     }
+    completeCourseLocation(totalPar, totalShots) {
+      if (this.modeKey === "daily" || !this.courseLocation?.id) return null;
+      const id = this.courseLocation.id;
+      this.progress.courseLocationUnlocks = { pine_valley: true, ...(this.progress.courseLocationUnlocks || {}) };
+      this.progress.courseLocationClears = { ...(this.progress.courseLocationClears || {}) };
+      const current = {
+        clears: 0,
+        bestShots: null,
+        bestMedal: null,
+        ...(this.progress.courseLocationClears[id] || {})
+      };
+      const medal = getRoundMedal(totalPar, totalShots);
+      current.clears += 1;
+      current.bestShots = current.bestShots == null ? totalShots : Math.min(current.bestShots, totalShots);
+      if (!current.bestMedal || getMedalRank(medal) > getMedalRank(current.bestMedal)) current.bestMedal = medal;
+      this.progress.courseLocationClears[id] = current;
+      const next = getNextCourseLocation(id);
+      const reward = this.courseLocation.clearReward || {};
+      const rewardGolfBalls = Math.max(0, Number(reward.golfBalls) || 0);
+      const rewardStars = Math.max(0, Number(reward.stars) || 0);
+      if (rewardGolfBalls) this.progress.golfBalls = Math.max(0, Number(this.progress.golfBalls) || 0) + rewardGolfBalls;
+      if (rewardStars) this.progress.stars = Math.max(0, Number(this.progress.stars) || 0) + rewardStars;
+      let unlocked = null;
+      if (next && !this.progress.courseLocationUnlocks[next.id]) {
+        this.progress.courseLocationUnlocks[next.id] = true;
+        unlocked = next;
+        emitGameFx('tree');
+      }
+      return { location: this.courseLocation, nextUnlocked: unlocked, track: current, medal, totalPar, totalShots, rewardGolfBalls, rewardStars };
+    }
     getEquippedCosmetic() {
       return BALL_COSMETICS.find(item => item.id === this.progress.equippedCosmetic) || BALL_COSMETICS[0];
     }
@@ -7395,7 +7935,100 @@
       return Math.max(0, Number(this.progress.abilityLevels[id]) || 0);
     }
     getPutterTier(id) {
+      if (id === "starter_putter" && this.progress.ownedItems?.starter_putter) return Math.max(1, Number(this.progress.putterLevels?.[id]) || 1);
       return Math.max(0, Number(this.progress.putterLevels?.[id]) || 0);
+    }
+    getMergeBucket(item) {
+      if (!item) return null;
+      if (item.type === "ability") return "abilities";
+      if (item.type === "putter") return "putters";
+      return null;
+    }
+    getItemTier(item) {
+      if (!item) return 0;
+      if (item.type === "ability") return this.getAbilityTier(item.id);
+      if (item.type === "putter") return this.getPutterTier(item.id);
+      return this.hasOwnedItem(item.id) ? 1 : 0;
+    }
+    getItemMaxTier(item) {
+      if (!item) return 0;
+      if (item.type === "ability") return item.maxTier || 0;
+      if (item.type === "putter") return item.maxTier || 5;
+      return 1;
+    }
+    getCopyCount(item, tier = null) {
+      const bucket = this.getMergeBucket(item);
+      if (!bucket) return 0;
+      const currentTier = Math.max(1, Number(tier) || Math.max(1, this.getItemTier(item)));
+      return Math.max(0, Number(this.progress.itemCopies?.[bucket]?.[item.id]?.[currentTier]) || 0);
+    }
+    getTotalCopyCount(item) {
+      const bucket = this.getMergeBucket(item);
+      const copies = bucket ? this.progress.itemCopies?.[bucket]?.[item.id] : null;
+      if (!copies) return 0;
+      return Object.values(copies).reduce((total, value) => total + Math.max(0, Number(value) || 0), 0);
+    }
+    getMergeEffectCopy(item, fromTier, toTier) {
+      const nextLabel = MERGE_TIER_LABELS[toTier] || `Tier ${toTier}`;
+      const currentLabel = MERGE_TIER_LABELS[fromTier] || `Tier ${fromTier}`;
+      if (!item?.effect) return `${currentLabel} upgraded into ${nextLabel}.`;
+      const scale = item.effect.scale ? ` Effect strength rises from ${Math.round((1 + fromTier * item.effect.scale) * 100)}% to ${Math.round((1 + toTier * item.effect.scale) * 100)}%.` : "";
+      return `${nextLabel} ${item.effect.label.toLowerCase()}: ${item.effect.description}${scale}`;
+    }
+    renderMergeInventoryPanel(item) {
+      const bucket = this.getMergeBucket(item);
+      const tier = this.getItemTier(item);
+      if (!bucket || item.id === "none_ability" || tier <= 0) return "";
+      const maxTier = this.getItemMaxTier(item);
+      const copies = this.getCopyCount(item, tier);
+      const progress = clamp(copies / MERGE_COPY_REQUIREMENT, 0, 1);
+      const nextTier = Math.min(maxTier, tier + 1);
+      const totalCopies = this.getTotalCopyCount(item);
+      return `
+        <div class="merge-inventory-panel">
+          <div class="merge-inventory-row"><span>Merge inventory</span><strong>${copies}/${MERGE_COPY_REQUIREMENT}</strong></div>
+          <div class="merge-progress-track"><div class="merge-progress-fill" style="width:${Math.round(progress * 100)}%;"></div></div>
+          <div class="merge-inventory-row"><span>${MERGE_TIER_LABELS[tier] || `Tier ${tier}`} → ${MERGE_TIER_LABELS[nextTier] || `Tier ${nextTier}`}</span><strong>${totalCopies} total copies</strong></div>
+        </div>
+      `;
+    }
+    grantItemCopy(id) {
+      const item = ITEM_LOOKUP[id];
+      const bucket = this.getMergeBucket(item);
+      if (!item || !bucket) return false;
+      const currentTier = Math.max(1, this.getItemTier(item) || 1);
+      this.progress.itemCopies = this.progress.itemCopies || { abilities: {}, putters: {} };
+      this.progress.itemCopies[bucket] = this.progress.itemCopies[bucket] || {};
+      this.progress.itemCopies[bucket][id] = this.progress.itemCopies[bucket][id] || {};
+      this.progress.itemCopies[bucket][id][currentTier] = this.getCopyCount(item, currentTier) + 1;
+      this.progress.ownedItems[id] = true;
+      if (item.type === "ability" && this.getAbilityTier(id) <= 0) this.progress.abilityLevels[id] = 1;
+      if (item.type === "putter" && this.getPutterTier(id) <= 0) this.progress.putterLevels[id] = 1;
+      return true;
+    }
+    canMergeItem(id) {
+      const item = ITEM_LOOKUP[id];
+      const bucket = this.getMergeBucket(item);
+      if (!bucket) return false;
+      const tier = this.getItemTier(item);
+      const maxTier = this.getItemMaxTier(item);
+      return tier > 0 && tier < maxTier && this.getCopyCount(item, tier) >= MERGE_COPY_REQUIREMENT;
+    }
+    mergeItem(id) {
+      const item = ITEM_LOOKUP[id];
+      const bucket = this.getMergeBucket(item);
+      if (!item || !bucket || !this.canMergeItem(id)) return;
+      const tier = this.getItemTier(item);
+      this.progress.itemCopies[bucket][id][tier] = Math.max(0, this.getCopyCount(item, tier) - MERGE_COPY_REQUIREMENT);
+      if (item.type === "ability") this.progress.abilityLevels[id] = tier + 1;
+      if (item.type === "putter") this.progress.putterLevels[id] = tier + 1;
+      this.progress.ownedItems[id] = true;
+      saveProgress(this.progress);
+      emitGameFx('tree');
+      this.refreshMetaUi();
+      this.applyCurrentLoadout();
+      this.unlockNote.textContent = `${item.name} merged to ${MERGE_TIER_LABELS[tier + 1] || `Tier ${tier + 1}`}.`;
+      this.showMergeReveal(item, tier, tier + 1);
     }
     isTreeNodeUnlocked(nodeId) {
       return Boolean(this.progress.treeUnlocks && this.progress.treeUnlocks[nodeId]);
@@ -7580,11 +8213,71 @@
       }
       return ready;
     }
+    getMergeWorkshopItems(tabKey) {
+      const items = tabKey === "putters"
+        ? PUTTER_SHOP.filter(item => item.id !== "starter_putter")
+        : tabKey === "balls"
+          ? ABILITY_SHOP.filter(item => item.id !== "none_ability")
+          : [];
+      return items
+        .filter(item => this.getItemTier(item) > 0)
+        .map(item => {
+          const tier = this.getItemTier(item);
+          const copies = this.getCopyCount(item, tier);
+          return {
+            item,
+            tier,
+            copies,
+            ready: this.canMergeItem(item.id),
+            progress: clamp(copies / MERGE_COPY_REQUIREMENT, 0, 1)
+          };
+        })
+        .sort((a, b) => Number(b.ready) - Number(a.ready) || b.progress - a.progress || b.tier - a.tier);
+    }
+    renderMergeWorkshop(tabKey) {
+      const entries = this.getMergeWorkshopItems(tabKey);
+      if (!entries.length) return "";
+      const readyCount = entries.filter(entry => entry.ready).length;
+      const lead = entries[0];
+      const label = tabKey === "putters" ? "Putter Forge" : "Ball Lab";
+      const nextTier = MERGE_TIER_LABELS[Math.min(this.getItemMaxTier(lead.item), lead.tier + 1)] || `Tier ${lead.tier + 1}`;
+      return `
+        <section class="shop-section">
+          <h3>${label}</h3>
+          <div class="merge-pro-panel">
+            <div class="merge-tier-row">
+              <div class="shop-preview">${this.renderShopPreview(lead.item)}</div>
+              <div style="flex:1;">
+                <h3>${readyCount ? `${readyCount} merge ready` : `${lead.item.name} is closest`}</h3>
+                <p>${readyCount ? "Fuse duplicate copies to push your active gear up a tier." : `${lead.copies}/${MERGE_COPY_REQUIREMENT} copies toward ${nextTier}.`}</p>
+              </div>
+              ${lead.ready ? `<button class="primary" data-action="merge" data-id="${lead.item.id}">Merge</button>` : `<strong>${Math.round(lead.progress * 100)}%</strong>`}
+            </div>
+            <div class="merge-stat-grid">
+              ${entries.slice(0, 3).map(entry => `
+                <div class="merge-stat">
+                  <b>${entry.ready ? "Ready" : MERGE_TIER_LABELS[entry.tier] || `Tier ${entry.tier}`}</b>
+                  <span>${entry.item.name}<br />${entry.copies}/${MERGE_COPY_REQUIREMENT}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </section>
+      `;
+    }
     renderStats() {
       const stats = this.progress.stats;
       const streak = getDailyStreak(this.progress);
       const collection = getCollectionProgress(this.progress);
       const nextGoal = getNextLongTermGoal(this.progress);
+      const courseRows = COURSE_LOCATION_ORDER.map(id => {
+        const location = COURSE_LOCATIONS[id];
+        const unlocked = isCourseLocationUnlocked(this.progress, id);
+        const clears = Math.max(0, Number(this.progress.courseLocationClears?.[id]?.clears) || 0);
+        const bestMedal = this.progress.courseLocationClears?.[id]?.bestMedal || "None";
+        const requirement = getCourseLocationUnlockRequirement(id);
+        return `${unlocked ? "✓" : "•"} ${location.name}: <strong>${unlocked ? `${clears} clear${clears === 1 ? "" : "s"} · best ${bestMedal}` : requirement}</strong>`;
+      }).join("<br />");
       const cards = [
         { label: 'Rounds', value: stats.roundsCompleted },
         { label: 'Holes', value: stats.holesCompleted },
@@ -7601,7 +8294,7 @@
           <span>${card.label}</span>
         </div>
       `).join("");
-      this.statsSubhead.textContent = `${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Practice'} • Theme ${this.theme.name}`;
+      this.statsSubhead.textContent = `${this.difficulty.label} • ${this.modeKey === 'daily' ? 'Daily' : 'Practice'} • ${this.courseLocation?.name || "Open Links"} • Theme ${this.theme.name}`;
       this.statsNotes.innerHTML = `
         <strong>Loadout profile</strong><br />
         Favorite ball: <strong>${this.getFavoriteFromUsage(stats.usage.cosmetics, 'Classic')}</strong><br />
@@ -7612,6 +8305,8 @@
         <strong>Progression</strong><br />
         Beginner ${this.getBranchClears('beginner')} clears · Average ${this.getBranchClears('average')} clears · Hardcore ${this.getBranchClears('hardcore')} clears.<br />
         Ready nodes: <strong>${this.getTreeReadyCount()}</strong> · Collection: <strong>${collection.owned}/${collection.total}</strong>.<br />
+        <br /><strong>Course tour</strong><br />
+        ${courseRows}<br />
         Ball mastery: <strong>${formatMasteryLabel(this.progress, 'cosmetics', this.progress.equippedCosmetic, 'Classic')}</strong><br />
         Trail mastery: <strong>${formatMasteryLabel(this.progress, 'trails', this.progress.equippedTrail, 'No Trail')}</strong><br />
         Core mastery: <strong>${formatMasteryLabel(this.progress, 'abilities', this.progress.equippedAbility, 'Standard Core')}</strong>.<br /><br />
@@ -7982,7 +8677,7 @@
       }
       if (item.type === 'putter') {
         const currentTier = this.getPutterTier(id);
-        if (currentTier >= 3) return;
+        if (currentTier >= this.getItemMaxTier(item)) return;
       }
       const cost = this.getItemCost(item);
       if (this.progress.golfBalls < cost) return;
@@ -8048,18 +8743,18 @@
         } else if (r < 0.95) {
           const ballPool = ABILITY_SHOP.filter(item => item.cost > 0 && this.getAbilityTier(item.id) < Math.min(item.maxTier || 1, rarityRank + 1));
           const item = ballPool.sort((a, b) => b.cost - a.cost)[Math.floor(rng() * Math.min(ballPool.length, Math.max(1, rarityRank + 2)))];
-          loot.push(item ? { type: 'ability_level', id: item.id, tier: this.getAbilityTier(item.id) + 1, label: 'New Ball' } : null);
+          loot.push(item ? { type: 'ability_copy', id: item.id, tier: Math.max(1, this.getAbilityTier(item.id) || 1), label: this.getAbilityTier(item.id) > 0 ? 'Power Ball Copy' : 'New Power Ball' } : null);
         } else if (r < 0.985) {
           const skinPool = PUTTER_SKINS.filter(item => item.cost > 0 && !this.hasOwnedItem(item.id));
           loot.push(skinPool.length ? { type: 'owned_item', id: skinPool[Math.floor(rng() * skinPool.length)].id, label: 'Putter Skin' } : null);
         } else {
-          const clubPool = PUTTER_SHOP.filter(item => item.cost > 0 && this.getPutterTier(item.id) < Math.min(3, rarityRank));
+          const clubPool = PUTTER_SHOP.filter(item => item.cost > 0 && this.getPutterTier(item.id) < Math.min(this.getItemMaxTier(item), rarityRank + 1));
           const weighted = clubPool.flatMap(item => {
             const weight = item.rarity === 'legendary' ? 1 : item.rarity === 'epic' ? 2 : item.rarity === 'rare' ? 3 : 5;
             return Array.from({ length: weight }, () => item);
           });
           const item = weighted[Math.floor(rng() * weighted.length)];
-          loot.push(item ? { type: 'putter_level', id: item.id, tier: this.getPutterTier(item.id) + 1, label: 'Putter Club' } : null);
+          loot.push(item ? { type: 'putter_copy', id: item.id, tier: Math.max(1, this.getPutterTier(item.id) || 1), label: this.getPutterTier(item.id) > 0 ? 'Putter Copy' : 'New Putter' } : null);
         }
       }
       const filtered = loot.filter(Boolean);
@@ -8080,30 +8775,138 @@
         } else if (drop.type === 'putter_level') {
           this.progress.ownedItems[drop.id] = true;
           this.progress.putterLevels[drop.id] = Math.max(this.getPutterTier(drop.id), drop.tier || 1);
+        } else if (drop.type === 'ability_copy' || drop.type === 'putter_copy') {
+          this.grantItemCopy(drop.id);
         }
       });
     }
     showChestReveal(chest, loot) {
       const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
       if (this.weeklyChestHeading) this.weeklyChestHeading.textContent = chest.name;
+      if (this.closeWeeklyChestBtn) this.closeWeeklyChestBtn.textContent = "Continue";
       this.weeklyChestSubhead.textContent = `${chest.name} cracked open.`;
       this.weeklyChestTitle.textContent = "Chest Contents";
-      //this.weeklyChestCopy.textContent = "Stars turned into loot. Direct shop buys still use golf balls.";
+      this.weeklyChestCopy.textContent = "Stars turned into loot. Direct shop buys still use golf balls.";
       this.weeklyChestRewards.innerHTML = `<div class="loot-list">${loot.map(drop => {
         if (drop.type === 'stars') return `<div class="loot-row"><div class="shop-preview">${this.renderLootPreview(drop)}</div><div>+${drop.amount} stars</div></div>`;
         if (drop.type === 'golf_balls') return `<div class="loot-row"><div class="shop-preview">${this.renderLootPreview(drop)}</div><div>+${formatGolfBalls(drop.amount)}</div></div>`;
         const item = ITEM_LOOKUP[drop.id];
-        const tier = drop.type === 'ability_level' || drop.type === 'putter_level' ? ` · Tier ${drop.tier}` : '';
+        const tier = ['ability_level', 'putter_level', 'ability_copy', 'putter_copy'].includes(drop.type) ? ` · ${MERGE_TIER_LABELS[drop.tier] || `Tier ${drop.tier}`}` : '';
         return `<div class="loot-row"><div class="shop-preview">${this.renderShopPreview(item)}</div><div>${drop.label || 'Loot'}: ${item?.name || drop.id}${tier}</div></div>`;
       }).join("")}</div>`;
       if (badge) {
         badge.textContent = "★";
-        badge.classList.remove('opening');
+        badge.style.background = "";
+        badge.classList.remove('opening', 'merging');
         void badge.offsetWidth;
         badge.classList.add('opening');
       }
       this.weeklyChestModal.style.display = 'flex';
       this.weeklyChestResolve = null;
+    }
+    showMergeReveal(item, fromTier, toTier) {
+      const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
+      const fromLabel = MERGE_TIER_LABELS[fromTier] || `Tier ${fromTier}`;
+      const toLabel = MERGE_TIER_LABELS[toTier] || `Tier ${toTier}`;
+      const isPutter = item.type === "putter";
+      if (this.weeklyChestHeading) this.weeklyChestHeading.textContent = item.type === "putter" ? "Putter Merge" : "Ball Merge";
+      if (this.closeWeeklyChestBtn) this.closeWeeklyChestBtn.textContent = "Done";
+      this.weeklyChestSubhead.textContent = `${MERGE_COPY_REQUIREMENT} duplicate copies fused into a cleaner tier.`;
+      this.weeklyChestTitle.textContent = `${item.name} Upgraded`;
+      this.weeklyChestCopy.textContent = this.getMergeEffectCopy(item, fromTier, toTier);
+      this.weeklyChestRewards.innerHTML = `
+        <div class="merge-pro-panel">
+          <div class="merge-tier-row">
+            <div class="shop-preview">${this.renderShopPreview(item)}</div>
+            <div style="flex:1;">
+              <h3>${item.name}</h3>
+              <p>${item.effect?.label || (isPutter ? "Club effect" : "Power ball effect")}</p>
+            </div>
+            <strong>${toLabel}</strong>
+          </div>
+          <div class="merge-stat-grid">
+            <div class="merge-stat"><b>Before</b><span>${fromLabel}</span></div>
+            <div class="merge-stat"><b>After</b><span>${toLabel}</span></div>
+            <div class="merge-stat"><b>Copies Used</b><span>${MERGE_COPY_REQUIREMENT}</span></div>
+          </div>
+          <div class="merge-progress-track"><div class="merge-progress-fill" style="width:100%;"></div></div>
+        </div>
+      `;
+      if (badge) {
+        badge.textContent = item.type === "putter" ? "⛳" : "●";
+        badge.style.background = isPutter
+          ? "linear-gradient(180deg, #111827 0%, #16a34a 100%)"
+          : "linear-gradient(180deg, #111827 0%, #2563eb 100%)";
+        badge.classList.remove('opening', 'merging');
+        void badge.offsetWidth;
+        badge.classList.add('merging');
+      }
+      this.weeklyChestModal.style.display = 'flex';
+      this.weeklyChestResolve = () => {
+        const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
+        if (badge) badge.style.background = "";
+      };
+    }
+    showCourseUnlockReveal(locationUpdate, onContinue = null) {
+      if (!locationUpdate) {
+        if (typeof onContinue === 'function') onContinue();
+        return;
+      }
+      const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
+      const next = locationUpdate.nextUnlocked;
+      const location = locationUpdate.location || this.courseLocation;
+      const medal = locationUpdate.medal || locationUpdate.track?.bestMedal || "Bronze";
+      const medalColors = {
+        Gold: "#facc15",
+        Silver: "#d1d5db",
+        Bronze: "#d97706"
+      };
+      const shotLine = Number.isFinite(locationUpdate.totalShots) && Number.isFinite(locationUpdate.totalPar)
+        ? `${locationUpdate.totalShots} strokes on par ${locationUpdate.totalPar}`
+        : "Practice clear banked";
+      if (this.weeklyChestHeading) this.weeklyChestHeading.textContent = next ? "Course Unlocked" : "Course Cleared";
+      if (this.closeWeeklyChestBtn) this.closeWeeklyChestBtn.textContent = "Continue";
+      this.weeklyChestSubhead.textContent = location?.name || "Practice Course";
+      this.weeklyChestTitle.textContent = next ? next.name : "Clear Banked";
+      this.weeklyChestCopy.textContent = next
+        ? `${next.terrain}. The next stop on the tour is ready from Course Select.`
+        : `Best medal: ${locationUpdate.track?.bestMedal || medal}. Keep grinding this course for cleaner lines.`;
+      this.weeklyChestRewards.innerHTML = `
+        <div class="course-trophy-panel" style="border-color:${location?.style?.accent || "#111827"};">
+          <div class="course-trophy-head">
+            <div>
+              <h3>${location?.name || "Practice Course"} Trophy</h3>
+              <p>${shotLine} · ${location?.terrain || "tour course"}</p>
+            </div>
+            <div class="course-trophy-medal" style="background:${medalColors[medal] || "#f9fafb"};">${medal[0] || "C"}</div>
+          </div>
+          <div class="course-trophy-grid">
+            <div class="course-trophy-stat"><b>Medal</b><span>${medal}</span></div>
+            <div class="course-trophy-stat"><b>Clears</b><span>${locationUpdate.track?.clears || 1}</span></div>
+            <div class="course-trophy-stat"><b>Best</b><span>${locationUpdate.track?.bestMedal || medal}</span></div>
+          </div>
+          <div class="loot-list">
+            <div class="loot-row"><div class="shop-preview">${renderGolfBallIconSvg()}</div><div>+${locationUpdate.rewardGolfBalls || 0} course clear golf balls</div></div>
+            <div class="loot-row"><div class="shop-preview">${this.renderLootPreview({ type: "stars" })}</div><div>+${locationUpdate.rewardStars || 0} course clear stars</div></div>
+            ${next ? `<div class="loot-row"><div class="shop-preview">${this.renderCourseBadgePreview(next)}</div><div><strong>${next.name}</strong><br />Unlocked for Practice rounds</div></div>` : ""}
+          </div>
+        </div>
+      `;
+      if (badge) {
+        badge.textContent = next ? "⛳" : medal[0] || "✓";
+        badge.style.background = (next?.style?.accent || location?.style?.accent)
+          ? `linear-gradient(180deg, ${next?.style?.accent || location?.style?.accent} 0%, #111827 100%)`
+          : "";
+        badge.classList.remove('opening', 'merging');
+        void badge.offsetWidth;
+        badge.classList.add('opening');
+      }
+      this.weeklyChestModal.style.display = 'flex';
+      this.weeklyChestResolve = () => {
+        const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
+        if (badge) badge.style.background = "";
+        if (typeof onContinue === 'function') onContinue();
+      };
     }
     buyDailyReward(id) {
       const item = ITEM_LOOKUP[id];
@@ -8144,6 +8947,7 @@
     }
     renderShop() {
       const featured = this.getDailyFeaturedOffer();
+      if (this.currentShopTab === "powers") this.currentShopTab = "balls";
       this.shopTabButtons.forEach(button => button.classList.toggle('active', button.dataset.shopTab === this.currentShopTab));
       const treeMarkup = `
         <section class="shop-section">
@@ -8154,8 +8958,9 @@
         </section>
       `;
       const sectionGroups = {
-        powers: ['upgrades', 'abilities', 'putters'],
-        skins: ['cosmetics', 'trails', 'putter_skins']
+        balls: ['upgrades', 'abilities'],
+        putters: ['putters', 'putter_skins'],
+        skins: ['cosmetics', 'trails']
       };
       const tabSections = this.currentShopTab === 'tree'
         ? treeMarkup
@@ -8183,7 +8988,8 @@
                 .map(item => this.renderShopItem(item, featured)).join("")}
             </section>
           `).join("");
-      this.shopList.innerHTML = tabSections;
+      const workshopMarkup = ["balls", "putters"].includes(this.currentShopTab) ? this.renderMergeWorkshop(this.currentShopTab) : "";
+      this.shopList.innerHTML = workshopMarkup + tabSections;
       this.shopList.querySelectorAll("button[data-tree-unlock]").forEach(button => {
         button.onclick = () => {
           const { branch, node } = button.dataset;
@@ -8195,6 +9001,7 @@
           const { action, id } = button.dataset;
           if (action === "buy") this.buyItem(id);
           if (action === "equip") this.equipItem(id);
+          if (action === "merge") this.mergeItem(id);
         };
       });
     }
@@ -8325,11 +9132,12 @@
         }
       } else if (item.type === 'putter') {
         const tier = this.getPutterTier(item.id);
+        const maxTier = this.getItemMaxTier(item);
         if (item.id === 'starter_putter') {
           button = equipped
             ? `<button class="secondary" disabled>Equipped</button>`
             : `<button class="primary" data-action="equip" data-id="${item.id}">Equip</button>`;
-        } else if (tier >= 3) {
+        } else if (tier >= maxTier) {
           button = equipped
             ? `<button class="secondary" disabled>Maxed</button>`
             : `<button class="primary" data-action="equip" data-id="${item.id}">Equip</button>`;
@@ -8350,9 +9158,9 @@
       const tag = item.type === 'ability'
         ? (item.id === 'none_ability'
           ? (equipped ? "Default core · equipped" : "Default core")
-          : `Tier ${this.getAbilityTier(item.id)}/${item.maxTier}`)
+          : `${MERGE_TIER_LABELS[this.getAbilityTier(item.id)] || `Tier ${this.getAbilityTier(item.id)}`} · ${this.getAbilityTier(item.id)}/${item.maxTier}`)
         : item.type === 'putter'
-        ? `Tier ${this.getPutterTier(item.id)}/3 · ${item.rarity || 'common'}`
+        ? `${MERGE_TIER_LABELS[this.getPutterTier(item.id)] || `Tier ${this.getPutterTier(item.id)}`} · ${this.getPutterTier(item.id)}/${this.getItemMaxTier(item)} · ${item.rarity || 'common'}`
         : item.id === 'preview_path' && !owned
         ? `Costs ${cost} golf balls`
         : owned
@@ -8361,16 +9169,30 @@
           ? `Today only: ${cost} golf balls`
           : `Costs ${cost} golf balls`;
       const rewardBadge = item.trackReward ? `<div class="shop-badge">${DIFFICULTY_PRESETS[item.trackReward].label} Track</div>` : featuredBadge;
+      const mergeBucket = this.getMergeBucket(item);
+      const mergeTier = mergeBucket ? this.getItemTier(item) : 0;
+      const mergeCopies = mergeBucket && mergeTier > 0 ? this.getCopyCount(item, mergeTier) : 0;
+      const mergeReady = mergeBucket && this.canMergeItem(item.id);
+      const mergeCopy = mergeBucket && item.id !== 'none_ability'
+        ? `<div class="shop-badge">${mergeCopies}/${MERGE_COPY_REQUIREMENT} duplicate copies toward ${MERGE_TIER_LABELS[mergeTier + 1] || `Tier ${mergeTier + 1}`}</div>`
+        : "";
+      const mergeInventory = this.renderMergeInventoryPanel(item);
+      const mergeButton = mergeReady
+        ? `<button class="primary" data-action="merge" data-id="${item.id}">Merge</button>`
+        : "";
+      const actionMarkup = mergeButton ? `${button}${mergeButton}` : button;
       return `
         <div class="shop-item">
           <div class="shop-preview">${this.renderShopPreview(item)}</div>
           <div>
             <h3>${item.name}</h3>
-            <p>${item.description}</p>
+            <p>${item.description}${item.effect?.description ? ` ${item.effect.label}: ${item.effect.description}` : ""}</p>
             <span class="shop-tag">${tag}</span>
             ${rewardBadge}
+            ${mergeCopy}
+            ${mergeInventory}
           </div>
-          <div class="shop-action">${button}</div>
+          <div class="shop-action">${actionMarkup}</div>
         </div>
       `;
     }
@@ -8396,6 +9218,19 @@
       }
       const item = ITEM_LOOKUP[drop.id];
       return this.renderShopPreview(item);
+    }
+    renderCourseBadgePreview(location) {
+      const accent = location?.style?.accent || "#111827";
+      const bg = location?.style?.bg || "#ffffff";
+      const glyph = location?.name?.slice(0, 1) || "C";
+      return `
+        <svg width="34" height="34" viewBox="0 0 52 52" aria-hidden="true">
+          <rect x="8" y="8" width="36" height="36" rx="10" fill="${bg}" stroke="#111111" stroke-width="2.5" />
+          <path d="M17 34 C22 29 31 29 36 34" fill="none" stroke="${accent}" stroke-width="3" stroke-linecap="round" />
+          <circle cx="26" cy="23" r="8" fill="${accent}" />
+          <text x="26" y="27" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">${glyph}</text>
+        </svg>
+      `;
     }
     renderPutterPreview(item) {
       const isSkin = item.type === "putter_skin";
@@ -8583,6 +9418,7 @@
         this.getCurrentLoadout(),
         {
           theme: this.theme,
+          courseLocation: this.courseLocation,
           challengeRule: this.challengeRule,
           difficulty: this.difficulty,
           onFirstShot: () => this.commitDailyAttempt(),
@@ -8598,8 +9434,8 @@
     showHoleIntro(data) {
       if (this.introTimer) clearTimeout(this.introTimer);
       const introCopy = this.modeKey === 'daily'
-        ? `${this.dailySignature?.variantName || data.dailyVariant || "Daily Challenge"}${this.dailySignature?.variantDescription ? `<br />${this.dailySignature.variantDescription}` : ""}<br />${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br /><strong>Warning:</strong> ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}${this.level?.shotLimit ? `<br />Stroke cap: ${this.level.shotLimit} on this hole` : ''}<br />Daily ${getTodayKey()} • One official run.`
-        : `${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}`;
+        ? `${this.courseLocation?.name || this.dailySignature?.locationName || "Daily Course"} • ${this.courseLocation?.terrain || this.dailySignature?.locationTerrain || "mixed terrain"}<br />${this.dailySignature?.variantName || data.dailyVariant || "Daily Challenge"}${this.dailySignature?.variantDescription ? `<br />${this.dailySignature.variantDescription}` : ""}<br />${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br /><strong>Warning:</strong> ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}${this.level?.shotLimit ? `<br />Stroke cap: ${this.level.shotLimit} on this hole` : ''}<br />Daily ${getTodayKey()} • One official run.`
+        : `${this.courseLocation?.name || "Open Practice"} • ${this.courseLocation?.terrain || "mixed terrain"}<br />${formatLayoutLabel(data.layoutType)} layout${data.setpiece && data.setpiece.id !== 'none' ? `<br />Setpiece: ${data.setpiece.name}` : ''}${data.hazardTheme ? `<br />Spotlight: ${data.hazardTheme.name}` : ''}<br />Modifier: ${data.modifier?.name || 'None'}`;
       this.introEl.innerHTML = `
         <div class="overlay-card">
           <div class="intro-title">${this.theme.name} Theme • ${this.challengeRule.name}${this.modeKey === 'daily' && (data.setpiece?.id !== 'none' || data.hazardTheme) ? ' • Signature Hole' : ''}</div>
@@ -8669,6 +9505,7 @@
       const golfBallReward = isLast ? getRoundGolfBallReward(roundMedal, this.modeKey, this.difficultyKey, false) : 0;
       const bestImproved = isLast ? this.updateBestRound(totalPar, totalShots) : false;
       const trackUpdate = isLast ? this.updateDifficultyTrack(totalPar, totalShots) : null;
+      const locationUpdate = isLast ? this.completeCourseLocation(totalPar, totalShots) : null;
       if (isLast) {
         this.progress.stats.roundsCompleted++;
         this.progress.golfBalls = Math.max(0, Number(this.progress.golfBalls) || 0) + golfBallReward;
@@ -8709,6 +9546,8 @@
             ${socialLine}
             ${this.modeKey === 'daily' ? `${this.getRankGapCopy(totalPar, totalShots)}${tokenReward ? `<br />+${tokenReward} Daily Token${tokenReward === 1 ? '' : 's'}.` : ''}` : ""}
             ${golfBallReward ? `<br />+${golfBallReward} golf ball${golfBallReward === 1 ? '' : 's'} for ${roundMedal}.` : ""}
+            ${locationUpdate ? `<br />Course clear: +${locationUpdate.rewardGolfBalls || 0} golf balls, +${locationUpdate.rewardStars || 0}★.` : ""}
+            ${locationUpdate?.nextUnlocked ? `<br />Course unlocked: ${locationUpdate.nextUnlocked.name}.` : ""}
             ${this.modeKey === 'daily' && weeklyChestRewards.length ? `<br />${weeklyChestRewards.join(" ")}` : ""}
             ${this.modeKey === 'daily' && masteryRewards.length ? `<br />${masteryRewards.join(" ")}` : ""}
             ${this.modeKey === 'daily' && calendarRewards.length ? `<br />${calendarRewards.join(" ")}` : ""}
@@ -8724,7 +9563,7 @@
                   : calendarRewards.length
                     ? calendarRewards.join(" ")
                     : `${roundRankTier} banked • +${golfBallReward} golf ball${golfBallReward === 1 ? '' : 's'}${tokenReward ? ` • +${tokenReward}◈ Daily Tokens` : ''}.`
-            : `${trackUpdate?.rewardMessage || `${roundMedal} medal banked for ${this.difficulty.label}.`} +${golfBallReward} golf ball${golfBallReward === 1 ? '' : 's'}.`;
+            : `${locationUpdate?.nextUnlocked ? `${locationUpdate.nextUnlocked.name} unlocked. ` : ""}${trackUpdate?.rewardMessage || `${roundMedal} medal banked for ${this.courseLocation?.name || this.difficulty.label}.`} +${golfBallReward} medal golf ball${golfBallReward === 1 ? '' : 's'}${locationUpdate ? ` • +${locationUpdate.rewardGolfBalls || 0} course golf balls • +${locationUpdate.rewardStars || 0}★` : ""}.`;
         } else {
           this.roundSummaryEl.style.display = 'none';
           this.roundSummaryEl.innerHTML = '';
@@ -8753,6 +9592,10 @@
       this.showRewardBurst({ starsEarned, resultLabel, streakBonus, cleanStreak: this.cleanStreak }, () => {
         if (isLast && this.modeKey === 'daily' && weeklyChestRewards.length) {
           this.showWeeklyChestReveal(weeklyChestRewards, revealScorecard);
+          return;
+        }
+        if (isLast && this.modeKey !== 'daily' && locationUpdate) {
+          this.showCourseUnlockReveal(locationUpdate, revealScorecard);
           return;
         }
         revealScorecard();
@@ -8874,9 +9717,10 @@
       this.dailySignature = this.modeKey === "daily"
         ? getDailyCourseSignature(getTodayKey(), this.difficultyKey, this.roundHoleCount, this.progress)
         : null;
-      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
+      this.courseLocation = pickCourseLocation(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress, this.selectedLocationId);
+      this.theme = pickCourseTheme(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress, this.courseLocation);
       this.challengeRule = pickChallengeRule(this.roundRng, this.difficultyKey, this.modeKey, this.roundHoleCount, this.progress);
-      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey);
+      this.levels = generateCourse(this.seed, this.roundHoleCount, this.difficultyKey, this.progress, this.modeKey, this.courseLocation);
       this.dailyRoundShotLimit = this.modeKey === "daily" ? getDailyRoundShotLimit(this.levels, this.difficultyKey) : null;
       this.dailyAttemptCommitted = this.modeKey === "daily"
         ? Math.max(0, Number(getDailyAttemptRecord(this.progress, getTodayKey(), this.difficultyKey)?.attemptsUsed) || 0) > 0
@@ -8896,6 +9740,8 @@
         mode: this.scorecardEl.style.display === 'flex' ? 'scorecard' : 'playing',
         modeKey: this.modeKey,
         difficulty: this.difficultyKey,
+        courseLocation: this.courseLocation?.id || null,
+        courseLocationName: this.courseLocation?.name || null,
         theme: this.theme.id,
         challengeRule: this.challengeRule.id,
         seed: this.seed,
@@ -8917,6 +9763,7 @@
         holeCount: this.levels.length,
         archetype: level ? level.data.archetype : null,
         layoutType: level ? level.data.layoutType : null,
+        holeLocation: level ? level.data.locationId || this.courseLocation?.id || null : null,
         handmadeMapId: level ? level.data.handmadeMapId || null : null,
         handmadeMapName: level ? level.data.handmadeMapName || null : null,
         hazardTheme: level ? level.data.hazardTheme?.id || null : null,
@@ -8985,6 +9832,8 @@
     this.frameRequestId = null;
     this.zoomRestoreState = null;
     this.theme = roundConfig.theme || COURSE_THEMES.classic;
+    this.courseLocation = roundConfig.courseLocation || null;
+    this.courseStyle = this.courseLocation?.style || {};
     this.challengeRule = roundConfig.challengeRule || CHALLENGE_RULES.none;
     this.difficulty = roundConfig.difficulty || DIFFICULTY_PRESETS.average;
     this.isCapturingReplay = false;
@@ -9439,8 +10288,12 @@
 
   renderBackground(ctx, left, top, right, bottom, scale = 1) {
     const theme = ctx.__courseTheme || this.theme;
+    const style = this.courseStyle || {};
     const spacing = 80;
-    ctx.fillStyle = theme.glyphColor;
+    ctx.save();
+    ctx.fillStyle = style.bg || "#ffffff";
+    ctx.fillRect(left - spacing, top - spacing, (right - left) + spacing * 2, (bottom - top) + spacing * 2);
+    ctx.fillStyle = style.glyphColor || theme.glyphColor;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = `12px system-ui, -apple-system, sans-serif`;
@@ -9450,9 +10303,10 @@
     const endY = Math.ceil((bottom + spacing) / spacing) * spacing;
     for (let gx = startX; gx <= endX; gx += spacing) {
       for (let gy = startY; gy <= endY; gy += spacing) {
-        ctx.fillText(theme.glyph, gx, gy);
+        ctx.fillText(getThemeGlyph(theme, gx, gy), gx, gy);
       }
     }
+    ctx.restore();
   }
 
   renderWorld(ctx) {
@@ -9461,6 +10315,7 @@
     const viewRight = this.camera.x + this.camera.canvasWidth / this.camera.zoom;
     const viewBottom = this.camera.y + this.camera.canvasHeight / this.camera.zoom;
     ctx.__courseTheme = this.theme;
+    ctx.__courseStyle = this.courseStyle;
     this.renderBackground(ctx, viewLeft, viewTop, viewRight, viewBottom);
     this.walls.forEach(w => w.render(ctx));
     this.sandTraps.forEach(trap => trap.render(ctx));
@@ -9850,6 +10705,96 @@
     this.renderHudOverlay(ctx);
   }
 
+  truncateCanvasText(ctx, text, maxWidth) {
+    const source = String(text || "");
+    if (ctx.measureText(source).width <= maxWidth) return source;
+    let clipped = source;
+    while (clipped.length > 1 && ctx.measureText(`${clipped}...`).width > maxWidth) {
+      clipped = clipped.slice(0, -1);
+    }
+    return `${clipped}...`;
+  }
+
+  drawMiniBallIcon(ctx, x, y, radius = 8) {
+    const ball = this.ball;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = ball.style?.fill || "#ffffff";
+    ctx.fill();
+    if (ball.style?.split) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.fillStyle = "#111111";
+      ctx.fillRect(x, y - radius, radius + 2, radius * 2);
+      ctx.restore();
+    }
+    ctx.strokeStyle = ball.style?.stroke || "#111827";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    const dimpleColor = ball.style?.fill === "#111111" ? "rgba(255,255,255,0.58)" : "rgba(17,17,17,0.28)";
+    [[-0.32, -0.28], [0.18, -0.36], [0.34, 0.1], [-0.12, 0.32]].forEach(([dx, dy]) => {
+      ctx.beginPath();
+      ctx.arc(x + dx * radius, y + dy * radius, Math.max(0.8, radius * 0.12), 0, Math.PI * 2);
+      ctx.fillStyle = dimpleColor;
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  drawMiniPutterIcon(ctx, x, y, width = 18, height = 18) {
+    const putter = this.ball.putter || PUTTER_SHOP[0];
+    const skin = this.ball.putterSkin || PUTTER_SKINS[0];
+    const accent = skin.id === "crown_wrap" ? "#f59e0b" : skin.id === "chrome_face" ? "#6b7280" : putter.rarity === "legendary" ? "#111827" : "#374151";
+    ctx.save();
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x + width * 0.28, y + height * 0.12);
+    ctx.lineTo(x + width * 0.34, y + height * 0.78);
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.strokeStyle = "#111827";
+    roundedRectPath(ctx, x + width * 0.22, y + height * 0.68, width * 0.64, height * 0.22, 3);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  renderEquipmentOverlay(ctx, originX, originY, maxWidth, compact = false) {
+    const ball = this.ball;
+    const ballName = ball.style?.name || "Classic Ball";
+    const coreName = ball.ability?.id && ball.ability.id !== "none_ability"
+      ? `${ball.ability.name} ${MERGE_TIER_LABELS[ball.abilityTier] || `T${ball.abilityTier}`}`
+      : "Standard Core";
+    const putterName = `${ball.putter?.name || "Starter Putter"} ${MERGE_TIER_LABELS[ball.putterTier] || `T${ball.putterTier}`}`;
+    const panelWidth = Math.min(maxWidth, compact ? 288 : 360);
+    const panelHeight = compact ? 42 : 46;
+    const x = originX;
+    const y = originY;
+    ctx.save();
+    fillRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, "rgba(255,255,255,0.82)");
+    strokeRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, "rgba(17,24,39,0.72)", 1.2);
+    this.drawMiniBallIcon(ctx, x + 22, y + panelHeight / 2, compact ? 7 : 8);
+    this.drawMiniPutterIcon(ctx, x + panelWidth - 36, y + 12, compact ? 17 : 19, compact ? 17 : 19);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#111827";
+    ctx.font = compact ? "700 11px system-ui, -apple-system, sans-serif" : "700 12px system-ui, -apple-system, sans-serif";
+    ctx.fillText(this.truncateCanvasText(ctx, ballName, panelWidth * 0.38), x + 38, y + 15);
+    ctx.font = compact ? "600 9.5px system-ui, -apple-system, sans-serif" : "600 10px system-ui, -apple-system, sans-serif";
+    ctx.fillStyle = "#4b5563";
+    ctx.fillText(this.truncateCanvasText(ctx, coreName, panelWidth * 0.42), x + 38, y + panelHeight - 13);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#111827";
+    ctx.font = compact ? "700 10px system-ui, -apple-system, sans-serif" : "700 11px system-ui, -apple-system, sans-serif";
+    ctx.fillText(this.truncateCanvasText(ctx, putterName, panelWidth * 0.32), x + panelWidth - 48, y + panelHeight / 2);
+    ctx.restore();
+  }
+
   renderHudOverlay(ctx) {
     const width = this.camera.canvasWidth;
     const isCompact = width <= 430;
@@ -9886,6 +10831,7 @@
       ctx.fillText(detailParts.join(" · "), x + 12, y + panelHeight - 11);
     }
     ctx.restore();
+    this.renderEquipmentOverlay(ctx, x, y + panelHeight + 8, Math.min(width - 20, isCompact ? 292 : 372), isCompact);
   }
 
   buildPreviewPath() {
@@ -10054,6 +11000,8 @@
       this.pulseStrength = 0;
       this.pulseTriggered = false;
       this.pulseFlash = 0;
+      this.rollAngle = 0;
+      this.rollDirection = 0;
       this.trailHistory = [];
       this.bounds = null;
       this.applyLoadout(loadout || { cosmetic: BALL_COSMETICS[0], trail: TRAIL_SHOP[0], ability: ABILITY_SHOP[0] });
@@ -10079,8 +11027,8 @@
       this.visualScale = 1;
       this.visualScaleX = 1;
       this.visualScaleY = 1;
-      this.pulseFrames = this.ability.id === "pulse_core" ? Math.max(10, 14 - this.abilityTier) : 0;
-      this.pulseStrength = this.ability.id === "pulse_core" ? (0.85 + this.abilityTier * 0.18) : 0;
+      this.pulseFrames = this.ability.id === "pulse_core" ? Math.max(7, 15 - this.abilityTier * 1.5) : 0;
+      this.pulseStrength = this.ability.id === "pulse_core" ? (0.8 + this.abilityTier * 0.22) : 0;
       this.pulseTriggered = false;
       this.pulseFlash = 0;
       if (this.ability.id === "air_hopper" && this.shotHopsRemaining > 0) {
@@ -10106,18 +11054,22 @@
       this.bounds = bounds || null;
       this.clampToBounds();
     }
+    getPutterEffectStrength(type, base = 1) {
+      if (this.putter?.effect?.type !== type) return 0;
+      return base * (1 + Math.max(0, this.putterTier - 1) * 0.45);
+    }
     getMaxPower() {
-      const putterPower = (this.putter?.stats?.power || 0) + this.putterTier * 0.18;
+      const putterPower = (this.putter?.stats?.power || 0) + this.putterTier * 0.18 + this.getPutterEffectStrength("power_face", 0.45);
       if (this.ability.id !== "power_core") return 12 + putterPower;
-      return 12 + this.abilityTier * 1.25 + putterPower;
+      return 12 + this.abilityTier * 1.25 + (this.abilityTier >= 5 ? 0.8 : 0) + putterPower;
     }
     getRollFriction() {
-      const putterControl = ((this.putter?.stats?.control || 0) + this.putterTier * 0.25) * 0.0008;
+      const putterControl = ((this.putter?.stats?.control || 0) + this.putterTier * 0.25 + this.getPutterEffectStrength("tempo_focus", 0.8) + this.getPutterEffectStrength("tour_resolve", 0.45)) * 0.0008;
       if (this.ability.id !== "true_roll") return 0.98 + putterControl;
       return 0.98 + this.abilityTier * 0.0025 + putterControl;
     }
     getBounceFactor(base) {
-      const forgiveness = ((this.putter?.stats?.forgiveness || 0) + this.putterTier * 0.2) * 0.025;
+      const forgiveness = ((this.putter?.stats?.forgiveness || 0) + this.putterTier * 0.2 + this.getPutterEffectStrength("soft_bank", 0.75) + this.getPutterEffectStrength("tour_resolve", 0.55)) * 0.025;
       if (this.ability.id === "bank_shot") return base * (1.12 + this.abilityTier * 0.06);
       if (this.ability.id === "needle_core") return base * (1.08 + this.abilityTier * 0.04);
       if (this.ability.id !== "soft_shell") return base * (1 - forgiveness);
@@ -10130,23 +11082,24 @@
     }
     getSandFactor() {
       if (this.ability.id !== "true_roll") return 0.9;
-      return 0.9 + this.abilityTier * 0.02;
+      return Math.min(0.995, 0.9 + this.abilityTier * 0.02 + (this.abilityTier >= 5 ? 0.035 : 0));
     }
     getCurveStrength() {
       if (this.ability.id !== "curve_core") return 0;
-      return 0.02 + this.abilityTier * 0.007;
+      return 0.02 + this.abilityTier * 0.007 + (this.abilityTier >= 5 ? 0.006 : 0);
     }
     getFieldResistance() {
       if (this.ability.id === "pressure_core") return 0.48;
-      if (this.ability.id !== "anchor_core") return 1;
-      return Math.max(0.38, 0.72 - this.abilityTier * 0.1);
+      const putterResistance = this.getPutterEffectStrength("tour_resolve", 0.08);
+      if (this.ability.id !== "anchor_core") return Math.max(0.82, 1 - putterResistance);
+      return Math.max(0.38, 0.72 - this.abilityTier * 0.1 - putterResistance);
     }
     hasSplitPreview() {
       return this.ability.id === "split_core" && this.abilityTier > 0;
     }
     getSplitPreviewOffset() {
       if (this.ability.id !== "split_core") return 0;
-      return 0.028 + this.abilityTier * 0.01;
+      return 0.028 + this.abilityTier * 0.01 + (this.abilityTier >= 5 ? 0.012 : 0);
     }
     getCurveDirectionFromAim(dx, dy) {
       if (this.ability.id !== "curve_core") return 1;
@@ -10158,7 +11111,7 @@
     }
     getHopCount() {
       if (this.ability.id !== "air_hopper") return 0;
-      const base = 1;
+      const base = this.abilityTier >= 4 ? 2 : 1;
       if (this.holeModifier && this.holeModifier.id === "one_hop_only") return Math.min(1, base);
       return base;
     }
@@ -10204,6 +11157,11 @@
         this.vy += (currentVx / speed) * curveStrength * curveScale * this.curveDirection * stepScale;
       }
       this.x += this.vx * stepScale; this.y += this.vy * stepScale;
+      const travel = Math.hypot(this.x - this.prevX, this.y - this.prevY);
+      if (travel > 0.001) {
+        this.rollAngle = (this.rollAngle + (travel / Math.max(1, this.radius)) * 0.72) % (Math.PI * 2);
+        this.rollDirection = Math.atan2(this.y - this.prevY, this.x - this.prevX);
+      }
       if (this.pulseFrames > 0) {
         this.pulseFrames = Math.max(0, this.pulseFrames - stepScale);
         if (!this.pulseTriggered && this.pulseFrames === 0 && this.speed() > 0.3) {
@@ -10407,6 +11365,42 @@
       ctx.lineWidth = outlineWidth;
       ctx.stroke();
     }
+    renderRollingDetail(ctx, renderRadiusX, renderRadiusY) {
+      if (this.speed() <= 0.08 && Math.abs(this.rollAngle) < 0.001) return;
+      const ink = this.style.fill === "#111111" ? "rgba(255,255,255,0.42)" : "rgba(17,17,17,0.28)";
+      const highlight = this.style.fill === "#111111" ? "rgba(255,255,255,0.24)" : "rgba(255,255,255,0.5)";
+      const squash = clamp(renderRadiusY / Math.max(1, renderRadiusX), 0.45, 1.3);
+      const dimpleRows = [
+        { y: -0.44, count: 3, phase: 0 },
+        { y: -0.12, count: 4, phase: 0.35 },
+        { y: 0.22, count: 3, phase: 0.7 }
+      ];
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y, Math.max(renderRadiusX - 1, 1), Math.max(renderRadiusY - 1, 1), 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rollDirection * 0.18);
+      ctx.scale(1, squash);
+      dimpleRows.forEach(row => {
+        for (let i = 0; i < row.count; i++) {
+          const spread = row.count <= 1 ? 0 : (i / (row.count - 1)) * 2 - 1;
+          const slide = Math.sin(this.rollAngle + row.phase + i * 0.75) * 0.28;
+          const px = (spread + slide) * renderRadiusX * 0.42;
+          const py = row.y * renderRadiusY / Math.max(0.45, squash);
+          const fade = 0.42 + 0.34 * Math.cos(this.rollAngle + i + row.phase);
+          ctx.beginPath();
+          ctx.ellipse(px, py, Math.max(0.7, renderRadiusX * 0.105), Math.max(0.45, renderRadiusY * 0.07), 0, 0, Math.PI * 2);
+          ctx.fillStyle = ink.replace(/[\d.]+\)$/u, `${clamp(fade * 0.32, 0.08, 0.34)})`);
+          ctx.fill();
+        }
+      });
+      ctx.beginPath();
+      ctx.arc(-renderRadiusX * 0.26, -renderRadiusY * 0.3 / Math.max(0.45, squash), Math.max(1, renderRadiusX * 0.16), 0, Math.PI * 2);
+      ctx.fillStyle = highlight;
+      ctx.fill();
+      ctx.restore();
+    }
     renderCoreGlyph(ctx, renderRadiusX, renderRadiusY) {
       const innerRadius = Math.max(3.2, Math.min(renderRadiusX, renderRadiusY) * 0.9);
       const strokeWidth = Math.max(1.05, innerRadius * 0.15);
@@ -10573,6 +11567,7 @@
         ctx.stroke();
       }
       this.renderBallShell(ctx, renderRadiusX, renderRadiusY);
+      this.renderRollingDetail(ctx, renderRadiusX, renderRadiusY);
       if (this.ability.id !== "none_ability" && this.abilityTier > 0) {
         this.renderCoreGlyph(ctx, renderRadiusX, renderRadiusY);
       }
@@ -10590,7 +11585,8 @@
     ctx.save();
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.rotate(this.rotation);
-    ctx.fillStyle = "black";
+    const style = ctx.__courseStyle || {};
+    ctx.fillStyle = style.wallFill || "black";
     ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
     const theme = ctx.__courseTheme;
     if (theme && theme.wallStroke) {
@@ -10681,7 +11677,8 @@
       ctx.save();
       ctx.beginPath();
       ctx.arc(this.cx, this.cy, this.radius, this.startAngle, this.endAngle);
-      ctx.strokeStyle = VISUAL_STYLE.ink;
+      const style = ctx.__courseStyle || {};
+      ctx.strokeStyle = style.wallFill || VISUAL_STYLE.ink;
       ctx.lineCap = "butt";
       ctx.lineWidth = this.thickness;
       ctx.stroke();
@@ -11391,7 +12388,7 @@ function renderThemeGlyphField(ctx, theme, width, height) {
   ctx.font = `12px system-ui, -apple-system, sans-serif`;
   for (let x = spacing / 2; x < width; x += spacing) {
     for (let y = spacing / 2; y < height; y += spacing) {
-      ctx.fillText(theme.glyph, x, y);
+      ctx.fillText(getThemeGlyph(theme, x, y), x, y);
     }
   }
   ctx.restore();
@@ -11496,6 +12493,8 @@ function renderObstacleGalleryPage() {
 
   let game = null;
   let startModeKey = "daily";
+  let startCourseLocationId = "pine_valley";
+  let startCourseSetupOpen = false;
 
   function countReadyTreeNodes(progress, branchKey = null) {
     const branches = branchKey ? { [branchKey]: PROGRESSION_TREE[branchKey] } : PROGRESSION_TREE;
@@ -11526,9 +12525,85 @@ function renderObstacleGalleryPage() {
     }
     return null;
   }
+  function normalizeStartCourseLocation(progress) {
+    if (isCourseLocationUnlocked(progress, startCourseLocationId)) return startCourseLocationId;
+    startCourseLocationId = COURSE_LOCATION_ORDER.find(id => isCourseLocationUnlocked(progress, id)) || "pine_valley";
+    return startCourseLocationId;
+  }
+  function renderCourseLocationPicker(progress, modeKey = "daily") {
+    const section = document.getElementById('courseLocationSection');
+    const list = document.getElementById('courseLocationList');
+    if (!list) return;
+    normalizeStartCourseLocation(progress);
+    if (section) section.style.display = modeKey === "daily" || startCourseSetupOpen ? "none" : "grid";
+    if (modeKey === "daily" || startCourseSetupOpen) {
+      list.innerHTML = "";
+      return;
+    }
+    list.innerHTML = COURSE_LOCATION_ORDER.map((id, index) => {
+      const location = COURSE_LOCATIONS[id];
+      const unlocked = isCourseLocationUnlocked(progress, id);
+      const active = id === startCourseLocationId;
+      const clears = Math.max(0, Number(progress.courseLocationClears?.[id]?.clears) || 0);
+      const bestMedal = progress.courseLocationClears?.[id]?.bestMedal || "None";
+      const hazards = (location.spotlightBias || [])
+        .map(hazardId => HAZARD_SPOTLIGHTS[hazardId]?.name)
+        .filter(Boolean)
+        .slice(0, 2)
+        .join(", ") || "Mixed Flow";
+      const mapPackCount = getCourseMapPackCount(id, null, "standard");
+      const chip = unlocked
+        ? (clears ? `${clears} clear${clears === 1 ? "" : "s"}` : "Unlocked")
+        : "Locked";
+      const copy = unlocked
+        ? location.description
+        : getCourseLocationUnlockRequirement(id);
+      return `
+        <button class="course-location-btn ${active ? "active" : ""} ${unlocked ? "" : "locked"}" data-course-location="${id}" ${!unlocked ? "disabled" : ""}>
+          <strong>${location.name}<em class="course-location-chip">${chip}</em></strong>
+          <span>${copy}</span>
+          <div class="course-location-meta">
+            <div><b>Terrain</b>${location.terrain}</div>
+            <div><b>Hazards</b>${hazards}</div>
+            <div><b>Maps</b>${mapPackCount ? `${mapPackCount} signature holes` : "Procedural mix"}</div>
+            <div><b>Best</b>${bestMedal}</div>
+            <div><b>Unlock</b>${index === 0 ? "Starter course" : getCourseLocationUnlockRequirement(id)}</div>
+          </div>
+        </button>
+      `;
+    }).join("");
+    list.querySelectorAll('[data-course-location]').forEach(button => {
+      button.onclick = () => {
+        const id = button.dataset.courseLocation;
+        if (!isCourseLocationUnlocked(loadProgress(), id)) return;
+        startCourseLocationId = id;
+        startCourseSetupOpen = true;
+        renderMenuMeta(startModeKey, startRoundLengthKey);
+      };
+    });
+  }
+  function renderCourseSetupPanel(progress, modeKey = "daily", roundLengthKey = "default") {
+    const panel = document.getElementById('courseSetupPanel');
+    if (!panel) return;
+    const title = document.getElementById('courseSetupTitle');
+    const copy = document.getElementById('courseSetupCopy');
+    const back = document.getElementById('courseSetupBackBtn');
+    const location = COURSE_LOCATIONS[startCourseLocationId] || COURSE_LOCATIONS.pine_valley;
+    const showSetup = modeKey === "daily" || startCourseSetupOpen;
+    panel.style.display = showSetup ? "grid" : "none";
+    if (back) back.style.display = modeKey === "daily" ? "none" : "inline-block";
+    if (title) title.textContent = modeKey === "daily" ? "Daily Setup" : location.name;
+    if (copy) {
+      copy.textContent = modeKey === "daily"
+        ? "Pick a difficulty for today's seeded card."
+        : `${location.terrain}. ${roundLengthKey === "18" ? "18-hole card" : "Default card"} selected.`;
+    }
+  }
 
   function renderMenuMeta(modeKey = "daily", roundLengthKey = "default") {
     const progress = loadProgress();
+    const pageTitle = document.getElementById('gameTitle');
+    if (pageTitle) pageTitle.textContent = modeKey === "daily" ? "Daily Course" : "Course Select";
     const todayKey = getTodayKey();
     const weekStartKey = getWeekStartKey(todayKey);
     const tomorrowKey = getTomorrowKey(todayKey);
@@ -11574,6 +12649,11 @@ function renderObstacleGalleryPage() {
     const streakUrgencyCopy = streak > 0
       ? `Miss tomorrow and the ${streak}-day streak breaks.`
       : "Tomorrow starts the next streak chain.";
+    const selectedCourseLocation = COURSE_LOCATIONS[startCourseLocationId] || COURSE_LOCATIONS.pine_valley;
+    const selectedCourseClears = Math.max(0, Number(progress.courseLocationClears?.[selectedCourseLocation.id]?.clears) || 0);
+    const unlockedLocationCount = COURSE_LOCATION_ORDER.filter(id => isCourseLocationUnlocked(progress, id)).length;
+    renderCourseLocationPicker(progress, modeKey);
+    renderCourseSetupPanel(progress, modeKey, roundLengthKey);
 
     if (hero) {
       hero.innerHTML = modeKey === "daily"
@@ -11581,8 +12661,8 @@ function renderObstacleGalleryPage() {
           <div class="menu-hero-top">
             <div>
               <div class="menu-hero-kicker">Today&apos;s Main Card</div>
-              <div class="menu-hero-title">${averageSignature.variantName}</div>
-              <div class="menu-hero-copy">${averageSignature.variantDescription} Featured layout: ${formatLayoutLabel(averageSignature.featuredLayout)}. Spotlight: ${HAZARD_SPOTLIGHTS[averageSignature.featuredSpotlight]?.name || 'Mixed Flow'}.</div>
+              <div class="menu-hero-title">${averageSignature.locationName || "Daily Course"}</div>
+              <div class="menu-hero-copy">${averageSignature.variantName}: ${averageSignature.variantDescription} Terrain: ${averageSignature.locationTerrain || "mixed greens"}. Featured layout: ${formatLayoutLabel(averageSignature.featuredLayout)}. Spotlight: ${HAZARD_SPOTLIGHTS[averageSignature.featuredSpotlight]?.name || 'Mixed Flow'}.</div>
             </div>
             <div class="menu-streak-badge">
               <strong>${streak}</strong>
@@ -11612,22 +12692,22 @@ function renderObstacleGalleryPage() {
           <div class="menu-hero-top">
             <div>
               <div class="menu-hero-kicker">Practice Mode</div>
-              <div class="menu-hero-title">Open Practice</div>
-              <div class="menu-hero-copy">Fresh random seeds, unlimited retries, and no official attempt pressure. Great for learning lines before tomorrow&apos;s card.</div>
+              <div class="menu-hero-title">${startCourseSetupOpen ? selectedCourseLocation.name : "Choose A Course"}</div>
+              <div class="menu-hero-copy">${startCourseSetupOpen ? `${selectedCourseLocation.description} Select difficulty and hole count below.` : "Swipe through the course cards, pick an unlocked location, then set difficulty and hole count."}</div>
             </div>
             <div class="menu-streak-badge">
-              <strong>${collection.owned}</strong>
-              <span>Unlocked</span>
+              <strong>${unlockedLocationCount}</strong>
+              <span>Courses</span>
             </div>
           </div>
           <div class="menu-hero-grid">
             <div class="menu-hero-chip">
-              <strong>Streak</strong>
-              <span>${streak} day${streak === 1 ? '' : 's'} carried into the next Daily</span>
+              <strong>${startCourseSetupOpen ? "Clears" : "Tour Progress"}</strong>
+              <span>${startCourseSetupOpen ? `${selectedCourseClears} clear${selectedCourseClears === 1 ? "" : "s"} on this course` : `${unlockedLocationCount}/${COURSE_LOCATION_ORDER.length} courses unlocked`}</span>
             </div>
             <div class="menu-hero-chip">
-              <strong>Use Practice For</strong>
-              <span>Shot routing, setpiece reads, and shop loadout testing</span>
+              <strong>${startCourseSetupOpen ? "Terrain" : "Use Practice For"}</strong>
+              <span>${startCourseSetupOpen ? selectedCourseLocation.terrain : "Shot routing, setpiece reads, and shop loadout testing"}</span>
             </div>
           </div>
         `;
@@ -11637,7 +12717,7 @@ function renderObstacleGalleryPage() {
     const dailyHandmadeCount = getEligibleHandmadeMaps("average", "daily").length;
     note.textContent = modeKey === "daily"
       ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. ${dailyHandmadeCount ? `${dailyHandmadeCount} custom map${dailyHandmadeCount === 1 ? "" : "s"} can appear in today's Daily rotation. ` : ""}One official run per difficulty, with hole counts locked to Beginner 9, Average 12, and Hardcore 18. Miss the stroke caps and the card is gone until tomorrow.`
-      : `Practice uses a fresh random seed each time. ${handmadeCount ? `${handmadeCount} handmade map${handmadeCount === 1 ? "" : "s"} currently mix into the lineup.` : "No handmade maps are loaded yet."} No daily lockout here. Next official Daily reset in ${getTimeUntilNextResetLabel()}.`;
+      : `Practice uses a fresh random seed at the selected unlocked location. ${handmadeCount ? `${handmadeCount} handmade map${handmadeCount === 1 ? "" : "s"} currently mix into the lineup.` : "No handmade maps are loaded yet."} Beat a location to unlock the next course.`;
 
     document.querySelectorAll('[data-round-length]').forEach(button => {
       const isExtended = button.dataset.roundLength === "18";
@@ -11662,9 +12742,11 @@ function renderObstacleGalleryPage() {
         const signature = getDailyCourseSignature(todayKey, key, holeCount, progress);
         const board = buildLocalLeaderboard(progress, todayKey, key, holeCount);
         const attemptsLeft = getRemainingDailyAttempts(progress, todayKey, key);
-        target.textContent = `${holeCount} holes. ${base} Attempts left: ${attemptsLeft}. Best: ${formatBestLabel(record)}. Gold ${board.targets.gold} · Silver ${board.targets.silver}. ${signature.variantName}.`;
+        target.textContent = `${holeCount} holes at ${signature.locationName || "Daily Course"}. ${base} Attempts left: ${attemptsLeft}. Best: ${formatBestLabel(record)}. Gold ${board.targets.gold} · Silver ${board.targets.silver}. ${signature.variantName}.`;
       } else {
-        target.textContent = `${holeCount} holes. ${base} Best: ${formatBestLabel(record)}. Track: ${formatTrackStatus(progress.difficultyTracks[key])}.`;
+        const selectedLocation = COURSE_LOCATIONS[startCourseLocationId] || COURSE_LOCATIONS.pine_valley;
+        const playableHere = (selectedLocation.difficulties || []).includes(key);
+        target.textContent = `${holeCount} holes at ${selectedLocation.name}. ${playableHere ? base : "This location is tuned for another difficulty band, but the generator will fall back safely."} Best: ${formatBestLabel(record)}. Track: ${formatTrackStatus(progress.difficultyTracks[key])}.`;
       }
     }
 
@@ -11680,6 +12762,7 @@ function renderObstacleGalleryPage() {
         ? `${formatWeeklyGoalProgress(nextWeeklyGoal, progress, weekStartKey)} now • ${nextWeeklyGoal.rewardTokens}◈ when complete`
         : "All weekly token goals claimed for this week";
       tomorrowGrid.innerHTML = [
+        `<div class="menu-progress-row"><span>Location</span><span>${tomorrowSignature.locationName || "Daily Course"} • ${tomorrowSignature.locationTerrain || "mixed greens"}</span></div>`,
         `<div class="menu-progress-row"><span>Variant</span><span>${tomorrowSignature.variantName} • ${formatDateLabel(tomorrowKey)}</span></div>`,
         `<div class="menu-progress-row"><span>Spotlight</span><span>${spotlightName} • ${formatLayoutLabel(tomorrowSignature.featuredLayout)} focus</span></div>`,
         `<div class="menu-progress-row"><span>Medal Line</span><span>Gold ${tomorrowBoard.targets.gold} · Silver ${tomorrowBoard.targets.silver} · Bronze ${tomorrowBoard.targets.bronze}</span></div>`,
@@ -11987,6 +13070,7 @@ function renderObstacleGalleryPage() {
     }
     const selected = DIFFICULTY_PRESETS[difficultyKey] ? difficultyKey : "average";
     const progress = loadProgress();
+    normalizeStartCourseLocation(progress);
     if (startModeKey === "daily") {
       const attemptsLeft = getRemainingDailyAttempts(progress, getTodayKey(), selected);
       if (attemptsLeft <= 0) {
@@ -12002,7 +13086,7 @@ function renderObstacleGalleryPage() {
       ? getDailySeedForKey(getTodayKey())
       : resolveInitialSeed({ allowQuerySeed });
     const roundHoleCount = startModeKey === "daily" ? null : (startRoundLengthKey === "18" ? 18 : null);
-    game = new GameManager(seed, selected, startModeKey, roundHoleCount);
+    game = new GameManager(seed, selected, startModeKey, roundHoleCount, startModeKey === "daily" ? null : startCourseLocationId);
     if (DEBUG_FLAGS.debugHole > 1 && DEBUG_FLAGS.debugHole <= game.levels.length) {
       game.currentLevelIndex = DEBUG_FLAGS.debugHole - 1;
       game.loadLevel();
@@ -12019,6 +13103,7 @@ function renderObstacleGalleryPage() {
   document.querySelectorAll('[data-mode]').forEach(button => {
     button.onclick = () => {
       startModeKey = button.dataset.mode;
+      startCourseSetupOpen = false;
       if (startModeKey === "daily" && startRoundLengthKey === "18") {
         startRoundLengthKey = "default";
       }
@@ -12036,6 +13121,12 @@ function renderObstacleGalleryPage() {
   });
   document.getElementById('closeStatsBtn').onclick = () => {
     document.getElementById('statsModal').style.display = 'none';
+  };
+  document.getElementById('courseSetupBackBtn').onclick = () => {
+    unlockGameFx();
+    emitGameFx('ui');
+    startCourseSetupOpen = false;
+    renderMenuMeta(startModeKey, startRoundLengthKey);
   };
   document.getElementById('closeSettingsBtn').onclick = () => {
     document.getElementById('settingsModal').style.display = 'none';
