@@ -36,6 +36,7 @@
       -webkit-user-select: none;
       user-select: none;
       -webkit-touch-callout: none;
+      transition: background 220ms ease, color 220ms ease;
     }
     #app {
       min-height: var(--viewport-h);
@@ -622,7 +623,7 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.2);
       text-align: left;
     }
-    #settingsModal, #replayModal, #weeklyChestModal {
+    #settingsModal, #replayModal, #weeklyChestModal, #whatsNewModal {
       display: none;
       position: fixed;
       inset: 0;
@@ -632,7 +633,10 @@
       padding: calc(var(--safe-top) + 16px) calc(var(--safe-right) + 16px) calc(var(--safe-bottom) + 16px) calc(var(--safe-left) + 16px);
       z-index: 103;
     }
-    #settingsModal .card, #replayModal .card, #weeklyChestModal .card {
+    #whatsNewModal {
+      z-index: 140;
+    }
+    #settingsModal .card, #replayModal .card, #weeklyChestModal .card, #whatsNewModal .card {
       width: min(100%, 360px);
       max-height: min(84dvh, 680px);
       overflow: auto;
@@ -740,7 +744,7 @@
       display: grid;
       grid-template-columns: 52px 1fr auto;
       gap: 12px;
-      align-items: center;
+      align-items: start;
     }
     .shop-preview {
       width: 52px;
@@ -759,13 +763,27 @@
     .shop-item p {
       margin: 0;
       font-size: 13px;
+      line-height: 1.32;
       color: #4b5563;
     }
+    .shop-copy {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
     .shop-action {
-      min-width: 84px;
+      min-width: 112px;
       text-align: right;
       display: grid;
       gap: 6px;
+      align-content: center;
+    }
+    .shop-action button {
+      width: 100%;
+    }
+    .shop-action.single {
+      min-width: 96px;
     }
     .shop-tag {
       display: inline-block;
@@ -773,9 +791,14 @@
       font-size: 12px;
       color: #6b7280;
     }
+    .shop-tag-row, .shop-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: flex-start;
+    }
     .shop-badge {
       display: inline-block;
-      margin-top: 6px;
       padding: 2px 8px;
       border: 1px solid #111827;
       border-radius: 999px;
@@ -826,15 +849,16 @@
       gap: 10px;
     }
     .course-trophy-medal {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
+      width: 66px;
+      height: 78px;
       display: grid;
       place-items: center;
       color: #111827;
-      font-weight: 900;
-      border: 2px solid #111827;
-      background: #f9fafb;
+    }
+    .course-trophy-medal svg {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
     .course-trophy-panel h3, .merge-pro-panel h3 {
       margin: 0;
@@ -906,6 +930,251 @@
     }
     .merge-inventory-row strong {
       color: #111827;
+    }
+    .upgrade-delta-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .upgrade-delta-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .upgrade-delta-row strong {
+      color: #111827;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .upgrade-delta-row span {
+      color: #111827;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .merge-comparison {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+    .merge-compare-card {
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      padding: 10px;
+      background: #f9fafb;
+      display: grid;
+      gap: 8px;
+    }
+    .merge-compare-card h4 {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+    .merge-compare-tier {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #111827;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .merge-arrow-stage {
+      min-width: 58px;
+      display: grid;
+      place-items: center;
+      gap: 8px;
+    }
+    .merge-arrow-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1.5px solid #111827;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .merge-arrow-icon::after {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      border: 1px dashed rgba(17,24,39,0.24);
+      animation: merge-orbit 1.3s linear infinite;
+    }
+    .merge-arrow-icon span {
+      position: relative;
+      z-index: 1;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+      color: #111827;
+      animation: merge-pulse 900ms ease-in-out infinite;
+    }
+    .merge-arrow-copy {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+    .course-medal-copy {
+      display: grid;
+      gap: 4px;
+    }
+    .course-medal-copy span {
+      display: inline-block;
+      width: fit-content;
+      padding: 2px 8px;
+      border: 1px solid #111827;
+      border-radius: 999px;
+      background: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+    .whats-new-card {
+      display: grid;
+      gap: 14px;
+    }
+    .whats-new-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .whats-new-version {
+      display: inline-block;
+      padding: 3px 8px;
+      border: 1px solid #111827;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #111827;
+      background: #fff;
+      white-space: nowrap;
+    }
+    .whats-new-copy {
+      font-size: 13px;
+      line-height: 1.42;
+      color: #4b5563;
+    }
+    .whats-new-sections {
+      display: grid;
+      gap: 10px;
+    }
+    .whats-new-section {
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      padding: 12px;
+      background: #f9fafb;
+    }
+    .whats-new-section h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+    .whats-new-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .whats-new-list li {
+      display: grid;
+      grid-template-columns: 10px 1fr;
+      gap: 8px;
+      align-items: start;
+      font-size: 13px;
+      line-height: 1.38;
+      color: #374151;
+    }
+    .whats-new-list li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #111827;
+      margin-top: 6px;
+    }
+    .whats-new-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .whats-new-feature-card {
+      border: 1px solid #d1d5db;
+      border-radius: 14px;
+      padding: 10px;
+      background: #ffffff;
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+    .whats-new-feature-media {
+      height: 74px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .whats-new-feature-media svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .whats-new-feature-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+    .whats-new-feature-kicker svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+    }
+    .whats-new-feature-card strong {
+      display: block;
+      font-size: 13px;
+      color: #111827;
+    }
+    .whats-new-feature-card span {
+      display: block;
+      font-size: 12px;
+      line-height: 1.35;
+      color: #4b5563;
+    }
+    @keyframes merge-orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes merge-pulse {
+      0%, 100% { transform: scale(0.92); }
+      50% { transform: scale(1.08); }
     }
     .currency-ball {
       display: inline-grid;
@@ -990,32 +1259,161 @@
     }
     #shopFab {
       position: fixed;
-      right: calc(var(--safe-right) + 18px);
-      bottom: calc(var(--safe-bottom) + 86px);
+      right: calc(var(--safe-right) + 14px);
+      bottom: calc(var(--safe-bottom) + 94px);
       z-index: 95;
-      border-radius: 999px;
+      width: 58px;
+      height: 58px;
+      box-sizing: border-box;
+      border-radius: 18px;
       border: 2px solid #111827;
       background: #ffffff;
       color: #111827;
-      padding: 10px 14px;
-      font-size: 13px;
+      padding: 4px 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 8px;
       font-weight: 800;
       box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+      line-height: 1;
     }
     #settingsFab {
       position: fixed;
-      top: calc(var(--safe-top) + 10px);
-      right: calc(var(--safe-right) + 12px);
+      left: calc(var(--safe-left) + 14px);
+      bottom: calc(var(--safe-bottom) + 12px);
       z-index: 95;
-      border-radius: 999px;
+      width: 58px;
+      height: 58px;
+      box-sizing: border-box;
+      border-radius: 18px;
       border: 2px solid #111827;
       background: #ffffff;
       color: #111827;
-      padding: 10px 14px;
+      padding: 0;
       font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.06em;
       box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+    }
+    #zoomBtn::before,
+    #shopFab::before,
+    #settingsFab::before {
+      content: "";
+      display: block;
+      width: 24px;
+      height: 24px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+    #zoomBtn::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='none' stroke='%23111827' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8l7-3 5 3 8-3v19l-8 3-5-3-7 3z'/><path d='M13 5v19'/><path d='M18 8v19'/><circle cx='23' cy='16' r='2.4'/></g></svg>");
+    }
+    #shopFab::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='none' stroke='%23111827' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='25' r='2.1'/><circle cx='22' cy='25' r='2.1'/><path d='M5 7h3l2.3 11.2h13.4l2.3-8.2H9.2'/><path d='M11 11h11'/></g></svg>");
+    }
+    #settingsFab::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='none' stroke='%23111827' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='16' cy='16' r='4.1'/><path d='M16 5v3'/><path d='M16 24v3'/><path d='M5 16h3'/><path d='M24 16h3'/><path d='M8.7 8.7l2.2 2.2'/><path d='M21.1 21.1l2.2 2.2'/><path d='M23.3 8.7l-2.2 2.2'/><path d='M10.9 21.1l-2.2 2.2'/></g></svg>");
+    }
+    body[data-course-theme="cactus_ridge"] {
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255,255,255,0.9) 0%, rgba(255,249,238,0.92) 32%, rgba(247,233,206,0.96) 100%);
+      color: #3b2d21;
+    }
+    body[data-course-theme="cactus_ridge"] #gameTitle {
+      color: #3b2d21;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: clamp(24px, 6vw, 34px);
+      text-shadow: 0 2px 0 rgba(255,255,255,0.52);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    body[data-course-theme="cactus_ridge"] #gameTitle::before,
+    body[data-course-theme="cactus_ridge"] #gameTitle::after {
+      content: "";
+      width: 76px;
+      height: 26px;
+      flex: 0 0 auto;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 34'><g fill='none' stroke='%23b7ab82' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M3 17h9'/><path d='M16 12h8'/><path d='M15 22h7'/><path d='M46 28V6'/><path d='M40 24V14c0-4 2-6 6-6'/><path d='M52 20V11c0-4-2-6-6-6'/><path d='M57 17h10'/><path d='M70 12h8'/><path d='M69 22h7'/></g></svg>");
+    }
+    body[data-course-theme="cactus_ridge"] #gameTitle::after {
+      transform: scaleX(-1);
+    }
+    body[data-course-theme="cactus_ridge"] canvas {
+      border-color: #b79d76;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+    }
+    body[data-course-theme="cactus_ridge"] #zoomBtn,
+    body[data-course-theme="cactus_ridge"] #shopFab,
+    body[data-course-theme="cactus_ridge"] #settingsFab {
+      border-color: #b79d76;
+      background: linear-gradient(180deg, #fff8ee 0%, #f0dfc1 100%);
+      color: #3b2d21;
+      box-shadow: 0 10px 20px rgba(160, 123, 67, 0.14), inset 0 1px 0 rgba(255,255,255,0.78);
+    }
+    body[data-course-theme="cactus_ridge"] #zoomBtn,
+    body[data-course-theme="cactus_ridge"] #shopFab {
+      width: 58px;
+      height: 58px;
+      padding: 4px 5px;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1;
+      box-sizing: border-box;
+    }
+    body[data-course-theme="cactus_ridge"] #zoomBtn {
+      right: calc(var(--safe-right) + 14px);
+      bottom: calc(var(--safe-bottom) + 12px);
+    }
+    body[data-course-theme="cactus_ridge"] #shopFab {
+      right: calc(var(--safe-right) + 14px);
+      bottom: calc(var(--safe-bottom) + 94px);
+    }
+   
+    body[data-course-theme="cactus_ridge"] #zoomBtn::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='none' stroke='%235b4631' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 8l7-3 5 3 8-3v19l-8 3-5-3-7 3z'/><path d='M13 5v19'/><path d='M18 8v19'/><circle cx='23' cy='16' r='2.4'/></g></svg>");
+    }
+    body[data-course-theme="cactus_ridge"] #shopFab::before {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='none' stroke='%235b4631' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='25' r='2.1'/><circle cx='22' cy='25' r='2.1'/><path d='M5 7h3l2.3 11.2h13.4l2.3-8.2H9.2'/><path d='M11 11h11'/></g></svg>");
+    }
+    body[data-course-theme="cactus_ridge"] #settingsFab {
+      left: calc(var(--safe-left) + 14px);
+      right: auto;
+      top: auto;
+      bottom: calc(var(--safe-bottom) + 12px);
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      font-size: 0;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body[data-course-theme="cactus_ridge"] #settingsFab::before {
+      width: 26px;
+      height: 26px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><g fill='none' stroke='%235b4631' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='16' cy='16' r='4.1'/><path d='M16 5v3'/><path d='M16 24v3'/><path d='M5 16h3'/><path d='M24 16h3'/><path d='M8.7 8.7l2.2 2.2'/><path d='M21.1 21.1l2.2 2.2'/><path d='M23.3 8.7l-2.2 2.2'/><path d='M10.9 21.1l-2.2 2.2'/></g></svg>");
     }
     #shopFab.disabled {
       opacity: 0.42;
@@ -1248,19 +1646,27 @@
     }
     #zoomBtn {
       position: fixed;
-      bottom: calc(var(--safe-bottom) + 14px);
+      bottom: calc(var(--safe-bottom) + 12px);
       right: calc(var(--safe-right) + 14px);
-      min-width: 64px;
+      width: 58px;
       height: 58px;
-      padding: 0 16px;
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 4px 5px;
       background: #ffffff;
       color: #111827;
       border: 2px solid #111827;
-      border-radius: 999px;
+      border-radius: 18px;
       cursor: pointer;
-      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      font-size: 8px;
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0;
+      line-height: 1;
       box-shadow: 0 8px 20px rgba(0,0,0,0.14);
       touch-action: none;
     }
@@ -1298,14 +1704,17 @@
       }
       #shopFab {
         right: calc(var(--safe-right) + 8px);
-        bottom: calc(var(--safe-bottom) + 70px);
-        padding: 9px 12px;
-        font-size: 12px;
+        bottom: calc(var(--safe-bottom) + 68px);
+        width: 52px;
+        height: 52px;
+        padding: 4px;
+        font-size: 8px;
       }
       #settingsFab {
-        top: calc(var(--safe-top) + 8px);
-        right: calc(var(--safe-right) + 8px);
-        padding: 9px 12px;
+        left: calc(var(--safe-left) + 8px);
+        bottom: calc(var(--safe-bottom) + 8px);
+        width: 52px;
+        height: 52px;
         font-size: 11px;
       }
     }
@@ -1402,6 +1811,42 @@
       .menu-progress-row {
         grid-template-columns: 1fr;
         gap: 4px;
+      }
+      .shop-item {
+        grid-template-columns: 52px minmax(0, 1fr);
+        grid-template-areas:
+          "preview copy"
+          "action action";
+        gap: 10px 12px;
+      }
+      .shop-preview {
+        grid-area: preview;
+      }
+      .shop-copy {
+        grid-area: copy;
+      }
+      .shop-action {
+        grid-area: action;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        text-align: left;
+      }
+      .shop-action.single {
+        grid-template-columns: 1fr;
+      }
+      .merge-inventory-panel {
+        padding: 8px;
+      }
+      .merge-comparison {
+        grid-template-columns: 1fr;
+      }
+      .merge-arrow-stage {
+        grid-auto-flow: column;
+        justify-content: center;
+      }
+      .course-trophy-grid,
+      .merge-stat-grid {
+        grid-template-columns: 1fr;
       }
       canvas {
         border-radius: 0;
@@ -1543,6 +1988,28 @@
     </div>
   </div>
 
+  <div id="whatsNewModal">
+    <div class="card">
+      <div class="shop-head">
+        <div>
+          <h2 id="whatsNewHeading" style="margin:0;">What’s New</h2>
+          <div id="whatsNewSubhead" class="shop-balance">Latest build notes.</div>
+        </div>
+        <button id="closeWhatsNewBtn" class="secondary">Got It</button>
+      </div>
+      <div class="whats-new-card">
+        <div class="whats-new-head">
+          <div>
+            <div id="whatsNewTitle" style="font-size:24px;font-weight:800;color:#111111;">Latest build</div>
+            <div id="whatsNewCopy" class="whats-new-copy">A quick overview of the current update.</div>
+          </div>
+          <div id="whatsNewVersion" class="whats-new-version">Build</div>
+        </div>
+        <div id="whatsNewSections" class="whats-new-sections"></div>
+      </div>
+    </div>
+  </div>
+
   <button id="zoomBtn">MAP</button>
   <button id="shopFab" class="secondary">Shop</button>
   <button id="settingsFab" class="secondary">Settings</button>
@@ -1560,7 +2027,7 @@
       <div id="courseLocationSection" class="course-location-wrap">
         <div class="course-location-head">
           <div class="menu-section-label" style="margin-top:0;">Course Locations</div>
-          <span>Swipe the tour cards. Pick one to set up the round.</span>
+          <span>Select a course.</span>
         </div>
         <div id="courseLocationList" class="course-location-list"></div>
       </div>
@@ -1602,7 +2069,7 @@
       <div class="menu-carousel-wrap">
         <div class="menu-carousel-head">
           <strong>Daily Feed</strong>
-          <span>Swipe for tomorrow, goals, and the grind loop.</span>
+          <span>Tomorrow, goals, rewards.</span>
         </div>
         <div id="menuCarousel" class="menu-carousel">
           <div class="menu-carousel-slide">
@@ -1644,10 +2111,68 @@
 <script src="./custom-maps.js"></script>
 <script>
 
-  const APP_VERSION = "2026.04.06";
+  const APP_VERSION = "2026.04.26-whats-new-polish";
   const SAVE_SCHEMA_VERSION = 4;
   const STORAGE_KEY = "putt-mobile-progress";
   const LEGACY_STORAGE_KEYS = ["putt-mobile-progress-v1"];
+  const RELEASE_NOTES = {
+    "2026.04.26-whats-new-polish": {
+      heading: "What’s New",
+      subhead: "",
+      title: "Shop, Tour, And Release Polish",
+      summary: "This update tightens the shop, improves the merge flow, and adds a cleaner release notes surface on the main start page.",
+      sections: [
+        {
+          title: "Improvements",
+          items: [
+            "Gameplay HUD and floating action layout are now standardized across courses.",
+            "Cactus Ridge got a stronger in-round visual identity with cleaner HUD treatment and themed controls.",
+            "Practice clear flow now has a more premium finish reveal."
+          ],
+          cards: [
+            { kind: "system", icon: "spark", title: "Release Notes", copy: "The main start page now shows a one-time What’s New panel for each build." },
+            { kind: "system", icon: "merge", title: "Merge Compare", copy: "Upgrades now read as before >>> after instead of only tier bumps." }
+          ]
+        },
+        {
+          title: "Maps",
+          items: [
+            "Every course location now has its own signature hole pack.",
+            "More handmade holes were added so Pine Valley, Cactus Ridge, Neon Links, Frostbite Fairway, Volcanic Back Nine, and Moonshot Greens feel more distinct.",
+            "Course styling now leans harder into location-specific glyphs and atmosphere."
+          ],
+          cards: [
+            { kind: "course", icon: "map", locationId: "cactus_ridge", title: "Cactus Ridge", copy: "Desert-styled HUD, title treatment, and signature holes." },
+            { kind: "course", icon: "map", locationId: "moonshot_greens", title: "Moonshot Greens", copy: "Lunar identity and dedicated signature course content." }
+          ]
+        },
+        {
+          title: "Shop + Merge",
+          items: [
+            "Shop cards are tighter on smaller devices and easier to scan.",
+            "Balls and putters now show real upgrade gains before you buy or merge.",
+            "Merge reveals now use a static before >>> after comparison with a more deliberate upgrade animation."
+          ],
+          cards: [
+            { kind: "item", icon: "bag", itemId: "power_core", title: "Power Core", copy: "Upgrade cards now preview the actual next-step stat gains." },
+            { kind: "item", icon: "bag", itemId: "tempo_putter", title: "Tempo Putter", copy: "Putter upgrades show clearer control, power, and forgiveness changes." }
+          ]
+        },
+        {
+          title: "Collection",
+          items: [
+            "Practice trophy reveals now use a richer medal treatment.",
+            "Course unlocks, merge progress, and loadout progression read more clearly.",
+            "Chest and merge reward flows are more presentation-driven overall."
+          ],
+          cards: [
+            { kind: "item", icon: "trophy", itemId: "range_chest", title: "Reward Flow", copy: "Chest, merge, and course-clear rewards now land with a more premium presentation." },
+            { kind: "system", icon: "trophy", title: "Tour Medals", copy: "Practice clears now end on a stronger medal/trophy reveal." }
+          ]
+        }
+      ]
+    }
+  };
   const SHOP_PRICE_MULTIPLIER = 3;
   const UPGRADE_TIER_COST_STEP = 42;
   const MERGE_COPY_REQUIREMENT = 3;
@@ -2237,7 +2762,7 @@
       id: "pine_valley",
       name: "Pine Valley Pitch",
       terrain: "parkland fairways",
-      style: { bg: "#f4fbf1", fairway: "#ffffff", accent: "#6aa86d", glyphColor: "#b7c9b7", wallFill: "#111827" },
+      style: { bg: "#f4fbf1", fairway: "#ffffff", accent: "#6aa86d", glyphColor: "#b7c9b7", wallFill: "#111827", glyphs: ["▲", "⌁", "○", "⚑", "│"] },
       clearReward: { golfBalls: 4, stars: 12 },
       description: "Clean grass lanes, readable banks, and gentle obstacle pressure.",
       difficulties: ["beginner", "average"],
@@ -2252,7 +2777,22 @@
       id: "cactus_ridge",
       name: "Cactus Ridge",
       terrain: "dry desert runoffs",
-      style: { bg: "#fbf7ed", fairway: "#fffdf7", accent: "#c47a3b", glyphColor: "#d8c3a0", wallFill: "#1f1710" },
+      style: {
+        bg: "#fbf7ed",
+        fairway: "#fffdf7",
+        accent: "#c47a3b",
+        glyphColor: "#d8c3a0",
+        wallFill: "#5a4634",
+        wallShadow: "rgba(125, 95, 58, 0.22)",
+        wallHighlight: "#d0b38b",
+        wallJoint: "#4b3827",
+        overlayFill: "rgba(255, 248, 236, 0.92)",
+        overlayStroke: "#b79d76",
+        overlayText: "#3b2d21",
+        overlayMuted: "#776653",
+        overlayDivider: "rgba(183, 157, 118, 0.56)",
+        glyphs: ["╋", "│", "×", "△", "·"]
+      },
       clearReward: { golfBalls: 6, stars: 18 },
       description: "Sandy pressure, crosswind reads, and narrower recovery lanes.",
       difficulties: ["beginner", "average", "hardcore"],
@@ -2267,7 +2807,7 @@
       id: "neon_links",
       name: "Neon Links",
       terrain: "arcade turf",
-      style: { bg: "#f4f6ff", fairway: "#ffffff", accent: "#6366f1", glyphColor: "#bcc3ff", wallFill: "#111827" },
+      style: { bg: "#f4f6ff", fairway: "#ffffff", accent: "#6366f1", glyphColor: "#bcc3ff", wallFill: "#111827", glyphs: ["▣", "◇", "●", "+", "⟲"] },
       clearReward: { golfBalls: 8, stars: 24 },
       description: "Boosts, portals, rails, and combo routes built for chaos control.",
       difficulties: ["average", "hardcore"],
@@ -2282,7 +2822,7 @@
       id: "frostbite_fairway",
       name: "Frostbite Fairway",
       terrain: "slick winter greens",
-      style: { bg: "#effaff", fairway: "#ffffff", accent: "#38bdf8", glyphColor: "#b8dff0", wallFill: "#0f172a" },
+      style: { bg: "#effaff", fairway: "#ffffff", accent: "#38bdf8", glyphColor: "#b8dff0", wallFill: "#0f172a", glyphs: ["✦", "◇", "△", "⋄", "·"] },
       clearReward: { golfBalls: 10, stars: 30 },
       description: "Long sliding reads with low-friction pacing and punishing exits.",
       difficulties: ["average", "hardcore"],
@@ -2297,7 +2837,7 @@
       id: "volcanic_back_nine",
       name: "Volcanic Back Nine",
       terrain: "black-rock hazard shelves",
-      style: { bg: "#f7f2f0", fairway: "#fffafa", accent: "#dc2626", glyphColor: "#d8bab0", wallFill: "#16110f" },
+      style: { bg: "#f7f2f0", fairway: "#fffafa", accent: "#dc2626", glyphColor: "#d8bab0", wallFill: "#16110f", glyphs: ["▲", "◆", "×", "▴", "·"] },
       clearReward: { golfBalls: 14, stars: 38 },
       description: "Hardcore routes, aggressive hazards, and tiny safe landing zones.",
       difficulties: ["hardcore"],
@@ -2312,7 +2852,7 @@
       id: "moonshot_greens",
       name: "Moonshot Greens",
       terrain: "low-gravity lunar cups",
-      style: { bg: "#f8f7ff", fairway: "#ffffff", accent: "#7c3aed", glyphColor: "#cec4ef", wallFill: "#111827" },
+      style: { bg: "#f8f7ff", fairway: "#ffffff", accent: "#7c3aed", glyphColor: "#cec4ef", wallFill: "#111827", glyphs: ["○", "◐", "◇", "✦", "·"] },
       clearReward: { golfBalls: 16, stars: 44 },
       description: "Floaty pace, strange rebounds, and oversized trick-shot routes.",
       difficulties: ["average", "hardcore"],
@@ -2581,6 +3121,8 @@
       name: String(raw.name || `Handmade Map ${index + 1}`),
       width,
       height,
+      ballRadius: Number.isFinite(raw.ballRadius) ? Math.max(4, Math.round(raw.ballRadius)) : null,
+      lockBallRadius: Boolean(raw.lockBallRadius),
       par: Math.max(1, Math.round(Number(raw.par) || 0)) || null,
       cellSize: Math.max(80, Math.round(Number(raw.cellSize) || 212)),
       wallThickness: Math.max(8, Math.round(Number(raw.wallThickness) || 14)),
@@ -3803,6 +4345,86 @@
     const hash = Math.abs(((gridX * 73856093) ^ (gridY * 19349663) ^ (themeSeed * 83492791)) | 0);
     return glyphs[hash % glyphs.length] || theme?.glyph || "·";
   }
+  function getCourseDecorHash(x = 0, y = 0, salt = 0) {
+    const gx = Math.round(Number(x) || 0);
+    const gy = Math.round(Number(y) || 0);
+    return Math.abs(((gx * 73856093) ^ (gy * 19349663) ^ (salt * 83492791)) | 0);
+  }
+  function drawCactusProp(ctx, x, y, scale = 1, variant = 0) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#7f7b60";
+    ctx.fillStyle = "#9d9a78";
+    ctx.lineWidth = 4.2;
+    if (variant % 3 === 0) {
+      ctx.beginPath();
+      ctx.moveTo(0, 14);
+      ctx.lineTo(0, -16);
+      ctx.moveTo(-8, 2);
+      ctx.bezierCurveTo(-10, -6, -10, -11, -4, -12);
+      ctx.moveTo(8, 6);
+      ctx.bezierCurveTo(10, -1, 10, -8, 4, -9);
+      ctx.stroke();
+    } else if (variant % 3 === 1) {
+      ctx.beginPath();
+      ctx.arc(0, 2, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(0, 14);
+      ctx.lineTo(0, -10);
+      ctx.moveTo(-6, 4);
+      ctx.bezierCurveTo(-8, -1, -7, -5, -3, -6);
+      ctx.moveTo(5, 7);
+      ctx.bezierCurveTo(8, 2, 8, -1, 3, -2);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(72, 64, 48, 0.24)";
+    ctx.lineWidth = 1;
+    [-6, -2, 2, 6].forEach(offset => {
+      ctx.beginPath();
+      ctx.moveTo(offset, 16);
+      ctx.lineTo(offset + 2.5, 22);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+  function drawRockCluster(ctx, x, y, scale = 1) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    const rocks = [
+      { x: -10, y: 2, r: 3.6 },
+      { x: -2, y: -1, r: 5.4 },
+      { x: 8, y: 3, r: 4.2 }
+    ];
+    ctx.fillStyle = "rgba(114, 100, 76, 0.82)";
+    rocks.forEach(rock => {
+      ctx.beginPath();
+      ctx.ellipse(rock.x, rock.y, rock.r, rock.r * 0.78, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+  function drawGrassTuft(ctx, x, y, scale = 1) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.strokeStyle = "rgba(145, 138, 94, 0.78)";
+    ctx.lineWidth = 1.4;
+    ctx.lineCap = "round";
+    [-7, -2, 2, 7].forEach((dx, index) => {
+      ctx.beginPath();
+      ctx.moveTo(0, 6);
+      ctx.quadraticCurveTo(dx * 0.35, 1 - index, dx, -8 - (index % 2) * 2);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
 
   const FX_STATE = {
     ctx: null,
@@ -4046,6 +4668,7 @@
       calendarMilestoneClaims: {},
       courseLocationUnlocks: { pine_valley: true },
       courseLocationClears: {},
+      holeBestShots: {},
       mastery: { cosmetics: {}, trails: {}, abilities: {} },
       stats: {
         holesCompleted: 0,
@@ -4061,7 +4684,8 @@
       equippedTrail: "none",
       equippedAbility: "none_ability",
       equippedPutter: "starter_putter",
-      equippedPutterSkin: "classic_grip"
+      equippedPutterSkin: "classic_grip",
+      seenReleaseNotesVersion: null
     };
   }
 
@@ -4105,6 +4729,7 @@
     const calendarMilestoneClaims = { ...(parsed.calendarMilestoneClaims || {}) };
     const courseLocationUnlocks = { pine_valley: true, ...(parsed.courseLocationUnlocks || {}) };
     const courseLocationClears = { ...(parsed.courseLocationClears || {}) };
+    const holeBestShots = { ...(parsed.holeBestShots || {}) };
     const mastery = {
       cosmetics: { ...(parsed.mastery?.cosmetics || {}) },
       trails: { ...(parsed.mastery?.trails || {}) },
@@ -4165,13 +4790,15 @@
       calendarMilestoneClaims,
       courseLocationUnlocks,
       courseLocationClears,
+      holeBestShots,
       mastery,
       stats,
       equippedCosmetic,
       equippedTrail,
       equippedAbility,
       equippedPutter,
-      equippedPutterSkin
+      equippedPutterSkin,
+      seenReleaseNotesVersion: parsed.seenReleaseNotesVersion || null
     };
   }
 
@@ -4204,6 +4831,175 @@
       version: SAVE_SCHEMA_VERSION,
       appVersion: APP_VERSION
     }));
+  }
+
+  function getCurrentReleaseNotes() {
+    return RELEASE_NOTES[APP_VERSION] || null;
+  }
+
+  function renderWhatsNewSectionIcon(icon = "spark") {
+    const svgMap = {
+      spark: `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l1.8 5.2L17 9l-5.2 1.8L10 16l-1.8-5.2L3 9l5.2-1.8z" fill="#111111"/></svg>`,
+      map: `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5l4-2 3 2 4-2 3 1v11l-3-1-4 2-3-2-4 2z" fill="none" stroke="#111111" stroke-width="1.8" stroke-linejoin="round"/><path d="M7 3v12M10 5v12" stroke="#111111" stroke-width="1.6"/></svg>`,
+      bag: `<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="6.5" cy="15.5" r="1.6" fill="none" stroke="#111111" stroke-width="1.6"/><circle cx="13.5" cy="15.5" r="1.6" fill="none" stroke="#111111" stroke-width="1.6"/><path d="M2.5 4.5h2l1.5 7h8.2l1.6-5.3H5.4" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+      merge: `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h6M11 6l4 4-4 4" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 4l-2 2M17 16l-2-2" fill="none" stroke="#111111" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+      trophy: `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3h8v3a4 4 0 0 1-8 0z" fill="none" stroke="#111111" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 4H3v1a3 3 0 0 0 3 3M14 4h3v1a3 3 0 0 1-3 3M10 10v3M7 16h6" fill="none" stroke="#111111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+    };
+    return svgMap[icon] || svgMap.spark;
+  }
+
+  function renderWhatsNewCoursePreview(location) {
+    if (!location) return "";
+    const accent = location.style?.accent || "#111827";
+    const bg = location.style?.bg || "#ffffff";
+    const ink = location.style?.wall || "#111827";
+    const glyph = (location.name || "C").slice(0, 1).toUpperCase();
+    return `
+      <svg viewBox="0 0 160 90" aria-hidden="true">
+        <rect x="0" y="0" width="160" height="90" rx="14" fill="${bg}" />
+        <rect x="16" y="18" width="96" height="54" rx="16" fill="none" stroke="${ink}" stroke-width="8" />
+        <circle cx="120" cy="34" r="8" fill="#111111" />
+        <circle cx="42" cy="56" r="6" fill="#ffffff" stroke="#111111" stroke-width="2" />
+        <text x="132" y="74" text-anchor="middle" font-size="22" font-weight="900" fill="${accent}" font-family="system-ui, -apple-system, sans-serif">${glyph}</text>
+      </svg>
+    `;
+  }
+
+  function renderWhatsNewItemPreview(item) {
+    if (!item) return "";
+    if (item.type === "chest") {
+      return `
+        <svg viewBox="0 0 160 90" aria-hidden="true">
+          <rect x="0" y="0" width="160" height="90" rx="14" fill="#f9fafb" />
+          <path d="M42 42h76v24H42z" fill="#ffffff" stroke="#111111" stroke-width="4" stroke-linejoin="round" />
+          <path d="M48 30h64l6 12H42z" fill="#e5e7eb" stroke="#111111" stroke-width="4" stroke-linejoin="round" />
+          <path d="M80 30v36" stroke="#111111" stroke-width="3" />
+          <circle cx="80" cy="54" r="4" fill="#111111" />
+        </svg>
+      `;
+    }
+    if (item.type === "putter") {
+      return `
+        <svg viewBox="0 0 160 90" aria-hidden="true">
+          <rect x="0" y="0" width="160" height="90" rx="14" fill="#f9fafb" />
+          <path d="M62 18l6 42" stroke="#111111" stroke-width="4" stroke-linecap="round" />
+          <rect x="38" y="16" width="28" height="14" rx="5" fill="#6b7280" stroke="#111111" stroke-width="2.5" />
+          <rect x="66" y="56" width="40" height="12" rx="4" fill="#ffffff" stroke="#111111" stroke-width="3" />
+          <circle cx="92" cy="62" r="5" fill="none" stroke="#111111" stroke-width="2" />
+        </svg>
+      `;
+    }
+    if (item.type === "ability") {
+      return `
+        <svg viewBox="0 0 160 90" aria-hidden="true">
+          <rect x="0" y="0" width="160" height="90" rx="14" fill="#f9fafb" />
+          <circle cx="80" cy="45" r="22" fill="#ffffff" stroke="#111111" stroke-width="4" />
+          <text x="80" y="52" text-anchor="middle" font-size="22" font-weight="900" fill="#111111" font-family="system-ui, -apple-system, sans-serif">${(item.name || "B").slice(0,1).toUpperCase()}</text>
+        </svg>
+      `;
+    }
+    return `
+      <svg viewBox="0 0 160 90" aria-hidden="true">
+        <rect x="0" y="0" width="160" height="90" rx="14" fill="#f9fafb" />
+        <circle cx="80" cy="45" r="22" fill="#ffffff" stroke="#111111" stroke-width="4" />
+        <text x="80" y="52" text-anchor="middle" font-size="20" font-weight="900" fill="#111111" font-family="system-ui, -apple-system, sans-serif">${(item.name || "N").slice(0,1).toUpperCase()}</text>
+      </svg>
+    `;
+  }
+
+  function renderWhatsNewFeatureCard(card) {
+    if (!card) return "";
+    const item = card.itemId ? ITEM_LOOKUP[card.itemId] : null;
+    const location = card.locationId ? COURSE_LOCATIONS[card.locationId] : null;
+    const media = card.kind === "course"
+      ? renderWhatsNewCoursePreview(location)
+      : card.kind === "item"
+        ? renderWhatsNewItemPreview(item)
+        : renderWhatsNewCoursePreview({ name: card.title || "New", style: { accent: "#111827", bg: "#f9fafb", wall: "#111111" } });
+    return `
+      <article class="whats-new-feature-card">
+        <div class="whats-new-feature-media">${media}</div>
+        <div class="whats-new-feature-kicker">${renderWhatsNewSectionIcon(card.icon)}<span>${card.kind === "course" ? "Course" : card.kind === "item" ? "Shop" : "Update"}</span></div>
+        <div>
+          <strong>${card.title || item?.name || location?.name || "Update"}</strong>
+          <span>${card.copy || ""}</span>
+        </div>
+      </article>
+    `;
+  }
+
+  function populateWhatsNewModal(notes) {
+    if (!notes) return;
+    const heading = document.getElementById('whatsNewHeading');
+    const subhead = document.getElementById('whatsNewSubhead');
+    const title = document.getElementById('whatsNewTitle');
+    const copy = document.getElementById('whatsNewCopy');
+    const version = document.getElementById('whatsNewVersion');
+    const sections = document.getElementById('whatsNewSections');
+    if (heading) heading.textContent = notes.heading || "What’s New";
+    if (subhead) subhead.textContent = notes.subhead || "Latest build notes.";
+    if (title) title.textContent = notes.title || "Latest build";
+    if (copy) copy.textContent = notes.summary || "";
+    if (version) version.textContent = APP_VERSION;
+    if (sections) {
+      sections.innerHTML = (notes.sections || []).map(section => `
+        <section class="whats-new-section">
+          <h3>${section.title}</h3>
+          <ul class="whats-new-list">
+            ${(section.items || []).map(item => `<li>${item}</li>`).join("")}
+          </ul>
+          ${section.cards?.length ? `<div class="whats-new-feature-grid">${section.cards.map(card => renderWhatsNewFeatureCard(card)).join("")}</div>` : ""}
+        </section>
+      `).join("");
+    }
+  }
+
+  function closeWhatsNewModal(markSeen = true) {
+    const modal = document.getElementById('whatsNewModal');
+    if (modal) modal.style.display = 'none';
+    if (!markSeen) return;
+    const progress = loadProgress();
+    progress.seenReleaseNotesVersion = APP_VERSION;
+    saveProgress(progress);
+    if (window.__game?.progress) {
+      window.__game.progress.seenReleaseNotesVersion = APP_VERSION;
+    }
+  }
+
+  function isRootMainMenuSurface() {
+    const startMenu = document.getElementById('startMenu');
+    const menuVisible = startMenu && getComputedStyle(startMenu).display !== 'none';
+    return Boolean(menuVisible && !window.__game && (startModeKey === "daily" || !startCourseSetupOpen));
+  }
+
+  function syncWhatsNewModalVisibility() {
+    const modal = document.getElementById('whatsNewModal');
+    if (!modal) return;
+    if (!isRootMainMenuSurface()) {
+      closeWhatsNewModal(false);
+    }
+  }
+
+  function maybeShowWhatsNewModal(progress = loadProgress()) {
+    if (DEBUG_FLAGS.autostartDifficulty) return false;
+    if (!isRootMainMenuSurface()) return false;
+    const notes = getCurrentReleaseNotes();
+    if (!notes) return false;
+    if (progress.seenReleaseNotesVersion === APP_VERSION) return false;
+    populateWhatsNewModal(notes);
+    const modal = document.getElementById('whatsNewModal');
+    if (modal) modal.style.display = 'flex';
+    return true;
+  }
+
+  function getHoleProgressKey({ modeKey = "standard", difficultyKey = "average", seed = 0, courseLocationId = "open_links", holeIndex = 1, handmadeMapId = null } = {}) {
+    return [
+      modeKey,
+      difficultyKey,
+      seed >>> 0,
+      courseLocationId || "open_links",
+      handmadeMapId || `hole-${holeIndex}`
+    ].join(":");
   }
 
   function starsForHole(par, shots) {
@@ -7590,6 +8386,8 @@
       par: Math.max(1, Number(data.par) || estimateHandmadePar(data, difficultyKey)),
       width: data.width,
       height: data.height,
+      ballRadius: data.ballRadius || null,
+      lockBallRadius: Boolean(data.lockBallRadius),
       ballStart: { ...data.ballStart },
       hole: { ...data.hole },
       holeApproach: data.holeApproach ? { ...data.holeApproach } : { x: 0, y: -1 },
@@ -7803,6 +8601,30 @@
       this.weeklyChestModal.style.display = 'flex';
       this.weeklyChestResolve = onContinue;
     }
+    getHoleProgressKeyForData(data, holeIndex = this.currentLevelIndex) {
+      return getHoleProgressKey({
+        modeKey: this.modeKey,
+        difficultyKey: this.difficultyKey,
+        seed: this.seed,
+        courseLocationId: this.courseLocation?.id || data?.locationId || "open_links",
+        holeIndex: (holeIndex || 0) + 1,
+        handmadeMapId: data?.handmadeMapId || null
+      });
+    }
+    getBestShotsForHole(data, holeIndex = this.currentLevelIndex) {
+      const key = this.getHoleProgressKeyForData(data, holeIndex);
+      const value = this.progress?.holeBestShots?.[key];
+      return Number.isFinite(value) ? value : null;
+    }
+    updateHoleBestShots(data, shots, holeIndex = this.currentLevelIndex) {
+      if (!Number.isFinite(shots)) return null;
+      this.progress.holeBestShots = { ...(this.progress.holeBestShots || {}) };
+      const key = this.getHoleProgressKeyForData(data, holeIndex);
+      const current = this.progress.holeBestShots[key];
+      const next = Number.isFinite(current) ? Math.min(current, shots) : shots;
+      this.progress.holeBestShots[key] = next;
+      return next;
+    }
     closeWeeklyChestReveal() {
       this.weeklyChestModal.style.display = 'none';
       const badge = this.weeklyChestModal.querySelector('.chest-reveal-badge');
@@ -7817,6 +8639,7 @@
       if (title) {
         title.textContent = this.courseLocation?.name || (this.modeKey === "daily" ? "Daily Course" : "Practice Course");
       }
+      document.body.dataset.courseTheme = this.courseLocation?.id || "default";
       document.getElementById('difficultyLabel').textContent = this.difficulty.label;
       document.getElementById('themeLabel').textContent = `${this.courseLocation?.name || "Open Links"} · ${this.theme.name}`;
       document.getElementById('challengeLabel').textContent = this.challengeRule.name;
@@ -7974,6 +8797,161 @@
       if (!item?.effect) return `${currentLabel} upgraded into ${nextLabel}.`;
       const scale = item.effect.scale ? ` Effect strength rises from ${Math.round((1 + fromTier * item.effect.scale) * 100)}% to ${Math.round((1 + toTier * item.effect.scale) * 100)}%.` : "";
       return `${nextLabel} ${item.effect.label.toLowerCase()}: ${item.effect.description}${scale}`;
+    }
+    formatUpgradeMetric(value, suffix = "", signed = false) {
+      const numeric = Number(value) || 0;
+      const rounded = Math.abs(numeric) >= 10 ? numeric.toFixed(1) : numeric.toFixed(2);
+      const trimmed = rounded.replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+      const sign = signed && numeric > 0 ? "+" : "";
+      return `${sign}${trimmed}${suffix}`;
+    }
+    getAbilityTierSnapshot(item, tier) {
+      const safeTier = Math.max(0, Number(tier) || 0);
+      const abilityId = item?.id || "none_ability";
+      const putterPower = 0;
+      const putterControl = 0;
+      const putterForgiveness = 0;
+      const effectScale = (base = 1) => base;
+      return {
+        maxPower: abilityId === "power_core"
+          ? 12 + safeTier * 1.25 + (safeTier >= 5 ? 0.8 : 0) + putterPower
+          : 12 + putterPower,
+        rollFriction: abilityId === "true_roll"
+          ? 0.98 + safeTier * 0.0025 + putterControl
+          : 0.98 + putterControl,
+        bounceFactor: abilityId === "bank_shot"
+          ? 1.12 + safeTier * 0.06
+          : abilityId === "needle_core"
+            ? 1.08 + safeTier * 0.04
+            : abilityId === "soft_shell"
+              ? 1 - safeTier * 0.08 - putterForgiveness
+              : 1 - putterForgiveness,
+        hazardKnockback: abilityId === "needle_core"
+          ? 1.14 + safeTier * 0.06
+          : abilityId === "soft_shell"
+            ? 1 - safeTier * 0.08
+            : 1,
+        sandFactor: abilityId === "true_roll"
+          ? Math.min(0.995, 0.9 + safeTier * 0.02 + (safeTier >= 5 ? 0.035 : 0))
+          : 0.9,
+        curveStrength: abilityId === "curve_core"
+          ? 0.02 + safeTier * 0.007 + (safeTier >= 5 ? 0.006 : 0)
+          : 0,
+        fieldResistance: abilityId === "pressure_core"
+          ? 0.48
+          : abilityId === "anchor_core"
+            ? Math.max(0.38, 0.72 - safeTier * 0.1)
+            : 1,
+        splitOffset: abilityId === "split_core"
+          ? 0.028 + safeTier * 0.01 + (safeTier >= 5 ? 0.012 : 0)
+          : 0,
+        hopCount: abilityId === "air_hopper"
+          ? (safeTier >= 4 ? 2 : safeTier > 0 ? 1 : 0)
+          : 0,
+        hopFrames: abilityId === "air_hopper" ? 10 + Math.round(0.5 * 8) + safeTier * 2 : 0,
+        hopPeakScale: abilityId === "air_hopper" ? 1.12 + 0.5 * (0.18 + safeTier * 0.03) : 0,
+        radius: abilityId === "needle_core" ? Math.max(3.5, 6 - 0.8 - safeTier * 0.18) : 6,
+        effectScale
+      };
+    }
+    getPutterTierSnapshot(item, tier) {
+      const safeTier = Math.max(0, Number(tier) || 0);
+      const stats = item?.stats || {};
+      const getPutterEffectStrength = (type, base = 1) => item?.effect?.type === type ? base * (1 + Math.max(0, safeTier - 1) * 0.45) : 0;
+      const power = (stats.power || 0) + safeTier * 0.18 + getPutterEffectStrength("power_face", 0.45);
+      const control = ((stats.control || 0) + safeTier * 0.25 + getPutterEffectStrength("tempo_focus", 0.8) + getPutterEffectStrength("tour_resolve", 0.45)) * 0.0008;
+      const forgiveness = ((stats.forgiveness || 0) + safeTier * 0.2 + getPutterEffectStrength("soft_bank", 0.75) + getPutterEffectStrength("tour_resolve", 0.55)) * 0.025;
+      const fieldResistance = Math.max(0.82, 1 - getPutterEffectStrength("tour_resolve", 0.08));
+      return {
+        maxPowerBonus: power,
+        rollFrictionBonus: control,
+        bounceReduction: forgiveness,
+        controlRating: (stats.control || 0) + safeTier * 0.25 + getPutterEffectStrength("tempo_focus", 0.8) + getPutterEffectStrength("tour_resolve", 0.45),
+        forgivenessRating: (stats.forgiveness || 0) + safeTier * 0.2 + getPutterEffectStrength("soft_bank", 0.75) + getPutterEffectStrength("tour_resolve", 0.55),
+        powerRating: power,
+        fieldResistance
+      };
+    }
+    getUpgradeDeltaRows(item, fromTier, toTier) {
+      if (!item) return [];
+      if (item.type === "ability") {
+        const before = this.getAbilityTierSnapshot(item, fromTier);
+        const after = this.getAbilityTierSnapshot(item, toTier);
+        const rows = [];
+        if (item.id === "power_core") rows.push({ label: "Max Power", before: this.formatUpgradeMetric(before.maxPower), after: this.formatUpgradeMetric(after.maxPower), delta: this.formatUpgradeMetric(after.maxPower - before.maxPower, "", true) });
+        if (item.id === "true_roll") {
+          rows.push({ label: "Roll Grip", before: this.formatUpgradeMetric(before.rollFriction, "x"), after: this.formatUpgradeMetric(after.rollFriction, "x"), delta: this.formatUpgradeMetric(after.rollFriction - before.rollFriction, "x", true) });
+          rows.push({ label: "Sand Hold", before: this.formatUpgradeMetric(before.sandFactor, "x"), after: this.formatUpgradeMetric(after.sandFactor, "x"), delta: this.formatUpgradeMetric(after.sandFactor - before.sandFactor, "x", true) });
+        }
+        if (item.id === "soft_shell") {
+          rows.push({ label: "Bounce Soften", before: this.formatUpgradeMetric(before.bounceFactor, "x"), after: this.formatUpgradeMetric(after.bounceFactor, "x"), delta: this.formatUpgradeMetric(after.bounceFactor - before.bounceFactor, "x", true) });
+          rows.push({ label: "Hazard Knock", before: this.formatUpgradeMetric(before.hazardKnockback, "x"), after: this.formatUpgradeMetric(after.hazardKnockback, "x"), delta: this.formatUpgradeMetric(after.hazardKnockback - before.hazardKnockback, "x", true) });
+        }
+        if (item.id === "curve_core") rows.push({ label: "Curve", before: this.formatUpgradeMetric(before.curveStrength), after: this.formatUpgradeMetric(after.curveStrength), delta: this.formatUpgradeMetric(after.curveStrength - before.curveStrength, "", true) });
+        if (item.id === "air_hopper") {
+          rows.push({ label: "Hop Count", before: this.formatUpgradeMetric(before.hopCount), after: this.formatUpgradeMetric(after.hopCount), delta: this.formatUpgradeMetric(after.hopCount - before.hopCount, "", true) });
+          rows.push({ label: "Hang Time", before: this.formatUpgradeMetric(before.hopFrames, "f"), after: this.formatUpgradeMetric(after.hopFrames, "f"), delta: this.formatUpgradeMetric(after.hopFrames - before.hopFrames, "f", true) });
+        }
+        if (item.id === "bank_shot") rows.push({ label: "Bank Carry", before: this.formatUpgradeMetric(before.bounceFactor, "x"), after: this.formatUpgradeMetric(after.bounceFactor, "x"), delta: this.formatUpgradeMetric(after.bounceFactor - before.bounceFactor, "x", true) });
+        if (item.id === "anchor_core" || item.id === "pressure_core") rows.push({ label: "Field Resist", before: this.formatUpgradeMetric(before.fieldResistance, "x"), after: this.formatUpgradeMetric(after.fieldResistance, "x"), delta: this.formatUpgradeMetric(after.fieldResistance - before.fieldResistance, "x", true) });
+        if (item.id === "split_core") rows.push({ label: "Alt Line", before: this.formatUpgradeMetric(before.splitOffset), after: this.formatUpgradeMetric(after.splitOffset), delta: this.formatUpgradeMetric(after.splitOffset - before.splitOffset, "", true) });
+        if (item.id === "pulse_core") rows.push({ label: "Burst Power", before: this.formatUpgradeMetric(0.8 + fromTier * 0.22), after: this.formatUpgradeMetric(0.8 + toTier * 0.22), delta: this.formatUpgradeMetric((0.8 + toTier * 0.22) - (0.8 + fromTier * 0.22), "", true) });
+        if (item.id === "needle_core") {
+          rows.push({ label: "Ball Radius", before: this.formatUpgradeMetric(before.radius), after: this.formatUpgradeMetric(after.radius), delta: this.formatUpgradeMetric(after.radius - before.radius, "", true) });
+          rows.push({ label: "Bank Carry", before: this.formatUpgradeMetric(before.bounceFactor, "x"), after: this.formatUpgradeMetric(after.bounceFactor, "x"), delta: this.formatUpgradeMetric(after.bounceFactor - before.bounceFactor, "x", true) });
+        }
+        return rows.slice(0, 3);
+      }
+      if (item.type === "putter") {
+        const before = this.getPutterTierSnapshot(item, fromTier);
+        const after = this.getPutterTierSnapshot(item, toTier);
+        return [
+          { label: "Power", before: this.formatUpgradeMetric(before.powerRating), after: this.formatUpgradeMetric(after.powerRating), delta: this.formatUpgradeMetric(after.powerRating - before.powerRating, "", true) },
+          { label: "Control", before: this.formatUpgradeMetric(before.controlRating), after: this.formatUpgradeMetric(after.controlRating), delta: this.formatUpgradeMetric(after.controlRating - before.controlRating, "", true) },
+          { label: "Forgiveness", before: this.formatUpgradeMetric(before.forgivenessRating), after: this.formatUpgradeMetric(after.forgivenessRating), delta: this.formatUpgradeMetric(after.forgivenessRating - before.forgivenessRating, "", true) }
+        ];
+      }
+      return [];
+    }
+    renderUpgradeDeltaRows(item, fromTier, toTier, mode = "delta") {
+      if ((Number(toTier) || 0) <= (Number(fromTier) || 0)) return "";
+      const rows = this.getUpgradeDeltaRows(item, fromTier, toTier);
+      if (!rows.length) return "";
+      if (mode === "compare") {
+        return rows.map(row => `
+          <div class="upgrade-delta-row">
+            <strong>${row.label}</strong>
+            <span>${row.before} >>> ${row.after}</span>
+          </div>
+        `).join("");
+      }
+      return `
+        <div class="upgrade-delta-list">
+          ${rows.map(row => `
+            <div class="upgrade-delta-row">
+              <strong>${row.label}</strong>
+              <span>${row.delta}</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+    renderCourseMedalSvg(medal = "Bronze") {
+      const config = {
+        Gold: { top: "#fef3a4", rim: "#d4a217", fill: "#facc15", ribbon: "#b45309", mark: "G" },
+        Silver: { top: "#f8fafc", rim: "#94a3b8", fill: "#d1d5db", ribbon: "#64748b", mark: "S" },
+        Bronze: { top: "#f7d9bf", rim: "#b45309", fill: "#d97706", ribbon: "#7c2d12", mark: "B" }
+      }[medal] || { top: "#f3f4f6", rim: "#111827", fill: "#e5e7eb", ribbon: "#6b7280", mark: "C" };
+      return `
+        <svg viewBox="0 0 80 96" aria-hidden="true">
+          <path d="M20 10h14l6 22-14 10-10-8z" fill="${config.ribbon}" stroke="#111827" stroke-width="2" />
+          <path d="M46 10h14l4 24-10 8-14-10z" fill="${config.ribbon}" stroke="#111827" stroke-width="2" />
+          <circle cx="40" cy="56" r="24" fill="${config.fill}" stroke="#111827" stroke-width="2.5" />
+          <circle cx="40" cy="56" r="18" fill="${config.top}" stroke="${config.rim}" stroke-width="2" />
+          <path d="M40 42l4.7 9.5 10.5 1.5-7.6 7.4 1.8 10.6-9.4-5-9.4 5 1.8-10.6-7.6-7.4 10.5-1.5z" fill="${config.fill}" stroke="${config.rim}" stroke-width="1.2" />
+          <text x="40" y="61" text-anchor="middle" font-size="16" font-weight="900" fill="#111827" font-family="system-ui, -apple-system, sans-serif">${config.mark}</text>
+        </svg>
+      `;
     }
     renderMergeInventoryPanel(item) {
       const bucket = this.getMergeBucket(item);
@@ -8261,6 +9239,7 @@
                 </div>
               `).join("")}
             </div>
+            ${this.renderUpgradeDeltaRows(lead.item, lead.tier, Math.min(this.getItemMaxTier(lead.item), lead.tier + 1))}
           </div>
         </section>
       `;
@@ -8346,7 +9325,10 @@
         <strong>Active tuning</strong><br />
         Share mode: <strong>${settings.replayQuality.toUpperCase()}</strong> replay output.<br />
         Motion: <strong>${settings.reduceMotion ? 'Reduced' : 'Full'}</strong> · Game Audio: <strong>${settings.gameAudioEnabled ? 'On' : 'Off'}</strong> · UI Audio: <strong>${settings.uiAudioEnabled ? 'On' : 'Off'}</strong> · Haptics: <strong>${settings.hapticsEnabled ? 'On' : 'Off'}</strong> · Daily reminder: <strong>${settings.dailyReminderEnabled ? 'On' : 'Off'}</strong>.
-        <div style="margin-top:10px;"><button type="button" class="secondary" data-setting-action="ping">Test Audio</button></div>
+        <div style="margin-top:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+          <button type="button" class="secondary" data-setting-action="ping">Test Audio</button>
+          <button type="button" class="secondary" data-setting-action="whats-new">Patch Notes</button>
+        </div>
       </div>
       `;
       this.settingsList.querySelectorAll('[data-setting]').forEach(control => {
@@ -8362,6 +9344,11 @@
           if (button.dataset.settingAction === "daily-reminder") {
             await handleDailyReminderAction(this.progress);
             this.renderSettings();
+            return;
+          }
+          if (button.dataset.settingAction === "whats-new") {
+            populateWhatsNewModal(getCurrentReleaseNotes());
+            document.getElementById('whatsNewModal').style.display = 'flex';
             return;
           }
           if (button.dataset.settingAction !== "ping") return;
@@ -8824,10 +9811,25 @@
             </div>
             <strong>${toLabel}</strong>
           </div>
-          <div class="merge-stat-grid">
-            <div class="merge-stat"><b>Before</b><span>${fromLabel}</span></div>
-            <div class="merge-stat"><b>After</b><span>${toLabel}</span></div>
-            <div class="merge-stat"><b>Copies Used</b><span>${MERGE_COPY_REQUIREMENT}</span></div>
+          <div class="merge-comparison">
+            <div class="merge-compare-card">
+              <h4>Before</h4>
+              <div class="merge-compare-tier"><span>${fromLabel}</span><span>${fromTier}/${this.getItemMaxTier(item)}</span></div>
+              ${this.renderUpgradeDeltaRows(item, fromTier, toTier, "compare")}
+            </div>
+            <div class="merge-arrow-stage">
+              <div class="merge-arrow-icon"><span>&gt;&gt;&gt;</span></div>
+              <div class="merge-arrow-copy">Merge</div>
+            </div>
+            <div class="merge-compare-card">
+              <h4>After</h4>
+              <div class="merge-compare-tier"><span>${toLabel}</span><span>${toTier}/${this.getItemMaxTier(item)}</span></div>
+              <div class="merge-stat-grid">
+                <div class="merge-stat"><b>Copies Used</b><span>${MERGE_COPY_REQUIREMENT}</span></div>
+                <div class="merge-stat"><b>Tier Gain</b><span>+1 tier</span></div>
+                <div class="merge-stat"><b>Status</b><span>Upgrade banked</span></div>
+              </div>
+            </div>
           </div>
           <div class="merge-progress-track"><div class="merge-progress-fill" style="width:100%;"></div></div>
         </div>
@@ -8874,11 +9876,12 @@
       this.weeklyChestRewards.innerHTML = `
         <div class="course-trophy-panel" style="border-color:${location?.style?.accent || "#111827"};">
           <div class="course-trophy-head">
-            <div>
+            <div class="course-medal-copy">
               <h3>${location?.name || "Practice Course"} Trophy</h3>
               <p>${shotLine} · ${location?.terrain || "tour course"}</p>
+              <span>${medal} Medal</span>
             </div>
-            <div class="course-trophy-medal" style="background:${medalColors[medal] || "#f9fafb"};">${medal[0] || "C"}</div>
+            <div class="course-trophy-medal">${this.renderCourseMedalSvg(medal)}</div>
           </div>
           <div class="course-trophy-grid">
             <div class="course-trophy-stat"><b>Medal</b><span>${medal}</span></div>
@@ -9060,13 +10063,13 @@
         return `
           <div class="shop-item">
             <div class="shop-preview">${this.renderShopPreview(item)}</div>
-            <div>
+            <div class="shop-copy">
               <h3>${item.name}</h3>
               <p>${item.description}</p>
               <span class="shop-tag">Costs ${cost} stars · drops loot and golf balls</span>
               <div class="shop-badge">Stars only</div>
             </div>
-            <div class="shop-action"><button class="${canAfford ? "primary" : "secondary"}" ${canAfford ? "" : "disabled"} data-action="buy" data-id="${item.id}">Open · ${cost}★</button></div>
+            <div class="shop-action single"><button class="${canAfford ? "primary" : "secondary"}" ${canAfford ? "" : "disabled"} data-action="buy" data-id="${item.id}">Open · ${cost}★</button></div>
           </div>
         `;
       }
@@ -9083,13 +10086,13 @@
         return `
           <div class="shop-item">
             <div class="shop-preview">${this.renderShopPreview(item)}</div>
-            <div>
+            <div class="shop-copy">
               <h3>${item.name}</h3>
               <p>${item.description}</p>
               <span class="shop-tag">${owned ? "Claimed" : `Costs ${cost} Daily Tokens`}</span>
               <div class="shop-badge">Reward: ${rewardTarget}</div>
             </div>
-            <div class="shop-action">${button}</div>
+            <div class="shop-action single">${button}</div>
           </div>
         `;
       }
@@ -9181,18 +10184,32 @@
         ? `<button class="primary" data-action="merge" data-id="${item.id}">Merge</button>`
         : "";
       const actionMarkup = mergeButton ? `${button}${mergeButton}` : button;
+      const upgradePreview = this.renderUpgradeDeltaRows(
+        item,
+        item.type === "ability" ? Math.max(0, this.getAbilityTier(item.id)) : item.type === "putter" ? Math.max(0, this.getPutterTier(item.id)) : 0,
+        item.type === "ability"
+          ? Math.min(item.maxTier || 0, Math.max(1, this.getAbilityTier(item.id) + 1))
+          : item.type === "putter"
+            ? Math.min(this.getItemMaxTier(item), Math.max(1, this.getPutterTier(item.id) + 1))
+            : 0
+      );
       return `
         <div class="shop-item">
           <div class="shop-preview">${this.renderShopPreview(item)}</div>
-          <div>
+          <div class="shop-copy">
             <h3>${item.name}</h3>
             <p>${item.description}${item.effect?.description ? ` ${item.effect.label}: ${item.effect.description}` : ""}</p>
-            <span class="shop-tag">${tag}</span>
-            ${rewardBadge}
-            ${mergeCopy}
+            <div class="shop-tag-row">
+              <span class="shop-tag">${tag}</span>
+            </div>
+            ${upgradePreview}
+            <div class="shop-badge-row">
+              ${rewardBadge}
+              ${mergeCopy}
+            </div>
             ${mergeInventory}
           </div>
-          <div class="shop-action">${actionMarkup}</div>
+          <div class="shop-action ${mergeButton ? "" : "single"}">${actionMarkup}</div>
         </div>
       `;
     }
@@ -9425,7 +10442,8 @@
           shotLimit: holeShotLimit,
           roundShotLimit: this.dailyRoundShotLimit,
           priorRoundShots: priorShots,
-          dailyVariant: this.dailySignature?.variantName || null
+          dailyVariant: this.dailySignature?.variantName || null,
+          bestHoleShots: this.getBestShotsForHole(data, this.currentLevelIndex)
         }
       );
       this.resizeCanvas();
@@ -9462,6 +10480,7 @@
       const streakBonus = this.cleanStreak > 0 && this.cleanStreak % 3 === 0 ? 1 : 0;
       const parRushBonus = this.challengeRule.id === 'par_rush' && shots <= data.par ? 1 : 0;
       const starsEarned = starsForHole(data.par, shots) + streakBonus + parRushBonus;
+      this.updateHoleBestShots(data, shots, this.currentLevelIndex);
       this.progress.stars += starsEarned;
       this.progress.stats.holesCompleted++;
       this.progress.stats.totalShots += shots;
@@ -9853,6 +10872,7 @@
     this.roundShotLimit = Number.isFinite(roundConfig.roundShotLimit) ? Math.max(1, roundConfig.roundShotLimit) : null;
     this.priorRoundShots = Math.max(0, Number(roundConfig.priorRoundShots) || 0);
     this.dailyVariant = roundConfig.dailyVariant || data.dailyVariant || null;
+    this.bestHoleShots = Number.isFinite(roundConfig.bestHoleShots) ? roundConfig.bestHoleShots : null;
     this.failTriggered = false;
     this.onFirstShot = typeof roundConfig.onFirstShot === "function" ? roundConfig.onFirstShot : null;
     this.firstShotHandled = false;
@@ -9860,6 +10880,9 @@
     document.getElementById('shotCount').textContent = this.shots;
 
     this.ball = new Ball(data.ballStart.x, data.ballStart.y, loadout);
+    if (Number.isFinite(data.ballRadius)) {
+      this.ball.setCourseBallRadius(data.ballRadius, Boolean(data.lockBallRadius));
+    }
     this.ball.setCourseBounds({ minX: 14, minY: 14, maxX: data.width - 14, maxY: data.height - 14 });
     this.hole = data.hole;
     this.walls = data.walls.map(w => createWallInstance(w));
@@ -10289,21 +11312,88 @@
   renderBackground(ctx, left, top, right, bottom, scale = 1) {
     const theme = ctx.__courseTheme || this.theme;
     const style = this.courseStyle || {};
-    const spacing = 80;
+    const isCactus = this.courseLocation?.id === "cactus_ridge";
+    const spacing = isCactus ? 112 : 80;
     ctx.save();
-    ctx.fillStyle = style.bg || "#ffffff";
-    ctx.fillRect(left - spacing, top - spacing, (right - left) + spacing * 2, (bottom - top) + spacing * 2);
+    if (isCactus) {
+      const desertGradient = ctx.createLinearGradient(left, top, left, bottom);
+      desertGradient.addColorStop(0, "#fff9ef");
+      desertGradient.addColorStop(0.45, "#f8ecd4");
+      desertGradient.addColorStop(1, "#f1dfbc");
+      ctx.fillStyle = desertGradient;
+      ctx.fillRect(left - spacing, top - spacing, (right - left) + spacing * 2, (bottom - top) + spacing * 2);
+      for (let px = Math.floor((left - 160) / 140) * 140; px <= right + 160; px += 140) {
+        for (let py = Math.floor((top - 160) / 140) * 140; py <= bottom + 160; py += 140) {
+          const hash = getCourseDecorHash(px, py, 17);
+          const blotchRadius = 14 + (hash % 26);
+          const alpha = 0.035 + (hash % 7) * 0.008;
+          ctx.beginPath();
+          ctx.ellipse(px + ((hash % 17) - 8), py + (((hash >> 3) % 21) - 10), blotchRadius, blotchRadius * (0.62 + ((hash >> 5) % 30) / 100), (hash % 360) * Math.PI / 180, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(191, 153, 105, ${alpha})`;
+          ctx.fill();
+        }
+      }
+      for (let sx = Math.floor((left - 120) / 44) * 44; sx <= right + 120; sx += 44) {
+        for (let sy = Math.floor((top - 120) / 44) * 44; sy <= bottom + 120; sy += 44) {
+          const hash = getCourseDecorHash(sx, sy, 29);
+          if (hash % 5 !== 0) continue;
+          const radius = 0.6 + (hash % 3) * 0.22;
+          ctx.beginPath();
+          ctx.arc(sx + ((hash % 9) - 4), sy + (((hash >> 4) % 9) - 4), radius, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(112, 88, 59, 0.12)";
+          ctx.fill();
+        }
+      }
+    } else {
+      ctx.fillStyle = style.bg || "#ffffff";
+      ctx.fillRect(left - spacing, top - spacing, (right - left) + spacing * 2, (bottom - top) + spacing * 2);
+    }
     ctx.fillStyle = style.glyphColor || theme.glyphColor;
+    const glyphTheme = style.glyphs?.length ? { ...theme, glyphs: style.glyphs } : theme;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = `12px system-ui, -apple-system, sans-serif`;
+    ctx.font = isCactus ? `11px system-ui, -apple-system, sans-serif` : `12px system-ui, -apple-system, sans-serif`;
     const startX = Math.floor((left - spacing) / spacing) * spacing;
     const endX = Math.ceil((right + spacing) / spacing) * spacing;
     const startY = Math.floor((top - spacing) / spacing) * spacing;
     const endY = Math.ceil((bottom + spacing) / spacing) * spacing;
     for (let gx = startX; gx <= endX; gx += spacing) {
       for (let gy = startY; gy <= endY; gy += spacing) {
-        ctx.fillText(getThemeGlyph(theme, gx, gy), gx, gy);
+        const hash = getCourseDecorHash(gx, gy, 43);
+        const alpha = isCactus ? 0.34 + (hash % 4) * 0.05 : 1;
+        if (isCactus) ctx.globalAlpha = alpha;
+        ctx.fillText(getThemeGlyph(glyphTheme, gx, gy), gx, gy);
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  renderCourseDecor(ctx, left, top, right, bottom) {
+    if (this.courseLocation?.id !== "cactus_ridge") return;
+    const startX = Math.floor((left - 120) / 156) * 156;
+    const endX = Math.ceil((right + 120) / 156) * 156;
+    const startY = Math.floor((top - 120) / 168) * 168;
+    const endY = Math.ceil((bottom + 120) / 168) * 168;
+    ctx.save();
+    for (let x = startX; x <= endX; x += 156) {
+      for (let y = startY; y <= endY; y += 168) {
+        const hash = getCourseDecorHash(x, y, 61);
+        const cx = x + ((hash % 41) - 20);
+        const cy = y + (((hash >> 4) % 51) - 25);
+        const choice = hash % 7;
+        ctx.save();
+        ctx.globalAlpha = 0.54 + (hash % 3) * 0.08;
+        if (choice <= 2) {
+          drawCactusProp(ctx, cx, cy, 0.9 + (hash % 4) * 0.12, choice);
+          drawRockCluster(ctx, cx, cy + 22, 0.9 + (hash % 3) * 0.18);
+        } else if (choice <= 4) {
+          drawRockCluster(ctx, cx, cy + 8, 1 + (hash % 4) * 0.12);
+          drawGrassTuft(ctx, cx + 18, cy + 10, 0.9 + (hash % 3) * 0.15);
+        } else {
+          drawGrassTuft(ctx, cx, cy, 1 + (hash % 4) * 0.12);
+        }
+        ctx.restore();
       }
     }
     ctx.restore();
@@ -10317,6 +11407,7 @@
     ctx.__courseTheme = this.theme;
     ctx.__courseStyle = this.courseStyle;
     this.renderBackground(ctx, viewLeft, viewTop, viewRight, viewBottom);
+    this.renderCourseDecor(ctx, viewLeft, viewTop, viewRight, viewBottom);
     this.walls.forEach(w => w.render(ctx));
     this.sandTraps.forEach(trap => trap.render(ctx));
     this.spinners.forEach(s => s.render(ctx));
@@ -10717,12 +11808,13 @@
 
   drawMiniBallIcon(ctx, x, y, radius = 8) {
     const ball = this.ball;
+    const style = ball.style || BALL_COSMETICS[0];
     ctx.save();
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = ball.style?.fill || "#ffffff";
+    ctx.fillStyle = style.fill || "#ffffff";
     ctx.fill();
-    if (ball.style?.split) {
+    if (style.split) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -10731,107 +11823,319 @@
       ctx.fillRect(x, y - radius, radius + 2, radius * 2);
       ctx.restore();
     }
-    ctx.strokeStyle = ball.style?.stroke || "#111827";
+    if (style.ring) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.66, 0, Math.PI * 2);
+      ctx.strokeStyle = style.ring;
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+    }
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, Math.max(1, radius - 0.8), 0, Math.PI * 2);
+    ctx.clip();
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    if (style.skinPattern === "blueprint") {
+      ctx.strokeStyle = "#9ca3af";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x - radius * 0.65, y + radius * 0.12);
+      ctx.lineTo(x + radius * 0.65, y + radius * 0.12);
+      ctx.moveTo(x - radius * 0.24, y - radius * 0.72);
+      ctx.lineTo(x - radius * 0.24, y + radius * 0.72);
+      ctx.moveTo(x - radius * 0.58, y - radius * 0.58);
+      ctx.lineTo(x + radius * 0.58, y + radius * 0.58);
+      ctx.stroke();
+      ctx.fillStyle = "#111111";
+      ctx.beginPath();
+      ctx.arc(x + radius * 0.42, y - radius * 0.42, radius * 0.13, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (style.skinPattern === "obsidian_ring") {
+      ctx.fillStyle = "#f9fafb";
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.43, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#111111";
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (style.skinPattern === "monogram") {
+      ctx.strokeStyle = "#111111";
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.moveTo(x - radius * 0.62, y - radius * 0.42);
+      ctx.lineTo(x + radius * 0.62, y - radius * 0.42);
+      ctx.moveTo(x - radius * 0.62, y + radius * 0.42);
+      ctx.lineTo(x + radius * 0.62, y + radius * 0.42);
+      ctx.stroke();
+      ctx.fillStyle = "#111111";
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.23, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (style.skinPattern === "halftone_ghost") {
+      const dotColor = "rgba(17,17,17,0.22)";
+      [[-0.35, -0.5], [0.12, -0.58], [0.46, -0.28], [-0.46, 0], [0, 0], [0.42, 0.1], [-0.28, 0.48], [0.24, 0.56]].forEach(([dx, dy]) => {
+        ctx.beginPath();
+        ctx.arc(x + dx * radius, y + dy * radius, radius * 0.1, 0, Math.PI * 2);
+        ctx.fillStyle = dotColor;
+        ctx.fill();
+      });
+    } else if (style.skinPattern === "signal") {
+      [0.24, 0.5, 0.72].forEach((scale, index) => {
+        ctx.beginPath();
+        ctx.arc(x, y, radius * scale, 0, Math.PI * 2);
+        ctx.strokeStyle = index === 0 ? "#111111" : "rgba(17,17,17,0.68)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+    } else if (style.skinPattern === "glitch_ink") {
+      ctx.strokeStyle = "rgba(17,17,17,0.32)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(x - radius * 0.1, y + radius * 0.1, radius * 0.72, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = "#111111";
+      ctx.beginPath();
+      ctx.moveTo(x - radius * 0.62, y + radius * 0.16);
+      ctx.lineTo(x + radius * 0.56, y - radius * 0.12);
+      ctx.stroke();
+    } else {
+      const dimpleColor = style.fill === "#111111" ? "rgba(255,255,255,0.58)" : "rgba(17,17,17,0.28)";
+      [[-0.32, -0.28], [0.18, -0.36], [0.34, 0.1], [-0.12, 0.32]].forEach(([dx, dy]) => {
+        ctx.beginPath();
+        ctx.arc(x + dx * radius, y + dy * radius, Math.max(0.8, radius * 0.12), 0, Math.PI * 2);
+        ctx.fillStyle = dimpleColor;
+        ctx.fill();
+      });
+    }
+    ctx.restore();
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = style.stroke || "#111827";
     ctx.lineWidth = 1.5;
     ctx.stroke();
-    const dimpleColor = ball.style?.fill === "#111111" ? "rgba(255,255,255,0.58)" : "rgba(17,17,17,0.28)";
-    [[-0.32, -0.28], [0.18, -0.36], [0.34, 0.1], [-0.12, 0.32]].forEach(([dx, dy]) => {
-      ctx.beginPath();
-      ctx.arc(x + dx * radius, y + dy * radius, Math.max(0.8, radius * 0.12), 0, Math.PI * 2);
-      ctx.fillStyle = dimpleColor;
-      ctx.fill();
-    });
-    ctx.restore();
   }
 
   drawMiniPutterIcon(ctx, x, y, width = 18, height = 18) {
     const putter = this.ball.putter || PUTTER_SHOP[0];
     const skin = this.ball.putterSkin || PUTTER_SKINS[0];
-    const accent = skin.id === "crown_wrap" ? "#f59e0b" : skin.id === "chrome_face" ? "#6b7280" : putter.rarity === "legendary" ? "#111827" : "#374151";
+    const id = putter.id;
+    const skinId = skin.id;
+    const shaft = skinId === "pinstripe_grip" ? "#111111" : skinId === "chrome_face" ? "#6b7280" : "#111111";
+    const grip = skinId === "crown_wrap" ? "#f59e0b" : "#6b7280";
+    const face = skinId === "chrome_face" ? "#e5e7eb" : id === "tour_putter" ? "#111111" : "#ffffff";
+    const headX = x + width * 0.2;
+    const headY = y + height * 0.68;
+    const headW = width * 0.68;
+    const headH = height * (id === "tour_putter" ? 0.25 : 0.22);
     ctx.save();
-    ctx.strokeStyle = "#111827";
-    ctx.lineWidth = 2;
     ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = shaft;
+    ctx.lineWidth = id === "blade_putter" ? 1.8 : 2.1;
     ctx.beginPath();
-    ctx.moveTo(x + width * 0.28, y + height * 0.12);
-    ctx.lineTo(x + width * 0.34, y + height * 0.78);
+    if (id === "tempo_putter") {
+      ctx.moveTo(x + width * 0.28, y + height * 0.1);
+      ctx.bezierCurveTo(x + width * 0.6, y + height * 0.32, x + width * 0.34, y + height * 0.54, x + width * 0.34, y + height * 0.78);
+    } else {
+      ctx.moveTo(x + width * 0.3, y + height * 0.1);
+      ctx.lineTo(x + width * 0.34, y + height * 0.8);
+    }
     ctx.stroke();
-    ctx.fillStyle = accent;
+    ctx.fillStyle = grip;
     ctx.strokeStyle = "#111827";
-    roundedRectPath(ctx, x + width * 0.22, y + height * 0.68, width * 0.64, height * 0.22, 3);
+    ctx.lineWidth = 1.3;
+    roundedRectPath(ctx, x + width * 0.08, y + height * 0.08, width * 0.34, height * 0.36, 2);
     ctx.fill();
     ctx.stroke();
+    if (skinId === "pinstripe_grip") {
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 0.8;
+      [0.18, 0.28, 0.38].forEach(row => {
+        ctx.beginPath();
+        ctx.moveTo(x + width * 0.1, y + height * row);
+        ctx.lineTo(x + width * 0.4, y + height * row);
+        ctx.stroke();
+      });
+    }
+    ctx.fillStyle = face;
+    ctx.strokeStyle = "#111827";
+    ctx.lineWidth = 1.5;
+    roundedRectPath(ctx, headX, headY, headW, headH, id === "blade_putter" ? 1 : 3);
+    ctx.fill();
+    ctx.stroke();
+    if (skinId === "chrome_face") {
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(headX + headW * 0.22, headY + headH * 0.45);
+      ctx.lineTo(headX + headW * 0.82, headY + headH * 0.45);
+      ctx.stroke();
+    }
+    if (id === "tempo_putter") {
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(x + width * 0.72, y + height * 0.54, width * 0.16, -1.6, 0.8);
+      ctx.stroke();
+    }
+    if (id === "blade_putter") {
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      ctx.moveTo(x + width * 0.58, y + height * 0.28);
+      ctx.lineTo(x + width * 0.78, y + height * 0.42);
+      ctx.lineTo(x + width * 0.58, y + height * 0.56);
+      ctx.stroke();
+    }
+    if (id === "mallet_putter") {
+      ctx.strokeStyle = "#111827";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(headX + headW * 0.66, headY + headH * 0.5, Math.max(1.5, width * 0.11), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    if (id === "tour_putter" || skinId === "crown_wrap") {
+      ctx.strokeStyle = skinId === "crown_wrap" ? "#f59e0b" : "#ffffff";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(headX + headW * 0.44, headY - height * 0.12);
+      ctx.lineTo(headX + headW * 0.52, headY - height * 0.28);
+      ctx.lineTo(headX + headW * 0.6, headY - height * 0.12);
+      ctx.lineTo(headX + headW * 0.7, headY - height * 0.28);
+      ctx.lineTo(headX + headW * 0.78, headY - height * 0.12);
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
   renderEquipmentOverlay(ctx, originX, originY, maxWidth, compact = false) {
     const ball = this.ball;
+    const style = this.courseStyle || {};
+    const isCactus = this.courseLocation?.id === "cactus_ridge";
     const ballName = ball.style?.name || "Classic Ball";
     const coreName = ball.ability?.id && ball.ability.id !== "none_ability"
       ? `${ball.ability.name} ${MERGE_TIER_LABELS[ball.abilityTier] || `T${ball.abilityTier}`}`
       : "Standard Core";
     const putterName = `${ball.putter?.name || "Starter Putter"} ${MERGE_TIER_LABELS[ball.putterTier] || `T${ball.putterTier}`}`;
-    const panelWidth = Math.min(maxWidth, compact ? 288 : 360);
+    const panelWidth = maxWidth;
     const panelHeight = compact ? 42 : 46;
     const x = originX;
     const y = originY;
     ctx.save();
-    fillRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, "rgba(255,255,255,0.82)");
-    strokeRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, "rgba(17,24,39,0.72)", 1.2);
+    fillRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, style.overlayFill || "#ffffff");
+    strokeRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, style.overlayStroke || "#111827", 1.2);
+    if (style.overlayDivider) {
+      ctx.strokeStyle = style.overlayDivider;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      if (isCactus) {
+        const dividerX = x + panelWidth * 0.62;
+        ctx.moveTo(dividerX, y + 8);
+        ctx.lineTo(dividerX, y + panelHeight - 8);
+      } else {
+        ctx.moveTo(x + 72, y + 8);
+        ctx.lineTo(x + 72, y + panelHeight - 8);
+        ctx.moveTo(x + panelWidth - 86, y + 8);
+        ctx.lineTo(x + panelWidth - 86, y + panelHeight - 8);
+      }
+      ctx.stroke();
+    }
     this.drawMiniBallIcon(ctx, x + 22, y + panelHeight / 2, compact ? 7 : 8);
-    this.drawMiniPutterIcon(ctx, x + panelWidth - 36, y + 12, compact ? 17 : 19, compact ? 17 : 19);
+    this.drawMiniPutterIcon(ctx, isCactus ? x + panelWidth - 32 : x + panelWidth - 36, y + 12, compact ? 17 : 19, compact ? 17 : 19);
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#111827";
+    ctx.fillStyle = style.overlayText || "#111827";
     ctx.font = compact ? "700 11px system-ui, -apple-system, sans-serif" : "700 12px system-ui, -apple-system, sans-serif";
-    ctx.fillText(this.truncateCanvasText(ctx, ballName, panelWidth * 0.38), x + 38, y + 15);
+    ctx.fillText(this.truncateCanvasText(ctx, ballName, isCactus ? panelWidth * 0.46 : panelWidth * 0.38), x + 38, y + 15);
     ctx.font = compact ? "600 9.5px system-ui, -apple-system, sans-serif" : "600 10px system-ui, -apple-system, sans-serif";
-    ctx.fillStyle = "#4b5563";
-    ctx.fillText(this.truncateCanvasText(ctx, coreName, panelWidth * 0.42), x + 38, y + panelHeight - 13);
+    ctx.fillStyle = style.overlayMuted || "#4b5563";
+    ctx.fillText(this.truncateCanvasText(ctx, coreName, isCactus ? panelWidth * 0.46 : panelWidth * 0.42), x + 38, y + panelHeight - 13);
     ctx.textAlign = "right";
-    ctx.fillStyle = "#111827";
+    ctx.fillStyle = style.overlayText || "#111827";
     ctx.font = compact ? "700 10px system-ui, -apple-system, sans-serif" : "700 11px system-ui, -apple-system, sans-serif";
-    ctx.fillText(this.truncateCanvasText(ctx, putterName, panelWidth * 0.32), x + panelWidth - 48, y + panelHeight / 2);
+    ctx.fillText(this.truncateCanvasText(ctx, putterName, isCactus ? panelWidth * 0.26 : panelWidth * 0.32), x + panelWidth - 44, y + panelHeight / 2);
     ctx.restore();
   }
 
   renderHudOverlay(ctx) {
     const width = this.camera.canvasWidth;
+    const style = this.courseStyle || {};
     const isCompact = width <= 430;
-    const panelWidth = Math.min(width - 20, isCompact ? 272 : 348);
-    const panelHeight = isCompact ? 48 : 54;
+    const panelWidth = width - 20;
+    const panelHeight = isCompact ? 68 : 74;
     const x = 10;
     const y = 10;
-    const modifierText = this.modifier?.id && this.modifier.id !== "none" ? this.modifier.name : null;
-    const ruleText = this.challengeRule?.id && this.challengeRule.id !== "none" ? this.challengeRule.name : null;
-    const shotCapText = this.shotLimit ? `${this.shots}/${this.shotLimit} strokes` : `${this.shots} Shot${this.shots === 1 ? "" : "s"}`;
+    const shotCapText = this.shotLimit ? `${this.shots} / ${this.shotLimit}` : `${this.shots} SHOTS`;
     const signatureText = this.data.setpiece?.id !== "none"
       ? `Setpiece: ${this.data.setpiece.name}`
       : this.data.hazardTheme?.name
         ? `Spotlight: ${this.data.hazardTheme.name}`
         : this.dailyVariant;
+    const bestText = Number.isFinite(this.bestHoleShots) ? `${this.bestHoleShots}` : "--";
 
     ctx.save();
-    fillRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, "rgba(255,255,255,0.88)");
-    strokeRoundedRect(ctx, x, y, panelWidth, panelHeight, 14, VISUAL_STYLE.ink, 1.5);
+    fillRoundedRect(ctx, x, y, panelWidth, panelHeight, 18, style.overlayFill || "#ffffff");
+    strokeRoundedRect(ctx, x, y, panelWidth, panelHeight, 18, style.overlayStroke || VISUAL_STYLE.ink, 1.5);
+    const dividerColor = style.overlayDivider || "#d1d5db";
+    const dividerOne = x + panelWidth * 0.29;
+    const dividerTwo = x + panelWidth * 0.5;
+    ctx.strokeStyle = dividerColor;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(dividerOne, y + 10);
+    ctx.lineTo(dividerOne, y + panelHeight - 10);
+    ctx.moveTo(dividerTwo, y + 10);
+    ctx.lineTo(dividerTwo, y + panelHeight - 10);
+    ctx.stroke();
 
-    ctx.fillStyle = VISUAL_STYLE.ink;
+    const bigFont = isCompact ? "800 16px system-ui, -apple-system, sans-serif" : "800 17px system-ui, -apple-system, sans-serif";
+    const smallFont = isCompact ? "700 9px system-ui, -apple-system, sans-serif" : "700 10px system-ui, -apple-system, sans-serif";
+    const bodyFont = isCompact ? "700 10px system-ui, -apple-system, sans-serif" : "700 11px system-ui, -apple-system, sans-serif";
+    const leftX = x + 14;
+    const midX = dividerOne + 12;
+    const rightX = dividerTwo + 12;
+    const titleY = y + 23;
+    const subY = y + panelHeight - 17;
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
-    ctx.font = isCompact ? "700 13px system-ui, -apple-system, sans-serif" : "700 14px system-ui, -apple-system, sans-serif";
-    ctx.fillText(`Hole ${this.data.id} · Par ${this.data.par}`, x + 12, y + 14);
-    ctx.textAlign = "right";
-    ctx.fillText(shotCapText, x + panelWidth - 12, y + 14);
 
-    const detailParts = [this.difficulty?.label || null, ruleText, modifierText, signatureText].filter(Boolean);
-    if (detailParts.length) {
-      ctx.font = isCompact ? "600 10px system-ui, -apple-system, sans-serif" : "600 11px system-ui, -apple-system, sans-serif";
-      ctx.fillStyle = VISUAL_STYLE.muted;
-      ctx.textAlign = "left";
-      ctx.fillText(detailParts.join(" · "), x + 12, y + panelHeight - 11);
-    }
+    ctx.fillStyle = style.overlayText || "#111827";
+    ctx.font = bigFont;
+    ctx.fillText(`HOLE ${this.data.id}`, leftX, titleY);
+    ctx.font = bodyFont;
+    ctx.fillText(`PAR ${this.data.par}`, leftX + 3, subY);
+
+    ctx.font = bigFont;
+    ctx.fillText(shotCapText, midX, titleY);
+    ctx.fillStyle = style.overlayMuted || "#4b5563";
+    ctx.font = bodyFont;
+    ctx.fillText(`Best: ${bestText}`, midX + 2, subY);
+
+    ctx.fillStyle = style.overlayText || "#111827";
+    const barsX = rightX;
+    const barsY = titleY - 3;
+    ctx.fillRect(barsX, barsY + 7, 4, 7);
+    ctx.fillRect(barsX + 7, barsY + 3, 4, 11);
+    ctx.fillRect(barsX + 14, barsY - 1, 4, 15);
+    ctx.font = bigFont;
+    ctx.fillText(this.difficulty?.label || "Average", barsX + 25, titleY);
+
+    ctx.strokeStyle = style.overlayText || "#111827";
+    ctx.lineWidth = 1.7;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(barsX, subY + 2);
+    ctx.bezierCurveTo(barsX + 4, subY - 2, barsX + 8, subY - 2, barsX + 12, subY + 2);
+    ctx.moveTo(barsX + 4, subY + 7);
+    ctx.bezierCurveTo(barsX + 8, subY + 3, barsX + 12, subY + 3, barsX + 16, subY + 7);
+    ctx.stroke();
+    ctx.fillStyle = style.overlayText || "#111827";
+    ctx.font = smallFont;
+    ctx.fillText(this.truncateCanvasText(ctx, signatureText || "Spotlight: Mixed Flow", panelWidth - (barsX - x) - 35), barsX + 25, subY + 1);
     ctx.restore();
-    this.renderEquipmentOverlay(ctx, x, y + panelHeight + 8, Math.min(width - 20, isCompact ? 292 : 372), isCompact);
+    this.renderEquipmentOverlay(ctx, x, y + panelHeight + 8, width - 20, isCompact);
   }
 
   buildPreviewPath() {
@@ -10986,6 +12290,8 @@
       this.vx = 0;
       this.vy = 0;
       this.radius = 6;
+      this.courseBallRadius = null;
+      this.lockCourseBallRadius = false;
       this.visualScale = 1;
       this.visualScaleX = 1;
       this.visualScaleY = 1;
@@ -11043,8 +12349,27 @@
       this.putter = loadout.putter || PUTTER_SHOP[0];
       this.putterTier = Math.max(0, Number(loadout.putterTier) || 0);
       this.putterSkin = loadout.putterSkin || PUTTER_SKINS[0];
-      this.radius = this.ability.id === "needle_core" ? 5.2 - this.abilityTier * 0.18 : 6;
+      const baseRadius = Number.isFinite(this.courseBallRadius) ? this.courseBallRadius : 6;
+      this.radius = this.lockCourseBallRadius
+        ? baseRadius
+        : this.ability.id === "needle_core"
+          ? Math.max(3.5, baseRadius - 0.8 - this.abilityTier * 0.18)
+          : baseRadius;
       this.shotHopsRemaining = this.getHopCount();
+    }
+    setCourseBallRadius(radius, locked = false) {
+      if (!Number.isFinite(radius)) return;
+      this.courseBallRadius = Math.max(4, radius);
+      this.lockCourseBallRadius = Boolean(locked);
+      this.applyLoadout({
+        cosmetic: this.style,
+        trail: this.trail,
+        ability: this.ability,
+        abilityTier: this.abilityTier,
+        putter: this.putter,
+        putterTier: this.putterTier,
+        putterSkin: this.putterSkin
+      });
     }
     setHoleModifier(modifier) {
       this.holeModifier = modifier || HOLE_MODIFIERS.none;
@@ -11586,8 +12911,43 @@
     ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
     ctx.rotate(this.rotation);
     const style = ctx.__courseStyle || {};
+    if (style.wallShadow) {
+      ctx.fillStyle = style.wallShadow;
+      roundedRectPath(ctx, -this.width / 2 + 6, -this.height / 2 + 8, this.width, this.height, Math.min(10, Math.min(this.width, this.height) * 0.2));
+      ctx.fill();
+    }
     ctx.fillStyle = style.wallFill || "black";
-    ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+    roundedRectPath(ctx, -this.width / 2, -this.height / 2, this.width, this.height, Math.min(10, Math.min(this.width, this.height) * 0.2));
+    ctx.fill();
+    if (style.wallHighlight) {
+      ctx.strokeStyle = style.wallHighlight;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-this.width / 2 + 6, -this.height / 2 + 4);
+      ctx.lineTo(this.width / 2 - 6, -this.height / 2 + 4);
+      ctx.stroke();
+    }
+    if (style.wallJoint) {
+      ctx.strokeStyle = style.wallJoint;
+      ctx.lineWidth = 1.2;
+      const segmentCount = Math.max(2, Math.floor((this.width >= this.height ? this.width : this.height) / 22));
+      for (let index = 1; index < segmentCount; index++) {
+        const t = index / segmentCount;
+        if (this.width >= this.height) {
+          const x = -this.width / 2 + this.width * t;
+          ctx.beginPath();
+          ctx.moveTo(x, -this.height / 2 + 2);
+          ctx.lineTo(x, this.height / 2 - 2);
+          ctx.stroke();
+        } else {
+          const y = -this.height / 2 + this.height * t;
+          ctx.beginPath();
+          ctx.moveTo(-this.width / 2 + 2, y);
+          ctx.lineTo(this.width / 2 - 2, y);
+          ctx.stroke();
+        }
+      }
+    }
     const theme = ctx.__courseTheme;
     if (theme && theme.wallStroke) {
       ctx.strokeStyle = theme.wallStroke;
@@ -11655,11 +13015,21 @@
     ball.x = centerX + resolvedLocalX * cos + resolvedLocalY * sin;
     ball.y = centerY - resolvedLocalX * sin + resolvedLocalY * cos;
     const speedAlongNormal = ball.vx * worldNormalX + ball.vy * worldNormalY;
-    if (speedAlongNormal < 0) {
-      const bounce = ball.getBounceFactor(0.8);
+    const bounce = ball.getBounceFactor(0.8);
+    const minKick = 0.22;
+    if (Math.abs(speedAlongNormal) > 0.01) {
       ball.vx -= (1 + bounce) * speedAlongNormal * worldNormalX;
       ball.vy -= (1 + bounce) * speedAlongNormal * worldNormalY;
+      const postNormalSpeed = ball.vx * worldNormalX + ball.vy * worldNormalY;
+      if (Math.abs(postNormalSpeed) < minKick) {
+        const targetNormalSpeed = postNormalSpeed >= 0 ? minKick : -minKick;
+        ball.vx += (targetNormalSpeed - postNormalSpeed) * worldNormalX;
+        ball.vy += (targetNormalSpeed - postNormalSpeed) * worldNormalY;
+      }
       if (ball.isLiveBall) emitGameFx('wall', Math.min(1.2, ball.speed() / 8));
+    } else if (ball.speed && ball.speed() > 0.2) {
+      ball.vx += worldNormalX * minKick * 0.48;
+      ball.vy += worldNormalY * minKick * 0.48;
     }
   }
   }
@@ -11675,13 +13045,43 @@
     }
     render(ctx) {
       ctx.save();
+      const style = ctx.__courseStyle || {};
+      if (style.wallShadow) {
+        ctx.beginPath();
+        ctx.arc(this.cx + 6, this.cy + 8, this.radius, this.startAngle, this.endAngle);
+        ctx.strokeStyle = style.wallShadow;
+        ctx.lineCap = "round";
+        ctx.lineWidth = this.thickness;
+        ctx.stroke();
+      }
       ctx.beginPath();
       ctx.arc(this.cx, this.cy, this.radius, this.startAngle, this.endAngle);
-      const style = ctx.__courseStyle || {};
       ctx.strokeStyle = style.wallFill || VISUAL_STYLE.ink;
-      ctx.lineCap = "butt";
+      ctx.lineCap = "round";
       ctx.lineWidth = this.thickness;
       ctx.stroke();
+      if (style.wallHighlight) {
+        ctx.beginPath();
+        ctx.arc(this.cx, this.cy, this.radius + this.thickness * 0.18, this.startAngle, this.endAngle);
+        ctx.strokeStyle = style.wallHighlight;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+      if (style.wallJoint) {
+        const arcLength = Math.abs(this.endAngle - this.startAngle) * this.radius;
+        const segmentCount = Math.max(2, Math.floor(arcLength / 24));
+        ctx.strokeStyle = style.wallJoint;
+        ctx.lineWidth = 1;
+        for (let index = 1; index < segmentCount; index++) {
+          const angle = lerp(this.startAngle, this.endAngle, index / segmentCount);
+          const inner = this.radius - this.thickness * 0.48;
+          const outer = this.radius + this.thickness * 0.48;
+          ctx.beginPath();
+          ctx.moveTo(this.cx + Math.cos(angle) * inner, this.cy + Math.sin(angle) * inner);
+          ctx.lineTo(this.cx + Math.cos(angle) * outer, this.cy + Math.sin(angle) * outer);
+          ctx.stroke();
+        }
+      }
       const theme = ctx.__courseTheme;
       if (theme && theme.wallStroke) {
         ctx.beginPath();
@@ -11713,13 +13113,20 @@
       ball.x += normalX * overlap;
       ball.y += normalY * overlap;
       const speedAlongNormal = ball.vx * normalX + ball.vy * normalY;
-      if (speedAlongNormal < 0) {
-        const bounce = ball.getBounceFactor(0.8);
+      const bounce = ball.getBounceFactor(0.8);
+      const minKick = 0.22;
+      if (Math.abs(speedAlongNormal) > 0.01) {
         ball.vx -= (1 + bounce) * speedAlongNormal * normalX;
         ball.vy -= (1 + bounce) * speedAlongNormal * normalY;
+        const postNormalSpeed = ball.vx * normalX + ball.vy * normalY;
+        if (Math.abs(postNormalSpeed) < minKick) {
+          const targetNormalSpeed = postNormalSpeed >= 0 ? minKick : -minKick;
+          ball.vx += (targetNormalSpeed - postNormalSpeed) * normalX;
+          ball.vy += (targetNormalSpeed - postNormalSpeed) * normalY;
+        }
       } else {
-        ball.vx += normalX * 0.06;
-        ball.vy += normalY * 0.06;
+        ball.vx += normalX * minKick * 0.48;
+        ball.vy += normalY * minKick * 0.48;
       }
       if (ball.isLiveBall) emitGameFx('wall', Math.min(1.2, ball.speed() / 8));
     }
@@ -12602,6 +14009,7 @@ function renderObstacleGalleryPage() {
 
   function renderMenuMeta(modeKey = "daily", roundLengthKey = "default") {
     const progress = loadProgress();
+    syncWhatsNewModalVisibility();
     const pageTitle = document.getElementById('gameTitle');
     if (pageTitle) pageTitle.textContent = modeKey === "daily" ? "Daily Course" : "Course Select";
     const todayKey = getTodayKey();
@@ -12654,7 +14062,6 @@ function renderObstacleGalleryPage() {
     const unlockedLocationCount = COURSE_LOCATION_ORDER.filter(id => isCourseLocationUnlocked(progress, id)).length;
     renderCourseLocationPicker(progress, modeKey);
     renderCourseSetupPanel(progress, modeKey, roundLengthKey);
-
     if (hero) {
       hero.innerHTML = modeKey === "daily"
         ? `
@@ -12662,7 +14069,7 @@ function renderObstacleGalleryPage() {
             <div>
               <div class="menu-hero-kicker">Today&apos;s Main Card</div>
               <div class="menu-hero-title">${averageSignature.locationName || "Daily Course"}</div>
-              <div class="menu-hero-copy">${averageSignature.variantName}: ${averageSignature.variantDescription} Terrain: ${averageSignature.locationTerrain || "mixed greens"}. Featured layout: ${formatLayoutLabel(averageSignature.featuredLayout)}. Spotlight: ${HAZARD_SPOTLIGHTS[averageSignature.featuredSpotlight]?.name || 'Mixed Flow'}.</div>
+              <div class="menu-hero-copy">${averageSignature.variantName} · ${averageSignature.locationTerrain || "mixed greens"} · ${formatLayoutLabel(averageSignature.featuredLayout)} · ${HAZARD_SPOTLIGHTS[averageSignature.featuredSpotlight]?.name || 'Mixed Flow'}</div>
             </div>
             <div class="menu-streak-badge">
               <strong>${streak}</strong>
@@ -12672,19 +14079,19 @@ function renderObstacleGalleryPage() {
           <div class="menu-hero-grid">
             <div class="menu-hero-chip">
               <strong>Attempts</strong>
-              <span>${averageAttempts}/${DAILY_ATTEMPT_LIMIT} official average runs left today</span>
+              <span>${averageAttempts}/${DAILY_ATTEMPT_LIMIT} left today</span>
             </div>
             <div class="menu-hero-chip">
               <strong>Medal Line</strong>
-              <span>Gold III ${averageBoard.targets.gold} · Silver III ${averageBoard.targets.silver} · Bronze III ${averageBoard.targets.bronze}</span>
+              <span>G ${averageBoard.targets.gold} · S ${averageBoard.targets.silver} · B ${averageBoard.targets.bronze}</span>
             </div>
             <div class="menu-hero-chip">
               <strong>Next Unlock</strong>
-              <span>${nextReward ? `${nextReward.name} in ${Math.max(0, nextReward.days - streak)} day${nextReward.days - streak === 1 ? '' : 's'}` : 'All daily mechanic unlocks live'}</span>
+              <span>${nextReward ? `${nextReward.name} · ${Math.max(0, nextReward.days - streak)}d` : 'All mechanics live'}</span>
             </div>
             <div class="menu-hero-chip">
               <strong>Daily Tokens</strong>
-              <span>${tokenCount}◈ banked • Gold pays ${DAILY_TOKEN_REWARDS.Gold}◈</span>
+              <span>${tokenCount}◈ · Gold +${DAILY_TOKEN_REWARDS.Gold}◈</span>
             </div>
           </div>
         `
@@ -12693,7 +14100,7 @@ function renderObstacleGalleryPage() {
             <div>
               <div class="menu-hero-kicker">Practice Mode</div>
               <div class="menu-hero-title">${startCourseSetupOpen ? selectedCourseLocation.name : "Choose A Course"}</div>
-              <div class="menu-hero-copy">${startCourseSetupOpen ? `${selectedCourseLocation.description} Select difficulty and hole count below.` : "Swipe through the course cards, pick an unlocked location, then set difficulty and hole count."}</div>
+              <div class="menu-hero-copy">${startCourseSetupOpen ? `${selectedCourseLocation.terrain} · choose round settings.` : "Pick a course, then set the round."}</div>
             </div>
             <div class="menu-streak-badge">
               <strong>${unlockedLocationCount}</strong>
@@ -12707,7 +14114,7 @@ function renderObstacleGalleryPage() {
             </div>
             <div class="menu-hero-chip">
               <strong>${startCourseSetupOpen ? "Terrain" : "Use Practice For"}</strong>
-              <span>${startCourseSetupOpen ? selectedCourseLocation.terrain : "Shot routing, setpiece reads, and shop loadout testing"}</span>
+              <span>${startCourseSetupOpen ? selectedCourseLocation.terrain : "Routes and loadouts"}</span>
             </div>
           </div>
         `;
@@ -12716,8 +14123,8 @@ function renderObstacleGalleryPage() {
     const handmadeCount = getEligibleHandmadeMaps("average", "standard").length;
     const dailyHandmadeCount = getEligibleHandmadeMaps("average", "daily").length;
     note.textContent = modeKey === "daily"
-      ? `Daily challenge for ${todayKey}. Seed ${dailySeed}. ${dailyHandmadeCount ? `${dailyHandmadeCount} custom map${dailyHandmadeCount === 1 ? "" : "s"} can appear in today's Daily rotation. ` : ""}One official run per difficulty, with hole counts locked to Beginner 9, Average 12, and Hardcore 18. Miss the stroke caps and the card is gone until tomorrow.`
-      : `Practice uses a fresh random seed at the selected unlocked location. ${handmadeCount ? `${handmadeCount} handmade map${handmadeCount === 1 ? "" : "s"} currently mix into the lineup.` : "No handmade maps are loaded yet."} Beat a location to unlock the next course.`;
+      ? `Daily ${todayKey} · Seed ${dailySeed} · one run per difficulty.${dailyHandmadeCount ? ` ${dailyHandmadeCount} signature maps in rotation.` : ""}`
+      : `Fresh seed at the selected course.${handmadeCount ? ` ${handmadeCount} signature maps available.` : ""} Beat courses to unlock the tour.`;
 
     document.querySelectorAll('[data-round-length]').forEach(button => {
       const isExtended = button.dataset.roundLength === "18";
@@ -12742,7 +14149,7 @@ function renderObstacleGalleryPage() {
         const signature = getDailyCourseSignature(todayKey, key, holeCount, progress);
         const board = buildLocalLeaderboard(progress, todayKey, key, holeCount);
         const attemptsLeft = getRemainingDailyAttempts(progress, todayKey, key);
-        target.textContent = `${holeCount} holes at ${signature.locationName || "Daily Course"}. ${base} Attempts left: ${attemptsLeft}. Best: ${formatBestLabel(record)}. Gold ${board.targets.gold} · Silver ${board.targets.silver}. ${signature.variantName}.`;
+        target.textContent = `${holeCount} holes · ${signature.locationName || "Daily Course"} · ${base} · ${attemptsLeft} left · Best ${formatBestLabel(record)} · G ${board.targets.gold} / S ${board.targets.silver}`;
       } else {
         const selectedLocation = COURSE_LOCATIONS[startCourseLocationId] || COURSE_LOCATIONS.pine_valley;
         const playableHere = (selectedLocation.difficulties || []).includes(key);
@@ -12764,13 +14171,11 @@ function renderObstacleGalleryPage() {
       tomorrowGrid.innerHTML = [
         `<div class="menu-progress-row"><span>Location</span><span>${tomorrowSignature.locationName || "Daily Course"} • ${tomorrowSignature.locationTerrain || "mixed greens"}</span></div>`,
         `<div class="menu-progress-row"><span>Variant</span><span>${tomorrowSignature.variantName} • ${formatDateLabel(tomorrowKey)}</span></div>`,
-        `<div class="menu-progress-row"><span>Spotlight</span><span>${spotlightName} • ${formatLayoutLabel(tomorrowSignature.featuredLayout)} focus</span></div>`,
-        `<div class="menu-progress-row"><span>Medal Line</span><span>Gold ${tomorrowBoard.targets.gold} · Silver ${tomorrowBoard.targets.silver} · Bronze ${tomorrowBoard.targets.bronze}</span></div>`,
-        `<div class="menu-progress-row"><span>Tier Chase</span><span>Gold I ${tomorrowBoard.targets.gold - 2} · Gold II ${tomorrowBoard.targets.gold - 1} · Gold III ${tomorrowBoard.targets.gold}</span></div>`,
-        `<div class="menu-progress-row"><span>Reward Tease</span><span>Gold pays ${DAILY_TOKEN_REWARDS.Gold}◈ tomorrow • ${weeklyPushCopy}</span></div>`,
-        `<div class="menu-progress-row"><span>Urgency</span><span>${streakUrgencyCopy}</span></div>`,
-        `<div class="menu-progress-row"><span>Weekly Chest</span><span>${weeklyChestOpened ? 'Already opened this week' : weeklyChestReady ? 'Chest ready right now' : `${goalsClaimedThisWeek}/${WEEKLY_GOALS.length} goals claimed • finish the board for a chest`}</span></div>`,
-        `<div class="menu-progress-row"><span>Read</span><span>${tomorrowSignature.variantDescription}</span></div>`
+        `<div class="menu-progress-row"><span>Focus</span><span>${spotlightName} • ${formatLayoutLabel(tomorrowSignature.featuredLayout)}</span></div>`,
+        `<div class="menu-progress-row"><span>Medals</span><span>G ${tomorrowBoard.targets.gold} · S ${tomorrowBoard.targets.silver} · B ${tomorrowBoard.targets.bronze}</span></div>`,
+        `<div class="menu-progress-row"><span>Gold Pays</span><span>${DAILY_TOKEN_REWARDS.Gold}◈ • ${weeklyPushCopy}</span></div>`,
+        `<div class="menu-progress-row"><span>Streak</span><span>${streakUrgencyCopy}</span></div>`,
+        `<div class="menu-progress-row"><span>Weekly Chest</span><span>${weeklyChestOpened ? 'Opened' : weeklyChestReady ? 'Ready' : `${goalsClaimedThisWeek}/${WEEKLY_GOALS.length} goals`}</span></div>`
       ].join("");
     }
 
@@ -13131,9 +14536,19 @@ function renderObstacleGalleryPage() {
   document.getElementById('closeSettingsBtn').onclick = () => {
     document.getElementById('settingsModal').style.display = 'none';
   };
+  document.getElementById('closeWhatsNewBtn').onclick = () => {
+    unlockGameFx();
+    emitGameFx('ui');
+    closeWhatsNewModal(true);
+  };
   document.getElementById('settingsModal').onclick = (event) => {
     if (event.target === document.getElementById('settingsModal')) {
       document.getElementById('settingsModal').style.display = 'none';
+    }
+  };
+  document.getElementById('whatsNewModal').onclick = (event) => {
+    if (event.target === document.getElementById('whatsNewModal')) {
+      closeWhatsNewModal(true);
     }
   };
   handmadeMapsReady = loadCustomMapsRegistry();
@@ -13156,6 +14571,7 @@ function renderObstacleGalleryPage() {
     handmadeMapsReady.then(() => {
       if (!window.__game) renderMenuMeta(startModeKey, startRoundLengthKey);
     });
+    maybeShowWhatsNewModal(loadProgress());
     if (DEBUG_FLAGS.autostartDifficulty && DIFFICULTY_PRESETS[DEBUG_FLAGS.autostartDifficulty]) {
       startGame(DEBUG_FLAGS.autostartDifficulty);
     }
