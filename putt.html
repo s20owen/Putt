@@ -1027,6 +1027,294 @@
       letter-spacing: 0.08em;
       text-align: center;
     }
+    .merge-lab-shell {
+      display: grid;
+      gap: 12px;
+    }
+    .merge-collection-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .merge-collection-card {
+      appearance: none;
+      width: 100%;
+      cursor: pointer;
+      position: relative;
+      border: 1.5px solid #111827;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+    .merge-collection-card.active {
+      box-shadow: inset 0 0 0 2px #111827;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+    }
+    .merge-collection-card.locked {
+      opacity: 0.72;
+      background: #f9fafb;
+    }
+    .merge-collection-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1.2;
+      padding-right: 26px;
+    }
+    .merge-collection-tier {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #111827;
+    }
+    .merge-collection-preview {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto;
+      border-radius: 22px;
+      border: 1.5px solid #111827;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.92);
+    }
+    .merge-collection-preview svg {
+      width: 52px;
+      height: 52px;
+      display: block;
+    }
+    .merge-collection-progress {
+      border: 1.5px solid #111827;
+      border-radius: 999px;
+      height: 28px;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .merge-collection-progress-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0%;
+      background: linear-gradient(90deg, #e5e7eb 0%, #d1d5db 100%);
+    }
+    .merge-collection-progress.ready .merge-collection-progress-fill {
+      background: linear-gradient(90deg, #111827 0%, #374151 100%);
+    }
+    .merge-collection-progress span {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #111827;
+      z-index: 1;
+    }
+    .merge-pill-content {
+      position: absolute;
+      inset: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .merge-pill-text {
+      order: 1;
+      display: inline-flex;
+      align-items: center;
+    }
+    .merge-pill-icon {
+      order: 2;
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      transform: translateY(6px);
+    }
+    .merge-pill-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .merge-upgrade-arrow {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      left: 12px;
+      top: -18px;
+      animation: merge-arrow-bob 2.2s ease-in-out infinite;
+      transform-origin: center bottom;
+      color: #111827;
+      filter: drop-shadow(0 2px 0 rgba(255,255,255,0.88));
+    }
+    .merge-upgrade-arrow svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .merge-lab-panel {
+      border: 1.5px solid #111827;
+      border-radius: 22px;
+      background: #ffffff;
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+      text-align: left;
+    }
+    .merge-lab-title {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: #111827;
+    }
+    .merge-lab-body {
+      display: grid;
+      grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .merge-lab-main {
+      position: relative;
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+      text-align: center;
+      padding-top: 6px;
+    }
+    .merge-lab-main .merge-upgrade-arrow {
+      left: 10px;
+      top: 88px;
+    }
+    .merge-lab-item-name {
+      font-size: 17px;
+      font-weight: 900;
+      color: #111827;
+      line-height: 1.15;
+    }
+    .merge-lab-item-level {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+    .merge-lab-preview {
+      width: 96px;
+      height: 96px;
+      border-radius: 24px;
+      border: 1.5px solid #111827;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+    }
+    .merge-lab-preview svg {
+      width: 58px;
+      height: 58px;
+      display: block;
+    }
+    .merge-lab-progress-wrap {
+      width: 100%;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+    .merge-lab-progress {
+      width: min(100%, 212px);
+      border: 1.5px solid #111827;
+      border-radius: 999px;
+      height: 34px;
+      position: relative;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .merge-lab-progress-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0%;
+      background: linear-gradient(90deg, #e5e7eb 0%, #d1d5db 100%);
+    }
+    .merge-lab-progress.ready .merge-lab-progress-fill {
+      background: linear-gradient(90deg, #111827 0%, #374151 100%);
+    }
+    .merge-lab-progress span {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      font-weight: 900;
+      color: #111827;
+      z-index: 1;
+    }
+    .merge-lab-copy {
+      font-size: 13px;
+      line-height: 1.35;
+      color: #4b5563;
+    }
+    .merge-lab-actions {
+      width: 100%;
+      display: grid;
+      gap: 8px;
+    }
+    .merge-lab-actions button {
+      width: 100%;
+    }
+    .merge-lab-stats {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .merge-lab-description {
+      font-size: 14px;
+      line-height: 1.35;
+      color: #111827;
+    }
+    .merge-lab-stat-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .merge-lab-stat {
+      border: 1.5px solid #111827;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #f9fafb;
+      display: grid;
+      gap: 4px;
+    }
+    .merge-lab-stat strong {
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #4b5563;
+    }
+    .merge-lab-stat span {
+      font-size: 15px;
+      font-weight: 900;
+      color: #111827;
+    }
+    .merge-lab-stat em {
+      display: block;
+      margin-top: 2px;
+      font-style: normal;
+      color: #6b7280;
+      font-weight: 700;
+    }
+    @keyframes merge-arrow-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
     .course-medal-copy {
       display: grid;
       gap: 4px;
@@ -1843,6 +2131,12 @@
       .merge-arrow-stage {
         grid-auto-flow: column;
         justify-content: center;
+      }
+      .merge-lab-body {
+        grid-template-columns: 1fr;
+      }
+      .merge-lab-main .merge-upgrade-arrow {
+        left: 18px;
       }
       .course-trophy-grid,
       .merge-stat-grid {
@@ -8478,6 +8772,8 @@
       this.ctx = this.canvas.getContext('2d');
       this.scores = [];
       this.currentShopTab = "tree";
+      this.selectedBallLabItemId = null;
+      this.selectedPutterLabItemId = null;
       this.scorecardEl = document.getElementById('scorecard');
       this.nextBtn = document.getElementById('nextBtn');
       this.restartBtn = document.getElementById('restartBtn');
@@ -8995,8 +9291,10 @@
     mergeItem(id) {
       const item = ITEM_LOOKUP[id];
       const bucket = this.getMergeBucket(item);
-      if (!item || !bucket || !this.canMergeItem(id)) return;
+      const cost = item ? this.getItemCost(item) : 0;
+      if (!item || !bucket || !this.canMergeItem(id) || (this.progress.golfBalls || 0) < cost) return;
       const tier = this.getItemTier(item);
+      this.progress.golfBalls = Math.max(0, (this.progress.golfBalls || 0) - cost);
       this.progress.itemCopies[bucket][id][tier] = Math.max(0, this.getCopyCount(item, tier) - MERGE_COPY_REQUIREMENT);
       if (item.type === "ability") this.progress.abilityLevels[id] = tier + 1;
       if (item.type === "putter") this.progress.putterLevels[id] = tier + 1;
@@ -9005,7 +9303,7 @@
       emitGameFx('tree');
       this.refreshMetaUi();
       this.applyCurrentLoadout();
-      this.unlockNote.textContent = `${item.name} merged to ${MERGE_TIER_LABELS[tier + 1] || `Tier ${tier + 1}`}.`;
+      this.unlockNote.textContent = `${item.name} merged to ${MERGE_TIER_LABELS[tier + 1] || `Tier ${tier + 1}`} for ${cost} golf balls.`;
       this.showMergeReveal(item, tier, tier + 1);
     }
     isTreeNodeUnlocked(nodeId) {
@@ -9191,12 +9489,34 @@
       }
       return ready;
     }
-    getMergeWorkshopItems(tabKey) {
-      const items = tabKey === "putters"
+    getWorkshopItemsForTab(tabKey) {
+      return tabKey === "putters"
         ? PUTTER_SHOP.filter(item => item.id !== "starter_putter")
         : tabKey === "balls"
           ? ABILITY_SHOP.filter(item => item.id !== "none_ability")
           : [];
+    }
+    getLabSelectionKey(tabKey) {
+      return tabKey === "putters" ? "selectedPutterLabItemId" : "selectedBallLabItemId";
+    }
+    setSelectedLabItem(tabKey, itemId) {
+      const key = this.getLabSelectionKey(tabKey);
+      this[key] = itemId || null;
+    }
+    getSelectedLabItem(tabKey) {
+      const items = this.getWorkshopItemsForTab(tabKey);
+      const key = this.getLabSelectionKey(tabKey);
+      const currentId = this[key];
+      let selected = items.find(item => item.id === currentId) || null;
+      if (selected) return selected;
+      const equippedId = tabKey === "putters" ? this.progress.equippedPutter : this.progress.equippedAbility;
+      selected = items.find(item => item.id === equippedId) || null;
+      if (!selected) selected = items.find(item => this.getItemTier(item) > 0) || items[0] || null;
+      this[key] = selected?.id || null;
+      return selected;
+    }
+    getMergeWorkshopItems(tabKey) {
+      const items = this.getWorkshopItemsForTab(tabKey);
       return items
         .filter(item => this.getItemTier(item) > 0)
         .map(item => {
@@ -9212,34 +9532,268 @@
         })
         .sort((a, b) => Number(b.ready) - Number(a.ready) || b.progress - a.progress || b.tier - a.tier);
     }
+    isItemEquipped(item) {
+      if (!item) return false;
+      if (item.type === "ability") return this.progress.equippedAbility === item.id;
+      if (item.type === "putter") return this.progress.equippedPutter === item.id;
+      if (item.type === "cosmetic") return this.progress.equippedCosmetic === item.id;
+      if (item.type === "trail") return this.progress.equippedTrail === item.id;
+      if (item.type === "putter_skin") return this.progress.equippedPutterSkin === item.id;
+      return false;
+    }
+    renderUpgradeArrowSvg() {
+      return `
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 3l8 9h-5v16h-6V12H8z" fill="#ffffff" stroke="#111111" stroke-width="2.2" stroke-linejoin="round" />
+        </svg>
+      `;
+    }
+    renderMergePillLabel(item, text, showCurrency = false) {
+      if (!showCurrency) return text;
+      return `<span class="merge-pill-content"><span class="merge-pill-text">${text}</span><span class="merge-pill-icon">${renderGolfBallIconSvg()}</span></span>`;
+    }
+    canAffordMergeUpgrade(item) {
+      if (!item) return false;
+      return (this.progress.golfBalls || 0) >= this.getItemCost(item);
+    }
+    renderWorkshopActionButtons(item, mode = "default") {
+      if (!item) return "";
+      const equipped = this.isItemEquipped(item);
+      const mergeReady = this.getMergeBucket(item) && this.canMergeItem(item.id);
+      const owned = item.type === "ability"
+        ? this.getAbilityTier(item.id) > 0
+        : item.type === "putter"
+          ? this.getPutterTier(item.id) > 0 || item.id === "starter_putter"
+          : this.hasOwnedItem(item.id);
+      const canAfford = this.progress.golfBalls >= this.getItemCost(item);
+      const tier = this.getItemTier(item);
+      const maxTier = this.getItemMaxTier(item);
+      const mergeAffordable = mergeReady && this.canAffordMergeUpgrade(item);
+      const buyLabel = owned
+        ? `Upgrade · ${formatGolfBalls(this.getItemCost(item))}`
+        : `Unlock · ${formatGolfBalls(this.getItemCost(item))}`;
+      const buyButton = (owned && tier >= maxTier) || mergeReady
+        ? ""
+        : `<button class="${canAfford ? "primary" : "secondary"}" ${canAfford ? "" : "disabled"} data-action="buy" data-id="${item.id}">${buyLabel}</button>`;
+      const equipButton = owned && !equipped
+        ? `<button class="secondary" data-action="equip" data-id="${item.id}">Equip</button>`
+        : owned && equipped
+          ? `<button class="secondary" disabled>Equipped</button>`
+          : "";
+      const mergeButton = mergeReady
+        ? `<button class="${mergeAffordable ? "primary" : "secondary"}" ${mergeAffordable ? "" : "disabled"} data-action="merge" data-id="${item.id}">${mode === "lab" ? `Upgrade · ${formatGolfBalls(this.getItemCost(item))}` : `Merge · ${formatGolfBalls(this.getItemCost(item))}`}</button>`
+        : "";
+      const buttons = [mergeButton, buyButton, equipButton].filter(Boolean);
+      if (!buttons.length) return "";
+      return `<div class="merge-lab-actions">${buttons.join("")}</div>`;
+    }
+    renderLabCollectionCard(item, tabKey, selectedId) {
+      const tier = this.getItemTier(item);
+      const copies = tier > 0 ? this.getCopyCount(item, tier) : 0;
+      const ready = this.canMergeItem(item.id);
+      const maxTier = this.getItemMaxTier(item);
+      const maxed = tier > 0 && tier >= maxTier;
+      const progress = maxed ? 1 : tier > 0 ? clamp(copies / MERGE_COPY_REQUIREMENT, 0, 1) : 0;
+      const isSelected = selectedId === item.id;
+      const isLocked = tier <= 0;
+      const arrowScale = 0.9 + (Math.max(1, tier) / Math.max(1, maxTier)) * 0.55;
+      const progressLabel = isLocked
+        ? this.renderMergePillLabel(item, this.getItemCost(item), true)
+        : maxed
+          ? "MAX"
+          : `${copies}/${MERGE_COPY_REQUIREMENT}`;
+      return `
+        <button class="merge-collection-card ${isSelected ? "active" : ""} ${isLocked ? "locked" : ""}" data-select-lab="${tabKey}" data-id="${item.id}">
+          ${ready ? `<div class="merge-upgrade-arrow" style="transform: scale(${arrowScale});">${this.renderUpgradeArrowSvg()}</div>` : ""}
+          <div class="merge-collection-name">${item.name}</div>
+          <div class="merge-collection-tier">${tier > 0 ? `Lvl. ${tier}` : "Locked"}</div>
+          <div class="merge-collection-preview">${this.renderShopPreview(item)}</div>
+          <div class="merge-collection-progress ${ready ? "ready" : ""}">
+            <div class="merge-collection-progress-fill" style="width:${Math.round(progress * 100)}%;"></div>
+            <span>${progressLabel}</span>
+          </div>
+        </button>
+      `;
+    }
+    getAbilityLabStatRows(item) {
+      const tier = this.getItemTier(item);
+      const maxTier = this.getItemMaxTier(item);
+      const nextTier = tier > 0 ? Math.min(maxTier, tier + 1) : 1;
+      const current = this.getAbilityTierSnapshot(item, tier);
+      const next = this.getAbilityTierSnapshot(item, nextTier);
+      const rows = [];
+      const push = (label, currentValue, nextValue, suffix = "") => {
+        rows.push({
+          label,
+          current: this.formatUpgradeMetric(currentValue, suffix),
+          next: this.formatUpgradeMetric(nextValue, suffix),
+          delta: this.formatUpgradeMetric(nextValue - currentValue, suffix, true)
+        });
+      };
+      switch (item.id) {
+        case "power_core":
+          push("Power", current.maxPower, next.maxPower);
+          break;
+        case "curve_core":
+          push("Curve", current.curveStrength, next.curveStrength);
+          break;
+        case "true_roll":
+          push("Friction", current.rollFriction, next.rollFriction, "x");
+          push("Sand Resistance", current.sandFactor, next.sandFactor, "x");
+          break;
+        case "soft_shell":
+          push("Bounce", current.bounceFactor, next.bounceFactor, "x");
+          break;
+        case "bank_shot":
+          push("Bounce", current.bounceFactor, next.bounceFactor, "x");
+          break;
+        case "anchor_core":
+          push("Magnetic Resistance", current.fieldResistance, next.fieldResistance, "x");
+          break;
+        case "pressure_core":
+          push("Magnetic Resistance", current.fieldResistance, next.fieldResistance, "x");
+          break;
+        case "split_core":
+          push("Alt Line", current.splitOffset, next.splitOffset);
+          break;
+        case "air_hopper":
+          push("Hop Count", current.hopCount, next.hopCount);
+          push("Hang Time", current.hopFrames, next.hopFrames, "f");
+          break;
+        case "needle_core":
+          push("Radius", current.radius, next.radius);
+          push("Bounce", current.bounceFactor, next.bounceFactor, "x");
+          break;
+        case "pulse_core":
+          push("Power", 0.8 + tier * 0.22, 0.8 + nextTier * 0.22);
+          break;
+        default:
+          break;
+      }
+      return rows;
+    }
+    getPutterLabStatRows(item) {
+      const tier = this.getItemTier(item);
+      const maxTier = this.getItemMaxTier(item);
+      const nextTier = tier > 0 ? Math.min(maxTier, tier + 1) : 1;
+      const current = this.getPutterTierSnapshot(item, tier);
+      const next = this.getPutterTierSnapshot(item, nextTier);
+      const rows = [
+        { label: "Power", current: this.formatUpgradeMetric(current.powerRating), next: this.formatUpgradeMetric(next.powerRating), delta: this.formatUpgradeMetric(next.powerRating - current.powerRating, "", true) },
+        { label: "Control", current: this.formatUpgradeMetric(current.controlRating), next: this.formatUpgradeMetric(next.controlRating), delta: this.formatUpgradeMetric(next.controlRating - current.controlRating, "", true) },
+        { label: "Forgiveness", current: this.formatUpgradeMetric(current.forgivenessRating), next: this.formatUpgradeMetric(next.forgivenessRating), delta: this.formatUpgradeMetric(next.forgivenessRating - current.forgivenessRating, "", true) }
+      ];
+      if (item.effect?.type === "tempo_focus" || item.effect?.type === "tour_resolve") {
+        rows.push({
+          label: "Friction",
+          current: this.formatUpgradeMetric(current.rollFrictionBonus, "x"),
+          next: this.formatUpgradeMetric(next.rollFrictionBonus, "x"),
+          delta: this.formatUpgradeMetric(next.rollFrictionBonus - current.rollFrictionBonus, "x", true)
+        });
+      }
+      if (item.effect?.type === "soft_bank" || item.effect?.type === "tour_resolve") {
+        rows.push({
+          label: "Bounce",
+          current: this.formatUpgradeMetric(current.bounceReduction, "x"),
+          next: this.formatUpgradeMetric(next.bounceReduction, "x"),
+          delta: this.formatUpgradeMetric(next.bounceReduction - current.bounceReduction, "x", true)
+        });
+      }
+      if (item.effect?.type === "power_face") {
+        rows.push({
+          label: "Max Power",
+          current: this.formatUpgradeMetric(current.maxPowerBonus),
+          next: this.formatUpgradeMetric(next.maxPowerBonus),
+          delta: this.formatUpgradeMetric(next.maxPowerBonus - current.maxPowerBonus, "", true)
+        });
+      }
+      if (item.effect?.type === "tour_resolve") {
+        rows.push({
+          label: "Magnetic Resistance",
+          current: this.formatUpgradeMetric(current.fieldResistance, "x"),
+          next: this.formatUpgradeMetric(next.fieldResistance, "x"),
+          delta: this.formatUpgradeMetric(next.fieldResistance - current.fieldResistance, "x", true)
+        });
+      }
+      return rows;
+    }
+    renderLabStatCards(item) {
+      if (!item) return "";
+      const tier = this.getItemTier(item);
+      const rows = item.type === "putter"
+        ? this.getPutterLabStatRows(item)
+        : this.getAbilityLabStatRows(item);
+      if (!rows.length) {
+        return `
+          <div class="merge-lab-stat">
+            <strong>Status</strong>
+            <span>${tier > 0 ? "No next-step stat preview" : "Unlock to begin this lab track"}</span>
+          </div>
+        `;
+      }
+      return rows.map(row => `
+        <div class="merge-lab-stat">
+          <strong>${row.label}</strong>
+          <span>${row.current}</span>
+          <em>Next ${row.next} · ${row.delta}</em>
+        </div>
+      `).join("");
+    }
     renderMergeWorkshop(tabKey) {
-      const entries = this.getMergeWorkshopItems(tabKey);
-      if (!entries.length) return "";
-      const readyCount = entries.filter(entry => entry.ready).length;
-      const lead = entries[0];
+      const items = this.getWorkshopItemsForTab(tabKey);
+      if (!items.length) return "";
+      const selected = this.getSelectedLabItem(tabKey);
+      if (!selected) return "";
+      const selectedTier = this.getItemTier(selected);
+      const selectedCopies = selectedTier > 0 ? this.getCopyCount(selected, selectedTier) : 0;
+      const selectedReady = this.canMergeItem(selected.id);
+      const selectedMaxTier = this.getItemMaxTier(selected);
+      const selectedMaxed = selectedTier > 0 && selectedTier >= selectedMaxTier;
+      const selectedProgress = selectedMaxed ? 1 : selectedTier > 0 ? clamp(selectedCopies / MERGE_COPY_REQUIREMENT, 0, 1) : 0;
       const label = tabKey === "putters" ? "Putter Forge" : "Ball Lab";
-      const nextTier = MERGE_TIER_LABELS[Math.min(this.getItemMaxTier(lead.item), lead.tier + 1)] || `Tier ${lead.tier + 1}`;
+      const summary = selectedTier > 0
+        ? `${selected.effect?.description || selected.description} ${selectedMaxed ? "This item is already at max tier." : selectedReady ? "This item is ready to upgrade now." : `Needs ${Math.max(0, MERGE_COPY_REQUIREMENT - selectedCopies)} more duplicate ${MERGE_COPY_REQUIREMENT - selectedCopies === 1 ? "copy" : "copies"} for the next tier.`}`
+        : `${selected.description} Unlock the first copy to start its lab track.`;
+      const arrowScale = 0.95 + (Math.max(1, selectedTier || 1) / Math.max(1, selectedMaxTier)) * 0.7;
       return `
         <section class="shop-section">
-          <h3>${label}</h3>
-          <div class="merge-pro-panel">
-            <div class="merge-tier-row">
-              <div class="shop-preview">${this.renderShopPreview(lead.item)}</div>
-              <div style="flex:1;">
-                <h3>${readyCount ? `${readyCount} merge ready` : `${lead.item.name} is closest`}</h3>
-                <p>${readyCount ? "Fuse duplicate copies to push your active gear up a tier." : `${lead.copies}/${MERGE_COPY_REQUIREMENT} copies toward ${nextTier}.`}</p>
-              </div>
-              ${lead.ready ? `<button class="primary" data-action="merge" data-id="${lead.item.id}">Merge</button>` : `<strong>${Math.round(lead.progress * 100)}%</strong>`}
+          <h3>${tabKey === "putters" ? "Putters" : "Balls"}</h3>
+          <div class="merge-lab-shell">
+            <div class="merge-collection-grid">
+              ${items.map(item => this.renderLabCollectionCard(item, tabKey, selected.id)).join("")}
             </div>
-            <div class="merge-stat-grid">
-              ${entries.slice(0, 3).map(entry => `
-                <div class="merge-stat">
-                  <b>${entry.ready ? "Ready" : MERGE_TIER_LABELS[entry.tier] || `Tier ${entry.tier}`}</b>
-                  <span>${entry.item.name}<br />${entry.copies}/${MERGE_COPY_REQUIREMENT}</span>
+            <div class="merge-lab-panel" data-lab-panel="${tabKey}">
+              <div class="merge-lab-title">${label}</div>
+              <div class="merge-lab-body">
+                <div class="merge-lab-main">
+                  ${selectedReady ? `<div class="merge-upgrade-arrow" style="transform: scale(${arrowScale});">${this.renderUpgradeArrowSvg()}</div>` : ""}
+                  <div>
+                    <div class="merge-lab-item-name">${selected.name}</div>
+                    <div class="merge-lab-item-level">${selectedTier > 0 ? `Lvl. ${selectedTier}` : "Locked"}${selectedTier > 0 ? ` · ${MERGE_TIER_LABELS[selectedTier] || `Tier ${selectedTier}`}` : ""}</div>
+                  </div>
+                  <div class="merge-lab-preview">${this.renderShopPreview(selected)}</div>
+                  <div class="merge-lab-progress-wrap">
+                    <div class="merge-lab-progress ${selectedReady ? "ready" : ""}">
+                      <div class="merge-lab-progress-fill" style="width:${Math.round(selectedProgress * 100)}%;"></div>
+                      <span>${selectedTier > 0 ? (selectedMaxed ? "MAX" : `${selectedCopies}/${MERGE_COPY_REQUIREMENT}`) : formatGolfBalls(this.getItemCost(selected))}</span>
+                    </div>
+                    <div class="merge-lab-copy">${selectedTier > 0
+                      ? selectedMaxed
+                        ? "Top tier reached for this lab item."
+                        : `${MERGE_TIER_LABELS[Math.min(selectedMaxTier, selectedTier + 1)] || `Tier ${selectedTier + 1}`} needs ${MERGE_COPY_REQUIREMENT} duplicates.`
+                      : "Buy the first copy to unlock this lab item."}
+                    </div>
+                  </div>
+                  ${this.renderWorkshopActionButtons(selected, "lab")}
                 </div>
-              `).join("")}
+                <div class="merge-lab-stats">
+                  <div class="merge-lab-description">${summary}</div>
+                  <div class="merge-lab-stat-grid">
+                    ${this.renderLabStatCards(selected)}
+                  </div>
+                </div>
+              </div>
             </div>
-            ${this.renderUpgradeDeltaRows(lead.item, lead.tier, Math.min(this.getItemMaxTier(lead.item), lead.tier + 1))}
           </div>
         </section>
       `;
@@ -9948,6 +10502,11 @@
       this.refreshMetaUi();
       this.applyCurrentLoadout();
     }
+    scrollSelectedLabIntoView(tabKey) {
+      const panel = this.shopList?.querySelector(`[data-lab-panel="${tabKey}"]`);
+      if (!panel) return;
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     renderShop() {
       const featured = this.getDailyFeaturedOffer();
       if (this.currentShopTab === "powers") this.currentShopTab = "balls";
@@ -9981,6 +10540,24 @@
               ${DAILY_TOKEN_SHOP.map(item => this.renderShopItem(item, featured)).join("")}
             </section>
           `
+        : this.currentShopTab === 'balls'
+          ? `
+            ${this.renderMergeWorkshop('balls')}
+            <section class="shop-section">
+              <h3>Utility Upgrades</h3>
+              ${UPGRADE_SHOP.map(item => this.renderShopItem(item, featured)).join("")}
+            </section>
+          `
+        : this.currentShopTab === 'putters'
+          ? `
+            ${this.renderMergeWorkshop('putters')}
+            <section class="shop-section">
+              <h3>Putter Skins</h3>
+              ${PUTTER_SKINS
+                .filter(item => (!item.trackReward || this.hasOwnedItem(item.id)) && (!item.tokenReward || this.hasOwnedItem(item.id) || this.getAbilityTier(item.id) > 0) && (!item.weeklyReward || this.hasOwnedItem(item.id)))
+                .map(item => this.renderShopItem(item, featured)).join("")}
+            </section>
+          `
         : SHOP_SECTIONS
           .filter(section => sectionGroups[this.currentShopTab]?.includes(section.id))
           .map(section => `
@@ -9991,8 +10568,15 @@
                 .map(item => this.renderShopItem(item, featured)).join("")}
             </section>
           `).join("");
-      const workshopMarkup = ["balls", "putters"].includes(this.currentShopTab) ? this.renderMergeWorkshop(this.currentShopTab) : "";
-      this.shopList.innerHTML = workshopMarkup + tabSections;
+      this.shopList.innerHTML = tabSections;
+      this.shopList.querySelectorAll("[data-select-lab]").forEach(button => {
+        button.onclick = () => {
+          const tabKey = button.dataset.selectLab;
+          this.setSelectedLabItem(tabKey, button.dataset.id);
+          this.renderShop();
+          this.scrollSelectedLabIntoView(tabKey);
+        };
+      });
       this.shopList.querySelectorAll("button[data-tree-unlock]").forEach(button => {
         button.onclick = () => {
           const { branch, node } = button.dataset;
@@ -10915,6 +11499,8 @@
     const showOverview = (event) => {
       if (event) event.preventDefault();
       if (this.zoomRestoreState) return;
+      this.isAiming = false;
+      this.aimVector = null;
       this.zoomRestoreState = {
         x: this.camera.x,
         y: this.camera.y,
@@ -10998,7 +11584,7 @@
       return this.camera.screenToWorld(localX, localY);
     };
     canvas.onpointerdown = (e) => {
-      if (this.levelComplete || this.ball.speed() > 0.12) return;
+      if (this.levelComplete || this.ball.speed() > 0.12 || this.zoomRestoreState) return;
       e.preventDefault();
       canvas.setPointerCapture(e.pointerId);
       const pos = getWorldPos(e);
@@ -11007,6 +11593,11 @@
       this.startY = pos.y;
     };
     canvas.onpointermove = (e) => {
+      if (this.zoomRestoreState) {
+        this.isAiming = false;
+        this.aimVector = null;
+        return;
+      }
       if (this.isAiming) {
         e.preventDefault();
         const pos = getWorldPos(e);
@@ -11018,6 +11609,11 @@
     canvas.onpointerup = (e) => {
       if (this.levelComplete) return;
       e.preventDefault();
+      if (this.zoomRestoreState) {
+        this.isAiming = false;
+        this.aimVector = null;
+        return;
+      }
       if (this.isAiming && this.aimVector) {
         let { dx, dy } = this.aimVector;
         const angle = Math.atan2(dy, dx);
