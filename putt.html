@@ -11106,6 +11106,9 @@
       const roundRankTier = getDailyRankTier(totalPar, totalShots);
       const tokenReward = isLast && this.modeKey === "daily" ? getDailyTokenReward(roundMedal, false) : 0;
       const golfBallReward = isLast ? getRoundGolfBallReward(roundMedal, this.modeKey, this.difficultyKey, false) : 0;
+      const dailyCourseGolfBallReward = isLast && this.modeKey === "daily"
+        ? Math.max(0, Number(this.courseLocation?.clearReward?.golfBalls) || 0)
+        : 0;
       const bestImproved = isLast ? this.updateBestRound(totalPar, totalShots) : false;
       const trackUpdate = isLast ? this.updateDifficultyTrack(totalPar, totalShots) : null;
       const locationUpdate = isLast ? this.completeCourseLocation(totalPar, totalShots) : null;
@@ -11114,6 +11117,7 @@
         this.progress.golfBalls = Math.max(0, Number(this.progress.golfBalls) || 0) + golfBallReward;
       }
       if (isLast && this.modeKey === "daily") {
+        this.progress.golfBalls = Math.max(0, Number(this.progress.golfBalls) || 0) + dailyCourseGolfBallReward;
         this.progress.dailyTokens = Math.max(0, Number(this.progress.dailyTokens) || 0) + tokenReward;
         completeDailyAttempt(this.progress, getTodayKey(), this.difficultyKey, {
           failed: false,
@@ -11147,7 +11151,7 @@
             <strong>${this.modeKey === 'daily' ? roundRankTier : roundMedal}</strong><br />
             ${bestImproved ? "New best round." : "Best remains"} ${bestLabel}.<br />
             ${socialLine}
-            ${this.modeKey === 'daily' ? `${this.getRankGapCopy(totalPar, totalShots)}${tokenReward ? `<br />+${tokenReward} Daily Token${tokenReward === 1 ? '' : 's'}.` : ''}` : ""}
+            ${this.modeKey === 'daily' ? `${this.getRankGapCopy(totalPar, totalShots)}${tokenReward ? `<br />+${tokenReward} Daily Token${tokenReward === 1 ? '' : 's'}.` : ''}${dailyCourseGolfBallReward ? `<br />+${dailyCourseGolfBallReward} ${this.courseLocation?.name || "course"} golf ball${dailyCourseGolfBallReward === 1 ? '' : 's'}.` : ''}` : ""}
             ${golfBallReward ? `<br />+${golfBallReward} golf ball${golfBallReward === 1 ? '' : 's'} for ${roundMedal}.` : ""}
             ${locationUpdate ? `<br />Course clear: +${locationUpdate.rewardGolfBalls || 0} golf balls, +${locationUpdate.rewardStars || 0}★.` : ""}
             ${locationUpdate?.nextUnlocked ? `<br />Course unlocked: ${locationUpdate.nextUnlocked.name}.` : ""}
@@ -11165,7 +11169,7 @@
                   ? weeklyGoalRewards.join(" ")
                   : calendarRewards.length
                     ? calendarRewards.join(" ")
-                    : `${roundRankTier} banked • +${golfBallReward} golf ball${golfBallReward === 1 ? '' : 's'}${tokenReward ? ` • +${tokenReward}◈ Daily Tokens` : ''}.`
+                    : `${roundRankTier} banked • +${golfBallReward} golf ball${golfBallReward === 1 ? '' : 's'}${dailyCourseGolfBallReward ? ` • +${dailyCourseGolfBallReward} ${this.courseLocation?.name || "course"} golf ball${dailyCourseGolfBallReward === 1 ? '' : 's'}` : ''}${tokenReward ? ` • +${tokenReward}◈ Daily Tokens` : ''}.`
             : `${locationUpdate?.nextUnlocked ? `${locationUpdate.nextUnlocked.name} unlocked. ` : ""}${trackUpdate?.rewardMessage || `${roundMedal} medal banked for ${this.courseLocation?.name || this.difficulty.label}.`} +${golfBallReward} medal golf ball${golfBallReward === 1 ? '' : 's'}${locationUpdate ? ` • +${locationUpdate.rewardGolfBalls || 0} course golf balls • +${locationUpdate.rewardStars || 0}★` : ""}.`;
         } else {
           this.roundSummaryEl.style.display = 'none';

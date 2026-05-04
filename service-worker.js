@@ -1,4 +1,4 @@
-const APP_CACHE_VERSION = "2026.04.26-v1";
+const APP_CACHE_VERSION = "2026.05.04-v1";
 const CACHE_NAME = `putt-mobile-cache-${APP_CACHE_VERSION}`;
 const CORE_APP_SHELL = [
   "./",
