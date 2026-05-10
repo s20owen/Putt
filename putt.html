@@ -9447,6 +9447,22 @@
       this.renderStats();
       this.statsModal.style.display = 'flex';
     }
+    exportProgressJson() {
+      saveProgress(this.progress);
+      const payload = JSON.stringify({
+        ...this.progress,
+        version: SAVE_SCHEMA_VERSION,
+        appVersion: APP_VERSION
+      }, null, 2);
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `putt-save-${getTodayKey()}.json`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      this.unlockNote.textContent = "Save data exported as JSON.";
+    }
     closeStats() {
       this.statsModal.style.display = 'none';
     }
@@ -9883,6 +9899,7 @@
         <div style="margin-top:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
           <button type="button" class="secondary" data-setting-action="ping">Test Audio</button>
           <button type="button" class="secondary" data-setting-action="whats-new">Patch Notes</button>
+          <button type="button" class="secondary" data-setting-action="export-json">Export Save JSON</button>
         </div>
       </div>
       `;
@@ -9904,6 +9921,10 @@
           if (button.dataset.settingAction === "whats-new") {
             populateWhatsNewModal(getCurrentReleaseNotes());
             document.getElementById('whatsNewModal').style.display = 'flex';
+            return;
+          }
+          if (button.dataset.settingAction === "export-json") {
+            this.exportProgressJson();
             return;
           }
           if (button.dataset.settingAction !== "ping") return;
